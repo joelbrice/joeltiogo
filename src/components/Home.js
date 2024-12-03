@@ -1,17 +1,20 @@
-import React from 'react';
-import profilePic from '../assets/images/1.jpg';
-import styled from 'styled-components';
-import LinkedIn from '@mui/icons-material/LinkedIn';
-import Email from '@mui/icons-material/Email';
-import PlaceIcon from '@mui/icons-material/Place';
+import React from "react";
+import profilePic from "../assets/images/1.jpg";
+import styled from "styled-components";
+import LinkedIn from "@mui/icons-material/LinkedIn";
+import Email from "@mui/icons-material/Email";
+import PlaceIcon from "@mui/icons-material/Place";
 
 const Header = styled.header`
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
+  padding: 2rem;
+  background: linear-gradient(120deg, #4ca2cd, #67b26f);
+  color: white;
 
- @media (min-width: 768px) {
+  @media (min-width: 768px) {
     flex-direction: row;
     align-items: center;
     text-align: left;
@@ -19,120 +22,136 @@ const Header = styled.header`
   }
 
   img {
-    width: auto;
-    max-width: 250px;
-    height: 250px; /* Square shape */
-    object-fit: cover; /* Ensure no stretching */
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
     border-radius: 50%;
-    margin: 1rem;
-    border: 5px solid white; /* White border to create a standout effect */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+    margin-bottom: 1.5rem;
+    border: 5px solid white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  }
+
+  h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    font-size: 1.2rem;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.8;
   }
 `;
 
-const ContentContainer = styled.div`
-  max-width: 640px;
+const Container = styled.main`
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
 const Intro = styled.section`
-  background: linear-gradient(to right, #67b26f, #4ca2cd);
+  background: #fff;
   padding: 2rem;
-  color: white;
+  color: #333;
   border-radius: 12px;
-  margin: 2rem 1rem;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  max-width: 800px;
+
+  p {
+    font-size: 1.2rem;
+    line-height: 1.6;
+  }
 `;
 
-const Container = styled.main`
-  padding:1rem;
-  `;
-  
-  const CallToActionBtn = styled.a`
-    display: inline-block;
-    padding: 0.75rem 1.5rem;
-    margin-top: 1rem;
-    background-color: white;
+const CallToActionBtn = styled.a`
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  margin-top: 1rem;
+  background-color: #4ca2cd;
+  color: white;
+  font-weight: bold;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+
+  &:hover {
+    background-color: #67b26f;
+    transform: translateY(-2px);
+  }
+`;
+
+const SocialLinks = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 2rem;
+
+  a {
     color: #4ca2cd;
-    border-radius: 8px;
-    text-align: center;
-    font-weight: bold;
-    text-decoration: none;
-    transition: background-color 0.3s ease;
-  
+    transition: transform 0.2s ease;
+
     &:hover {
-      background-color: #e0e0e0;
+      transform: translateY(-3px);
     }
-  `;
-  
-  const SocialLinks = styled.div`
+  }
+
+  span {
     display: flex;
-    justify-content: center;
-    gap: 1rem;
-    margin-top: 1rem;
-  
-    a {
-      color: white;
-      transition: transform 0.2s ease;
-      text-decoration: none;
-  
-      &:hover {
-        transform: translateY(-2px);
-      }
-    }
-  `;
-  
-  const IconWrapper = styled.span`
-    margin-right: 0.5rem;
-    display: inline-flex;
-    justify-content: center;
     align-items: center;
-  `;
-  
-  function Home() {
-    return (
-      <div className="home">
-        <Header>
-          <img src={profilePic} alt="Profile" />
-          <ContentContainer>
-            
-          <h1 className="font-bold text-4xl text-blue-900 mb-4">
-            Business Developer | ESG Consultant | Digital Transformation Specialist
-          </h1>
-          <p className="mt-4 text-xl text-blue-900 sm:text-2xl">
-          Strategic leader in sustainable business growth, Digital Transformation and Environmental, Social, and Governance (ESG) solutions.
+    gap: 0.5rem;
+    font-size: 1rem;
+    color: #333;
+  }
+`;
+
+function Home() {
+  return (
+    <div className="home">
+      <Header>
+        <img src={profilePic} alt="Profile" />
+        <div>
+          <h1>Hi, I’m Joel Tiogo</h1>
+          <p>
+            Engineer by trade. MBA by choice. Data Scientist by passion. Innovating at the crossroads of
+            <em> business, tech, and sustainability</em>.
           </p>
-        </ContentContainer>
+        </div>
       </Header>
+
       <Container>
         <Intro>
-          <p className="text-xl">
-            A unique blend of qualifications in engineering, software, and entrepreneurship matched with deep insights into the ESG space.
+          <p>
+            Welcome to my digital hub! I blend a background in Electrical Engineering with an MBA’s strategic acumen
+            to drive impactful solutions in ESG and Digital Transformation.
           </p>
-          <p className="text-xl mt-4">
-            Driving business growth through innovation and technology, fostering strategic partnerships, emphasizing sustainable advances.
+          <p>
+            Whether it's automating workflows, interpreting data, or connecting the dots between technology and
+            business, I’m here to create value and share insights. My secret weapon? A knack for turning ideas into
+            measurable outcomes.
           </p>
-          <CallToActionBtn href="/blog">
-            Read My Blog
-          </CallToActionBtn>
+          <CallToActionBtn href="/blog">Explore My Blog</CallToActionBtn>
+        </Intro>
+
         <SocialLinks>
-          <a href="https://www.linkedin.com/in/joeltiogo/" target="_blank" rel="noopener noreferrer">
-            <IconWrapper>
-              <LinkedIn  fontSize="large"  />
-            </IconWrapper>
+          <a
+            href="https://www.linkedin.com/in/joeltiogo/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <LinkedIn fontSize="large" />
           </a>
           <a href="mailto:tiogojoel@gmail.com">
-            <IconWrapper>
-              <Email fontSize="large" />
-            </IconWrapper>
-            </a>
-          <a>
-            <IconWrapper>
-              <PlaceIcon fontSize="large"  />
-            </IconWrapper>
-            65428 Rüsselsheim am Main, Germany
+            <Email fontSize="large" />
           </a>
+          <span>
+            <PlaceIcon fontSize="large" />
+            65428 Rüsselsheim am Main, Germany
+          </span>
         </SocialLinks>
-        </Intro>
       </Container>
     </div>
   );
