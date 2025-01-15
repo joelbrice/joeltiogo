@@ -1,160 +1,177 @@
-import React from "react";
-import profilePic from "../assets/images/1.jpg";
-import styled from "styled-components";
-import LinkedIn from "@mui/icons-material/LinkedIn";
-import Email from "@mui/icons-material/Email";
-import PlaceIcon from "@mui/icons-material/Place";
+import React, { useState, useEffect } from 'react';
+import styled, { keyframes, css } from 'styled-components';
+import { FaTerminal, FaCode, FaBrain, FaRobot, FaUniversity, Fa500Px } from 'react-icons/fa';
+import { Fa0, Fa1, Fa3 } from 'react-icons/fa6';
 
-const Header = styled.header`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: 2rem;
-  background: linear-gradient(120deg, #4ca2cd, #67b26f);
-  color: white;
-
-  @media (min-width: 768px) {
-    flex-direction: row;
-    align-items: center;
-    text-align: left;
-    justify-content: space-around;
-  }
-
-  img {
-    width: 200px;
-    height: 200px;
-    object-fit: cover;
-    border-radius: 50%;
-    margin-bottom: 1.5rem;
-    border: 5px solid white;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  }
-
-  h1 {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-  }
-
-  p {
-    font-size: 1.2rem;
-    max-width: 600px;
-    margin: 0 auto;
-    line-height: 1.8;
-  }
+const glitch = keyframes`
+  0% { text-shadow: 2px 0 0 red, -2px 0 0 #0ff; }
+  50% { text-shadow: -2px 0 0 red, 2px 0 0 #0ff; }
+  100% { text-shadow: 2px 0 0 red, -2px 0 0 #0ff; }
 `;
 
-const Container = styled.main`
-  padding: 2rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+const typing = keyframes`
+  from { width: 0 }
+  to { width: 100% }
 `;
 
-const Intro = styled.section`
-  background: #fff;
-  padding: 2rem;
-  color: #333;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  max-width: 800px;
-
-  p {
-    font-size: 1.2rem;
-    line-height: 1.6;
-  }
+const blink = keyframes`
+  50% { border-color: transparent }
 `;
 
-const CallToActionBtn = styled.a`
-  display: inline-block;
-  padding: 0.75rem 1.5rem;
-  margin-top: 1rem;
-  background-color: #4ca2cd;
-  color: white;
-  font-weight: bold;
-  border-radius: 8px;
-  text-decoration: none;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-
-  &:hover {
-    background-color: #67b26f;
-    transform: translateY(-2px);
-  }
-`;
-
-const SocialLinks = styled.div`
+const Container = styled.div`
+  min-height: 100vh;
   display: flex;
   justify-content: center;
-  gap: 1.5rem;
-  margin-top: 2rem;
+  align-items: center;
+  background-color: #181818; /* Darker background for better contrast */
+  color: #00ff00;
+  font-family: 'Courier New', monospace;
+  overflow: hidden; /* Prevent scrollbars */
+`;
 
-  a {
-    color: #4ca2cd;
-    transition: transform 0.2s ease;
+const Terminal = styled.div`
+  width: 80vw; /* Adjust width to 80% of viewport */
+  max-width: 800px; /* Set a maximum width */
+  background: rgba(0, 0, 0, 0.9);
+  border: 1px solid #00ff00;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 0 30px rgba(0, 255, 0, 0.2);
+  padding: 2rem; /* Add padding to the Terminal */
+`;
 
-    &:hover {
-      transform: translateY(-3px);
-    }
+const TerminalHeader = styled.div`
+  background: #2d2d2d;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+const PathPrefix = styled.span`
+  color: #00ff00;
+  opacity: 0.8;
+  margin-right: 8px;
+`;
+
+const TerminalContent = styled.pre`
+  color: #00ff00;
+  font-family: 'Courier New', monospace;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  position: relative;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+
+  .command-line {
+    display: flex;
+    align-items: flex-start;
   }
 
-  span {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 1rem;
-    color: #333;
+  &:after {
+    content: '█';
+    position: absolute;
+    animation: ${blink} 1s step-end infinite;
   }
 `;
 
-function Home() {
+const EducationItem = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+
+  &::before {
+    content: '•';
+    margin-right: 8px;
+    color: #00ff00;
+  }
+`;
+
+const SkillCard = styled.div`
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid #00ff00;
+  border-radius: 4px;
+  padding: 1.5rem;
+  text-align: center;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
+  }
+`;
+
+const Home = () => {
+  const [displayText, setDisplayText] = useState('');
+  const [isTyping, setIsTyping] = useState(true);
+
+  const messages = [
+    { text: 'System initializing...', icon: <FaTerminal /> },
+    { text: 'Greetings! I am Joël Tiogo', icon: <FaCode /> },
+    { 
+      text: 'Passionate about leveraging AI and data science to drive innovation and create sustainable solutions for complex global challenges.', 
+      icon: Fa500Px 
+    },
+    { text: '\nEducation:', icon: FaBrain },
+    { text: '\n> MBA. Finance & Technology', icon: <FaUniversity /> },
+    { text: '\n       Frankfurt School of Finance & Management(FS)', icon: FaBrain },
+    { text: '\n> BTech. Electrical Engineering', icon: <FaUniversity /> },
+    { text: '\n       University of Johannesburg', icon: FaRobot },
+    { text: '\n> Data Science & AI Bootcamp', icon: <Fa0 /> },
+    { text: '\n       Le Wagon GmbH', icon: <FaRobot /> },
+    { text: '\n\n*Status*: Active & Seeking new opportunities', icon: Fa1 } 
+  ];
+
+  useEffect(() => {
+    let currentIndex = 0;
+    let currentChar = 0;
+    let currentText = '';
+
+    const typeNextChar = () => {
+      if (currentIndex >= messages.length) {
+        setIsTyping(false);
+        return;
+      }
+
+      const message = messages[currentIndex];
+      const shouldAddPath = currentIndex < 4; 
+
+      if (currentChar === 0 && shouldAddPath) { 
+        currentText += '\n~/joeltiogo/home$ '; 
+      }
+
+      currentText += message.text[currentChar];
+
+      setDisplayText(currentText);
+      currentChar++;
+
+      if (currentChar >= message.text.length) {
+        currentIndex++;
+        currentChar = 0;
+        setTimeout(typeNextChar, 800); // Delay between messages
+      } else {
+        setTimeout(typeNextChar, 50); // Typing speed
+      }
+    };
+
+    typeNextChar();
+  }, []);
+
   return (
-    <div className="home">
-      <Header>
-        <img src={profilePic} alt="Profile" />
-        <div>
-          <h1>Hi, I’m Joel Tiogo</h1>
-          <p>
-            Engineer by trade. MBA by choice. Data Scientist by passion. Innovating at the crossroads of
-            <em> business, tech, and sustainability</em>.
-          </p>
-        </div>
-      </Header>
-
-      <Container>
-        <Intro>
-          <p>
-            Welcome to my digital hub! I blend a background in Electrical Engineering with an MBA’s strategic acumen
-            to drive impactful solutions in ESG and Digital Transformation.
-          </p>
-          <p>
-            Whether it's automating workflows, interpreting data, or connecting the dots between technology and
-            business, I’m here to create value and share insights. My secret weapon? A knack for turning ideas into
-            measurable outcomes.
-          </p>
-          <CallToActionBtn href="/blog">Explore My Blog</CallToActionBtn>
-        </Intro>
-
-        <SocialLinks>
-          <a
-            href="https://www.linkedin.com/in/joeltiogo/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <LinkedIn fontSize="large" />
-          </a>
-          <a href="mailto:tiogojoel@gmail.com">
-            <Email fontSize="large" />
-          </a>
-          <span>
-            <PlaceIcon fontSize="large" />
-            65428 Rüsselsheim am Main, Germany
-          </span>
-        </SocialLinks>
-      </Container>
-    </div>
+    <Container>
+      <Terminal>
+        <TerminalHeader>
+          <div style={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#ff5f56' }} />
+          <div style={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#ffbd2e' }} />
+          <div style={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#27c93f' }} />
+          <span style={{ marginLeft: 20, color: '#00ff00', opacity: 0.8 }}>system-profile.exe</span>
+        </TerminalHeader>
+        <TerminalContent>
+          {displayText}
+        </TerminalContent>
+      </Terminal>
+    </Container>
   );
-}
+};
 
 export default Home;

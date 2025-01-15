@@ -1,11 +1,142 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-.home a {
-    text-decoration: underline;
+/* General Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    height: fit-content;
 }
-.home {
-    @media and(max-width: 425px) {
-        display: block !important;
+
+.parent-container {
+    overflow: hidden;
+}
+
+body {
+    font-family: "Courier New", Courier, monospace;
+    margin: 0;
+    padding: 0;
+    background-color: #000000; /* Hacker-style dark theme */
+    color: #00ff00; /* Matrix green text */
+    line-height: 1.6; /* Improved readability */
+    overflow-x: hidden;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #1a1a1a; /* Dark track */
+}
+
+::-webkit-scrollbar-thumb {
+    background: #00ff00; /* Neon green */
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #00cc00; /* Brighter on hover */
+}
+
+/* Heading Styles */
+h1, h2, h3, h4, h5, h6 {
+    color: #00ff00;
+    text-shadow: 0 0 5px #00ff00, 0 0 10px #00cc00;
+    margin: 0 0 1rem;
+}
+
+/* Paragraphs */
+p {
+    margin: 0 0 1.5rem;
+    color: #00cc00; /* Slightly dimmer green for body text */
+}
+
+/* Links */
+a {
+    color: #00ff00;
+    text-decoration: none;
+    transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+a:hover {
+    color: #00cc00;
+    text-shadow: 0 0 10px #00ff00;
+}
+
+/* Buttons */
+button {
+    font-family: inherit;
+    font-size: 1rem;
+    color: #000000;
+    background: #00ff00;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+    background: #00cc00;
+    transform: scale(1.05);
+}
+
+/* Inputs */
+input, textarea {
+    font-family: inherit;
+    font-size: 1rem;
+    color: #00ff00;
+    background: #1a1a1a;
+    border: 1px solid #00cc00;
+    border-radius: 5px;
+    padding: 0.5rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+input:focus, textarea:focus {
+    outline: none;
+    border-color: #00ff00;
+    box-shadow: 0 0 5px #00ff00;
+}
+
+/* Lists */
+ul, ol {
+    margin: 0 0 1.5rem;
+    padding-left: 2rem;
+}
+
+li {
+    margin-bottom: 0.5rem;
+    color: #00cc00;
+}
+
+/* Code Blocks */
+code {
+    font-family: "Courier New", Courier, monospace;
+    background: #1a1a1a;
+    color: #00ff00;
+    padding: 0.2rem 0.4rem;
+    border-radius: 3px;
+}
+
+/* Highlights */
+.highlight {
+    color: #ff0000; /* Red for emphasis */
+    font-weight: bold;
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+    body {
+        font-size: 0.9rem;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    h2 {
+        font-size: 1.5rem;
     }
 }

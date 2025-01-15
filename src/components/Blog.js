@@ -1,98 +1,217 @@
 import React, { useState } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
-import aiImage from "../assets/images/qr-code.png"; // Replace with a relevant AI-themed image
+import { FaRobot, FaBalanceScale } from 'react-icons/fa';
+
+const glowAnimation = keyframes`
+  0% { text-shadow: 0 0 10px #00ff00; }
+  50% { text-shadow: 0 0 20px #00ff00, 0 0 30px #00ff00; }
+  100% { text-shadow: 0 0 10px #00ff00; }
+`;
+
+// Add these new animations
+const matrixRain = keyframes`
+  0% { transform: translateY(-100%); opacity: 0; }
+  50% { opacity: 0.5; }
+  100% { transform: translateY(100%); opacity: 0; }
+`;
+
+const cursorBlink = keyframes`
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+`;
 
 const BlogContainer = styled.div`
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  font-family: "Courier New", Courier, monospace;
+  background: #0a0a0a;
+  color: #00ff00;
   padding: 2rem;
+  gap: 2rem;
 `;
 
-const HeroSection = styled.div`
-  background: linear-gradient(to right, #6a11cb, #2575fc);
-  color: white;
+const Header = styled.header`
   text-align: center;
-  padding: 2rem;
-  border-radius: 12px;
-  margin-bottom: 2rem;
+  padding: 2rem 0;
+  border-bottom: 1px solid #00ff0033;
 `;
 
+const Title = styled.h1`
+  font-size: 3rem;
+  margin: 0;
+  animation: ${glowAnimation} 2s infinite;
+  letter-spacing: 2px;
+`;
+
+const Subtitle = styled.p`
+  font-size: 1.5rem;
+  color: #00cc00;
+  margin-top: 1rem;
+  opacity: 0.8;
+`;
+
+// Update BlogGrid for tighter layout
 const BlogGrid = styled.section`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1.5rem;
+  padding: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
 `;
 
-const BlogCard = styled.article`
-  background: #fff;
+// Update BlogCard with more hacker aesthetics
+const BlogCard = styled.div`
+  background: linear-gradient(145deg, #0a0a0a, #151515);
+  border: 1px solid #00ff0033;
   border-radius: 8px;
+  padding: 1.5rem;
+  text-align: left;
+  transition: all 0.3s ease;
+  position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease;
+  max-width: 400px;
+
+  &:before {
+    content: '>';
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    color: #00ff00;
+    opacity: 0.3;
+    font-size: 1rem;
+  }
+
+  &:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 2px;
+    height: 100%;
+    background: #00ff00;
+    opacity: 0.5;
+  }
 
   &:hover {
-    transform: translateY(-8px);
+    transform: translateY(-3px);
+    border-color: #00ff00;
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
+    
+    &:after {
+      opacity: 1;
+    }
   }
 `;
 
-const CardImage = styled.img`
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
+const CardIcon = styled.div`
+  font-size: 3rem;
+  color: #00ff00;
+  margin-bottom: 1.5rem;
+  opacity: 0.9;
 `;
 
-const CardContent = styled.div`
-  padding: 1rem;
-`;
-
+// Update CardTitle for more compact look
 const CardTitle = styled.h3`
-  font-weight: bold;
-  margin-top: 0;
+  font-size: 1.4rem;
+  color: #00ff00;
+  margin: 0 0 0.8rem 0;
+  line-height: 1.2;
+  font-family: 'Courier New', monospace;
+  position: relative;
+  padding-left: 1rem;
+
+  &:before {
+    content: '/>';
+    position: absolute;
+    left: -10px;
+    color: #00ff00;
+    opacity: 0.5;
+  }
 `;
 
+// Update CardSummary for terminal feel
+const CardSummary = styled.p`
+  font-size: 0.9rem;
+  color: #00cc00;
+  margin: 0.8rem 0;
+  line-height: 1.5;
+  opacity: 0.8;
+  font-family: 'Courier New', monospace;
+  position: relative;
+  padding-left: 1rem;
+`;
+
+// Update ReadMoreButton for hacker style
 const ReadMoreButton = styled.button`
-  color: #2575fc;
-  font-weight: bold;
-  background: none;
-  border: none;
+  font-size: 0.9rem;
+  color: #00ff00;
+  background-color: transparent;
+  border: 1px solid #00ff00;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
   cursor: pointer;
+  font-family: 'Courier New', monospace;
+  transition: all 0.2s ease;
   margin-top: 1rem;
-  padding: 0;
-  text-decoration: underline;
+  position: relative;
+  overflow: hidden;
+
+  &:after {
+    content: '_';
+    animation: ${cursorBlink} 1s infinite;
+  }
+
+  &:hover {
+    background-color: rgba(0, 255, 0, 0.1);
+    transform: translateX(5px);
+  }
 `;
 
+const Footer = styled.footer`
+  text-align: center;
+  color: #00cc00;
+  font-size: 1rem;
+  padding: 2rem;
+  border-top: 1px solid #00ff0033;
+`;
+
+// Update modalStyle for hacker theme
 const modalStyle = {
   position: "absolute",
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: "80%",
-  bgcolor: "background.paper",
-  boxShadow: 24,
-  p: 4,
+  width: "90%",
+  maxWidth: "600px",
+  bgcolor: "#0a0a0a",
+  color: "#00ff00",
   borderRadius: "8px",
-  maxHeight: "90vh",
+  border: "1px solid #00ff0033",
+  boxShadow: "0 0 30px rgba(0, 255, 0, 0.1)",
+  p: 3,
+  maxHeight: "80vh",
   overflowY: "auto",
+  fontFamily: "'Courier New', monospace"
 };
 
 const blogPosts = [
   {
-    image: aiImage,
+    icon: <FaRobot />,
     title: "The Future of AI: Trends to Watch in 2024",
-    summary:
-      "Explore the key AI trends reshaping industries, including generative AI, ethical considerations, and advancements in natural language processing.",
-    content:
-      "Artificial intelligence (AI) continues to evolve at an unprecedented pace, revolutionizing industries and transforming daily life. In 2024, key trends include advances in generative AI, which powers creative tools like DALL-E and ChatGPT, and ethical AI frameworks to address biases and ensure fairness. Natural language processing breakthroughs are also reshaping how machines interact with humans, enabling seamless communication in multiple languages.",
+    summary: "Explore groundbreaking developments in AI technology, from advanced neural networks to revolutionary applications in healthcare and climate science. Discover how generative AI is reshaping creative industries and what's next in the evolution of machine learning.",
+    content: "Artificial Intelligence continues to evolve at an unprecedented pace, revolutionizing industries across the globe. Key trends include significant advances in generative AI, enabling more creative and nuanced content creation. Natural language processing breakthroughs are enabling more natural human-machine interactions, while ethical AI frameworks are being developed to ensure responsible deployment...",
   },
   {
-    image: aiImage,
-    title: "Ethics in AI: Challenges and Opportunities",
-    summary:
-      "Dive into the ethical challenges AI poses and the opportunities for creating a fair and transparent future with responsible AI practices.",
-    content:
-      "Ethical considerations in AI encompass a wide range of issues, from bias and transparency to accountability. Developing ethical AI requires collaboration between technologists, policymakers, and ethicists to create robust guidelines. Initiatives like Explainable AI (XAI) aim to ensure users understand AI decisions, building trust and mitigating risks.",
+    icon: <FaBalanceScale />,
+    title: "Ethics in AI: Navigating the Digital Frontier",
+    summary: "Delve into the critical ethical considerations shaping AI development. From bias mitigation to transparency initiatives, learn how researchers and developers are working to create more equitable AI systems.",
+    content: "As AI systems become more prevalent in decision-making processes, the importance of ethical considerations has moved to the forefront. Current initiatives focus on developing explainable AI systems, ensuring algorithmic fairness, and implementing robust privacy protections...",
   },
 ];
 
@@ -105,43 +224,48 @@ function Blog() {
     setOpen(true);
   };
 
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const handleClose = () => setOpen(false);
 
   return (
     <BlogContainer>
-      <HeroSection>
-        <h1>Explore the World of AI</h1>
-        <p>Stay updated on the latest trends, innovations, and insights in artificial intelligence.</p>
-      </HeroSection>
+      <Header>
+        <Title>{`> Hacker's Guide to AI`}</Title>
+        <Subtitle>Exploring the Digital Frontier of Artificial Intelligence</Subtitle>
+      </Header>
 
       <BlogGrid>
         {blogPosts.map((post, index) => (
           <BlogCard key={index}>
-            <CardImage src={post.image} alt={post.title} />
-            <CardContent>
-              <CardTitle>{post.title}</CardTitle>
-              <p>{post.summary}</p>
-              <ReadMoreButton onClick={() => handleOpen(post)}>Read More</ReadMoreButton>
-            </CardContent>
+            <CardIcon>{post.icon}</CardIcon>
+            <CardTitle>{post.title}</CardTitle>
+            <CardSummary>{post.summary}</CardSummary>
+            <ReadMoreButton onClick={() => handleOpen(post)}>
+              {'> Read More'}
+            </ReadMoreButton>
           </BlogCard>
         ))}
       </BlogGrid>
-
       <Modal open={open} onClose={handleClose}>
         <Box sx={modalStyle}>
           <IconButton
             onClick={handleClose}
-            sx={{ position: "absolute", right: 8, top: 8 }}
-            aria-label="close"
+            sx={{
+              position: "absolute",
+              right: 16,
+              top: 16,
+              color: "#00ff00",
+              '&:hover': {
+                color: "#00cc00",
+              }
+            }}
           >
             <CloseIcon />
           </IconButton>
           {selectedPost && (
             <>
-              <h2>{selectedPost.title}</h2>
-              <p>{selectedPost.content}</p>
+              <CardIcon>{selectedPost.icon}</CardIcon>
+              <h2 style={{ fontSize: '2rem', marginBottom: '1rem' }}>{selectedPost.title}</h2>
+              <p style={{ fontSize: '1.2rem', lineHeight: '1.8' }}>{selectedPost.content}</p>
             </>
           )}
         </Box>
