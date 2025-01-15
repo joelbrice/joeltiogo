@@ -1,110 +1,206 @@
-import React from 'react';
-import styled, { keyframes } from 'styled-components';
-import { FaTerminal, FaCode, FaBrain, FaRobot, FaGlobe } from 'react-icons/fa';
+import React from "react";
+import aboutPic from "../assets/images/0.jpg";
+import styled from 'styled-components';
+import CodeIcon from '@mui/icons-material/Code';
+import StorageIcon from '@mui/icons-material/Storage';
+import WebIcon from '@mui/icons-material/Web'; // Representing HTML
+import JavascriptIcon from '@mui/icons-material/Javascript'; // Example custom icon
+import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
+import GitHubIcon from '@mui/icons-material/GitHub';
+import TerminalIcon from '@mui/icons-material/Terminal';
+import BuildIcon from '@mui/icons-material/Build';
+import TimelineIcon from '@mui/icons-material/Timeline';
+import SpeedIcon from '@mui/icons-material/Speed';
+import ListAltIcon from '@mui/icons-material/ListAlt';
+import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
+import LightbulbIcon from '@mui/icons-material/Lightbulb';
+import GroupIcon from '@mui/icons-material/Group';
+import MemoryIcon from '@mui/icons-material/Memory';
+import ModelTrainingIcon from '@mui/icons-material/ModelTraining';
 
-const glitch = keyframes`
-  0% { text-shadow: 2px 0 0 red, -2px 0 0 #0ff; }
-  50% { text-shadow: -2px 0 0 red, 2px 0 0 #0ff; }
-  100% { text-shadow: 2px 0 0 red, -2px 0 0 #0ff; }
+const ExperienceSection = styled.section`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2rem;
 `;
 
-const Container = styled.div`
-  min-height: 100vh;
-  padding: 2rem 1rem 6rem; 
-  background-color: #181818; /* Darker background for better contrast */
-  color: #00ff00;
-  font-family: 'Courier New', monospace;
-  position: relative;
-`;
-
-const Title = styled.h1`
-  font-size: 2.5rem;
+const ExperienceCard = styled.div`
+  flex: 1;
+  min-width: 280px;
+  max-width: 340px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin: 1rem;
+  padding:2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   text-align: center;
-  margin-bottom: 2rem;
-  animation: ${glitch} 2s infinite;
-  &:before {
-    content: '> ';
-    color: #00ff00;
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: translateY(-10px);
+  }
+
+  .icon-container {
+    margin-bottom: 1rem;
+  }
+
+  .icon {
+    font-size: 3rem;
+    color: #4ca2cd;
+  }
+
+  .title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .description {
+    font-size: 1rem;
+    color: #666;
   }
 `;
 
-const Section = styled.section`
-  background: rgba(0, 255, 0, 0.05);
-  border: 1px solid #00ff00;
-  border-radius: 8px;
-  padding: 2rem;
-  margin: 2rem auto;
-  max-width: 800px;
-  position: relative;
-  overflow: hidden;
-`;
-
-const SkillGrid = styled.div`
+const experienceItems = [
+  {
+    icon: <BusinessCenterIcon className="icon" />,
+    title: 'Business Development & ESG',
+    description: 'Championing sustainable growth through strategic business development and ESG integration.'
+  },
+  {
+    icon: <LightbulbIcon className="icon" />,
+    title: 'Innovation & Technology',
+    description: 'Built innovative software and Electrical engineering solutions  and founded a startup.'
+  },
+  {
+    icon: <GroupIcon className="icon" />,
+    title: 'Leadership & Networking',
+    description: 'I have had the opportunity to lead exceptional teams and enjoy building networks with like-minded individuals.'
+  }
+];
+const SkillsSection = styled.section`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
-  margin: 2rem 0;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+  padding: 2rem;
+  background: #f9f9f9;
 `;
 
 const SkillCard = styled.div`
-  background: rgba(0, 0, 0, 0.7);
-  border: 1px solid #00ff00;
-  border-radius: 4px;
-  padding: 1.5rem;
-  text-align: center; /* Center text within cards */
-  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
 
   &:hover {
     transform: translateY(-5px);
-    box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
+  }
+
+  .skill-icon{
+    /* Additional styles for the skill icon and label, which can be customized as needed.
+       A simple colored circle or square could represent the icon, or you could import actual icons. */
+  }
+  .skill-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+
+    /* Placeholder styles - replace with actual icons if available */
+    background: #e0e0e0;
+    color: #333;
+    font-size: 24px;
+    font-weight: bold;
+  }
+
+  .skill-label {
+    text-align: center;
+    font-size: 1rem;
+    color: #333;
+    font-weight: 500;
   }
 `;
 
-const About = () => {
+const skills = [
+  { name: "Product Management", icon: <BuildIcon fontSize="large" /> },
+  { name: "Project Management", icon: <TimelineIcon fontSize="large" /> },
+  { name: "Business Development", icon: <RocketLaunchIcon fontSize="large" /> },
+  { name: "Agile Scrum", icon: <SpeedIcon fontSize="large" /> },
+  { name: "Responsive Web design", icon: <WebIcon fontSize="large" /> },
+  { name: "C# .Net", icon: <CodeIcon fontSize="large" /> },
+  { name: "Python", icon: <CodeIcon fontSize="large" /> },
+  { name: "C++", icon: <CodeIcon fontSize="large" /> },
+  { name: "JavaScript", icon: <JavascriptIcon fontSize="large" /> },
+  { name: "React.js", icon: <WebIcon fontSize="large" /> },
+  { name: "Angular", icon: <WebIcon fontSize="large" /> },
+  { name: "Confluence/Jira", icon: <ListAltIcon fontSize="large" /> },
+  { name: "Git", icon: <GitHubIcon fontSize="large" /> },
+  { name: "Azure", icon: <StorageIcon fontSize="large" /> },
+  { name: "AWS", icon: <StorageIcon fontSize="large" /> },
+  { name: "Docker", icon: <StorageIcon fontSize="large" /> },
+  { name: "Kubernetes", icon: <StorageIcon fontSize="large" /> },
+  { name: "Linux", icon: <TerminalIcon fontSize="large" /> },
+  { name: "Embedded Systems", icon: <MemoryIcon fontSize="large" /> },
+  {name: "Machine Learning",   icon: <ModelTrainingIcon fontSize="large" />,}
+];
+
+function About() 
+{
   return (
-    <Container>
-      <Title>User Profile</Title> 
+    <div className="bg-gray-100">
 
-      <Section>
-        <p>Initializing system profile...</p> 
-        <h2>Joël Tiogo</h2>
-        <p>Data Scientist & AI Consultant</p>
-        <p>Location: Frankfurt am Main, Germany</p> 
-        <p>Available for freelance projects and collaborations.</p>
-      </Section>
-
-      <Section>
-        <h2>Core Competencies</h2>
-        <SkillGrid>
-          <SkillCard>
-            <FaTerminal size={30} />
-            <h3>Data Science & Analytics</h3>
-            <p>Machine Learning, Deep Learning, Data Mining</p>
-          </SkillCard>
-          <SkillCard>
-            <FaRobot size={30} />
-            <h3>AI Development</h3>
-            <p>Natural Language Processing, Computer Vision</p>
-          </SkillCard>
-          <SkillCard>
-            <FaBrain size={30} />
-            <h3>Project Management</h3>
-            <p>Agile methodologies, Team Leadership</p>
-          </SkillCard>
-          <SkillCard>
-            <FaGlobe size={30} />
-            <h3>Sustainability</h3>
-            <p>ESG, Impact Investing, Green Technologies</p>
-          </SkillCard>
-        </SkillGrid>
-      </Section>
-
-      <Section>
-        <h2>Mission</h2>
-        <p>To contribute to a sustainable future through innovative AI and data-driven solutions.</p>
-      </Section>
-    </Container>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="lg:text-center">
+        <h2 className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl text-center">
+        Professional Expertise Snapshot
+          </h2>
+          <div className="mt-10 sm:flex sm:justify-center lg:justify-center">
+            <div className="mr-8 flex-shrink-0">
+              <img
+                className="h-64 w-64 rounded-full object-cover"
+                src={aboutPic}
+                alt="About Me"
+              />
+            </div>
+          </div>
+            <ExperienceSection aria-label="Professional Experience Highlights">
+            {experienceItems.map((item, index) => (
+              <ExperienceCard key={index}>
+                <div className="icon-container">{item.icon}</div>
+                <div className="title">{item.title}</div>
+                <div className="description">{item.description}</div>
+              </ExperienceCard>
+            ))}
+          </ExperienceSection>
+        </div>
+        <h2 className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl text-center">
+          Techncical Expertise
+          </h2>
+        <SkillsSection>
+      {skills.map((skill) => (
+        <SkillCard key={skill.name}>
+          <div className="skill-icon">{skill.icon}</div>
+          <div className="skill-label">{skill.name}</div>
+        </SkillCard>
+      ))}
+    </SkillsSection>
+      </div>
+    </div>
   );
-};
+}
 
 export default About;
