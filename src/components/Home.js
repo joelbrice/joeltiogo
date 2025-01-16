@@ -56,7 +56,6 @@ const TerminalContent = styled.pre`
   word-wrap: break-word;
   margin: 0.5rem 0; /* Added smaller margins */
   padding: 0.5rem; /* Added smaller padding */
-  //text-align: justify; /* Justify text */
   margin-top: 5rem; /* Add top margin to push content below potential navbar */ 
 
   .command-line {
@@ -79,11 +78,11 @@ const Home = () => {
     '> Initializing system...\n',
     '> Running security protocols...\n',
     '> Establishing secure connection...\n\n',
-    '>> *** SYSTEM PROFILE***\n',
+    '>> *** SYSTEM PROFILE ***\n',
     '>> NAME: Joel Tiogo\n',
     '>> ROLE: Data Scientist | AI Consultant | Project Manager\n',
     '> Executing profile.sh...',
-    'Driving innovation through agile methodologies and data-driven solutions, transforming complex challenges into actionable strategies.\n',
+    'Driving innovation through agile methodologies and data-driven solutions, transforming complex challenges into actionable strategies.\n\n',
     '> Loading credentials...',
     '=====================================\n',
     '*** EDUCATION***\n\n',
@@ -117,8 +116,6 @@ const Home = () => {
       if (currentIndex >= messages.length) {
         return;
       }
-
-      // Add path at the start of each main section
       if (currentChar === 0 && !messages[currentIndex].startsWith('>') && !messages[currentIndex].startsWith(' ')) {
         setDisplayText(prev => prev + (currentIndex === 0 ? path : `\n${path}`));
       }
