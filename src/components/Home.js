@@ -76,8 +76,8 @@ const Home = () => {
 
   const messages = [
     '> Initializing system...\n',
-    '> Running security protocols...\n',
-    '> Establishing secure connection...\n\n',
+    '> Running security protocols...',
+    '\n> Establishing secure connection...\n\n',
     '>> *** SYSTEM PROFILE ***\n',
     '>> NAME: Joël Tiogo\n',
     '>> ROLE: Data Scientist | AI Consultant | Project Manager\n\n',
