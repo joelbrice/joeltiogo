@@ -1,21 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import styled, { keyframes, css } from 'styled-components';
-import { FaTerminal, FaCode, FaBrain, FaRobot, FaUniversity, Fa500Px } from 'react-icons/fa';
-import { Fa0, Fa1, Fa3 } from 'react-icons/fa6';
+import styled, { keyframes } from 'styled-components';
 
-const glitch = keyframes`
-  0% { text-shadow: 2px 0 0 red, -2px 0 0 #0ff; }
-  50% { text-shadow: -2px 0 0 red, 2px 0 0 #0ff; }
-  100% { text-shadow: 2px 0 0 red, -2px 0 0 #0ff; }
-`;
 
-const typing = keyframes`
-  from { width: 0 }
-  to { width: 100% }
-`;
 
-const blink = keyframes`
-  50% { border-color: transparent }
+
+const cursorBlink = keyframes`
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
 `;
 
 const Container = styled.div`
@@ -23,21 +14,22 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #181818; /* Darker background for better contrast */
+  background-color: #181818;
   color: #00ff00;
   font-family: 'Courier New', monospace;
-  overflow: hidden; /* Prevent scrollbars */
+  overflow: hidden;
+  padding: 1rem; /* Reduced from 2rem */
 `;
 
 const Terminal = styled.div`
-  width: 80vw; /* Adjust width to 80% of viewport */
-  max-width: 800px; /* Set a maximum width */
+  width: 80vw;
+  max-width: 800px;
   background: rgba(0, 0, 0, 0.9);
   border: 1px solid #00ff00;
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 0 30px rgba(0, 255, 0, 0.2);
-  padding: 2rem; /* Add padding to the Terminal */
+  padding: 1rem; /* Reduced from 2rem */
 `;
 
 const TerminalHeader = styled.div`
@@ -48,20 +40,17 @@ const TerminalHeader = styled.div`
   gap: 8px;
 `;
 
-const PathPrefix = styled.span`
-  color: #00ff00;
-  opacity: 0.8;
-  margin-right: 8px;
-`;
 
 const TerminalContent = styled.pre`
   color: #00ff00;
   font-family: 'Courier New', monospace;
   font-size: 1.1rem;
-  line-height: 1.6;
+  line-height: 1.4; /* Reduced from 1.6 */
   position: relative;
   white-space: pre-wrap;
   word-wrap: break-word;
+  margin: 0.5rem 0; /* Added smaller margins */
+  padding: 0.5rem; /* Added smaller padding */
 
   .command-line {
     display: flex;
@@ -71,90 +60,58 @@ const TerminalContent = styled.pre`
   &:after {
     content: '█';
     position: absolute;
-    animation: ${blink} 1s step-end infinite;
+    animation: ${cursorBlink} 1s step-end infinite;
   }
 `;
 
-const EducationItem = styled.div`
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
 
-  &::before {
-    content: '•';
-    margin-right: 8px;
-    color: #00ff00;
-  }
-`;
-
-const SkillCard = styled.div`
-  background: rgba(0, 0, 0, 0.7);
-  border: 1px solid #00ff00;
-  border-radius: 4px;
-  padding: 1.5rem;
-  text-align: center;
-  transition: all 0.3s ease;
-
-  &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
-  }
-`;
 
 const Home = () => {
   const [displayText, setDisplayText] = useState('');
-  const [isTyping, setIsTyping] = useState(true);
+  const path = '~/joeltiogo/home$ ';
 
   const messages = [
-    { text: 'System initializing...', icon: <FaTerminal /> },
-    { text: 'Greetings! I am Joël Tiogo', icon: <FaCode /> },
-    { 
-      text: 'Passionate about leveraging AI and data science to drive innovation and create sustainable solutions for complex global challenges.', 
-      icon: Fa500Px 
-    },
-    { text: '\nEducation:', icon: FaBrain },
-    { text: '\n> MBA. Finance & Technology', icon: <FaUniversity /> },
-    { text: '\n       Frankfurt School of Finance & Management(FS)', icon: FaBrain },
-    { text: '\n> BTech. Electrical Engineering', icon: <FaUniversity /> },
-    { text: '\n       University of Johannesburg', icon: FaRobot },
-    { text: '\n> Data Science & AI Bootcamp', icon: <Fa0 /> },
-    { text: '\n       Le Wagon GmbH', icon: <FaRobot /> },
-    { text: '\n\n*Status*: Active & Seeking new opportunities', icon: Fa1 } 
+    'System initializing...\n',
+    'Greetings! I am Joël Tiogo\n',
+    'I am passionate about leveraging AI and data science to drive innovation and create sustainable solutions for complex global challenges.\n',
+    'Education:\n',
+    '>MBA. Finance & Technology',
+    '       \n\tFrankfurt School of Finance & Management(FS)\n \n> BTech. Electrical Engineering',
+    '       \n\tUniversity of Johannesburg \n\n> Data Science & AI Bootcamp',
+    '       \n\tLe Wagon GmbH\n\n',
+    '*Status*: Active & Open to opportunities'
   ];
 
   useEffect(() => {
     let currentIndex = 0;
     let currentChar = 0;
-    let currentText = '';
+    let timeoutId;
 
-    const typeNextChar = () => {
+    const typeText = () => {
       if (currentIndex >= messages.length) {
-        setIsTyping(false);
         return;
       }
 
-      const message = messages[currentIndex];
-      const shouldAddPath = currentIndex < 4; 
-
-      if (currentChar === 0 && shouldAddPath) { 
-        currentText += '\n~/joeltiogo/home$ '; 
+      // Add path at the start of each main section
+      if (currentChar === 0 && !messages[currentIndex].startsWith('>') && !messages[currentIndex].startsWith(' ')) {
+        setDisplayText(prev => prev + (currentIndex === 0 ? path : `\n${path}`));
       }
 
-      currentText += message.text[currentChar];
-
-      setDisplayText(currentText);
+      const char = messages[currentIndex][currentChar];
+      setDisplayText(prev => prev + char);
       currentChar++;
 
-      if (currentChar >= message.text.length) {
+      if (currentChar === messages[currentIndex].length) {
         currentIndex++;
         currentChar = 0;
-        setTimeout(typeNextChar, 800); // Delay between messages
+        timeoutId = setTimeout(typeText, 800); // Delay between messages
       } else {
-        setTimeout(typeNextChar, 50); // Typing speed
+        timeoutId = setTimeout(typeText, 50); // Typing speed
       }
     };
 
-    typeNextChar();
+    timeoutId = setTimeout(typeText, 500); // Initial delay
+    return () => clearTimeout(timeoutId);
   }, []);
 
   return (
