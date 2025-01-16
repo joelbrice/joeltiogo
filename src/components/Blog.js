@@ -33,12 +33,24 @@ const BlogContainer = styled.div`
   color: #00ff00;
   padding: 2rem;
   gap: 2rem;
+
+  /* Media queries for responsive adjustments */
+  @media (max-width: 768px) {
+    padding: 1rem;
+    gap: 1rem;
+    grid-template-columns: 1fr; /* Make it single column on smaller screens */
+  }
 `;
 
 const Header = styled.header`
   text-align: center;
   padding: 2rem 0;
   border-bottom: 1px solid #00ff0033;
+
+  /* Media queries for responsive font size */
+  @media (max-width: 768px) {
+    padding: 1rem 0;
+  }
 `;
 
 const Title = styled.h1`
@@ -46,6 +58,11 @@ const Title = styled.h1`
   margin: 0;
   animation: ${glowAnimation} 2s infinite;
   letter-spacing: 2px;
+
+  /* Media queries for responsive font size */
+  @media (max-width: 768px) {
+    font-size: 2.5rem;
+  }
 `;
 
 const Subtitle = styled.p`
@@ -53,6 +70,11 @@ const Subtitle = styled.p`
   color: #00cc00;
   margin-top: 1rem;
   opacity: 0.8;
+
+  /* Media queries for responsive font size */
+  @media (max-width: 768px) {
+    font-size: 1.2rem;
+  }
 `;
 
 // Update BlogGrid for tighter layout
@@ -63,6 +85,11 @@ const BlogGrid = styled.section`
   padding: 1rem;
   max-width: 1200px;
   margin: 0 auto;
+
+  /* Media queries for responsive grid layout */
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr; /* Make it single column on smaller screens */
+  }
 `;
 
 // Update BlogCard with more hacker aesthetics
@@ -76,6 +103,11 @@ const BlogCard = styled.div`
   position: relative;
   overflow: hidden;
   max-width: 400px;
+
+  /* Media queries for responsive card width */
+  @media (max-width: 768px) {
+    max-width: 100%; /* Make cards take full width on smaller screens */
+  }
 
   &:before {
     content: '>';
@@ -102,7 +134,7 @@ const BlogCard = styled.div`
     transform: translateY(-3px);
     border-color: #00ff00;
     box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
-    
+
     &:after {
       opacity: 1;
     }
@@ -126,6 +158,11 @@ const CardTitle = styled.h3`
   position: relative;
   padding-left: 1rem;
 
+  /* Media queries for responsive font size */
+  @media (max-width: 768px) {
+    font-size: 1.2rem;
+  }
+
   &:before {
     content: '/>';
     position: absolute;
@@ -145,6 +182,11 @@ const CardSummary = styled.p`
   font-family: 'Courier New', monospace;
   position: relative;
   padding-left: 1rem;
+
+  /* Media queries for responsive font size */
+  @media (max-width: 768px) {
+    font-size: 0.8rem;
+  }
 `;
 
 // Update ReadMoreButton for hacker style
@@ -162,6 +204,12 @@ const ReadMoreButton = styled.button`
   position: relative;
   overflow: hidden;
 
+  /* Media queries for responsive button size */
+  @media (max-width: 768px) {
+    font-size: 0.8rem;
+    padding: 0.4rem 0.8rem;
+  }
+
   &:after {
     content: '_';
     animation: ${cursorBlink} 1s infinite;
@@ -173,17 +221,8 @@ const ReadMoreButton = styled.button`
   }
 `;
 
-const Footer = styled.footer`
-  text-align: center;
-  color: #00cc00;
-  font-size: 1rem;
-  padding: 2rem;
-  border-top: 1px solid #00ff0033;
-`;
-
-// Update modalStyle for better readability
 const modalStyle = {
-  position: "fixed", // Change to fixed positioning
+  position: "fixed",
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
@@ -201,7 +240,6 @@ const modalStyle = {
   zIndex: 1000
 };
 
-// Add styled components for modal content
 const ModalContent = styled.div`
   position: relative;
   padding: 20px;
@@ -267,15 +305,15 @@ function Blog() {
           </BlogCard>
         ))}
       </BlogGrid>
-      <Modal 
-        open={open} 
+      <Modal
+        open={open}
         onClose={handleClose}
         aria-labelledby="modal-title"
         BackdropProps={{
           style: {
             backgroundColor: 'rgba(0, 0, 0, 0.8)'
           },
-          onClick: handleClose // Add click outside to close
+          onClick: handleClose
         }}
       >
         <Box sx={modalStyle}>

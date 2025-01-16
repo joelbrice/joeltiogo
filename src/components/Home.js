@@ -56,8 +56,8 @@ const TerminalContent = styled.pre`
   word-wrap: break-word;
   margin: 0.5rem 0; /* Added smaller margins */
   padding: 0.5rem; /* Added smaller padding */
-  text-align: justify; /* Justify text */
-  margin-top: 10rem; /* Add top margin to push content below potential navbar */ 
+  //text-align: justify; /* Justify text */
+  margin-top: 5rem; /* Add top margin to push content below potential navbar */ 
 
   .command-line {
     display: flex;
@@ -78,26 +78,29 @@ const Home = () => {
   const messages = [
     '> Initializing system...\n',
     '> Running security protocols...\n',
-    '> Establishing secure connection...\n',
-    '>> SYSTEM PROFILE: Joël Tiogo\n',
+    '> Establishing secure connection...\n\n',
+    '>> *** SYSTEM PROFILE***\n',
+    '>> NAME: Joel Tiogo\n',
     '>> ROLE: Data Scientist | AI Consultant | Project Manager\n',
     '> Executing profile.sh...',
     'Driving innovation through agile methodologies and data-driven solutions, transforming complex challenges into actionable strategies.\n',
     '> Loading credentials...',
     '=====================================\n',
-    'EDUCATION:\n',
+    '*** EDUCATION***\n\n',
     '> MBA.exe --Specialization="Finance & Technology"\n',
     '  └─ Frankfurt School of Finance & Management(FS), Germany\n',
     '> BTech.exe --field="Electrical Engineering"\n',
     '  └─ University of Johannesburg(UJ), South Africa\n',
+    '> AI.exe --Bootcamp="Data Science & AI Bootcamp"\n',
+    '  └─ Lewagon GmbH, Germany(Online)\n\n',
     '> cat technical_skills.txt\n',
-    '┌────────────────────────────────┐\n',
-    '│ • Full Stack Development       │\n',
-    '│ • Python | C# | JavaScript     │\n',
-    '│ • React.js | Angular           │\n',
-    '│ • GCP | AWS | Azure | Docker   │\n',
-    '│ • Tensorflow, Pytorch, Pandas  │\n',
-    '│ • Git, MLFlow, Prefect|FastAPI │\n',
+    '┌────────────────────────────────┐',
+    '│ • Full Stack Development       │',
+    '│ • Python | C# | JavaScript     │',
+    '│ • React.js | Angular           │',
+    '│ • GCP | AWS | Azure | Docker   │',
+    '│ • Tensorflow, Pytorch, Pandas  │',
+    '│ • Git, MLFlow, Prefect|FastAPI │',
     '└────────────────────────────────┘\n',
     '> Check system status...',
     '[STATUS]: Active & Innovation-Driven\n',
