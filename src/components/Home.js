@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 
-
-
+// Add matrix background animation
+const matrixRain = keyframes`
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+`;
 
 const cursorBlink = keyframes`
   0%, 100% { opacity: 1; }
@@ -14,11 +17,36 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #181818;
+  background-color: #000000;
+  background-image: 
+    linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.9)),
+    repeating-linear-gradient(0deg,
+      transparent 0%,
+      rgba(0, 255, 0, 0.1) 50%,
+      transparent 100%);
+  background-size: cover;
   color: #00ff00;
   font-family: 'Courier New', monospace;
   overflow: hidden;
-  padding: 1rem; /* Reduced from 2rem */
+  padding: 1rem;
+  position: relative;
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      rgba(0, 255, 0, 0.03) 50%,
+      rgba(0, 0, 0, 0.1) 50%
+    );
+    background-size: 100% 4px;
+    pointer-events: none;
+    animation: ${matrixRain} 20s linear infinite;
+    opacity: 0.3;
+  }
 `;
 
 const Terminal = styled.div`
@@ -68,18 +96,36 @@ const TerminalContent = styled.pre`
 
 const Home = () => {
   const [displayText, setDisplayText] = useState('');
-  const path = '~/joeltiogo/home$ ';
+  const path = '[root@quantum-core] ~/joeltiogo$ ';
 
   const messages = [
-    'System initializing...\n',
-    'Greetings! I am Joël Tiogo\n',
-    'I am passionate about leveraging AI and data science to drive innovation and create sustainable solutions for complex global challenges.\n',
-    'Education:\n',
-    '>MBA. Finance & Technology',
-    '       \n\tFrankfurt School of Finance & Management(FS)\n \n> BTech. Electrical Engineering',
-    '       \n\tUniversity of Johannesburg \n\n> Data Science & AI Bootcamp',
-    '       \n\tLe Wagon GmbH\n\n',
-    '*Status*: Active & Open to opportunities'
+    '> Initializing system...',
+    '> Running security protocols...',
+    '> Establishing secure connection...\n',
+    '>> SYSTEM PROFILE: Joël Tiogo',
+    '>> ROLE: Digital Transformation Leader | Innovation Architect',
+    '\n> Executing profile.sh...',
+    'Driving innovation through agile methodologies and data-driven solutions',
+    'transforming complex challenges into actionable strategies.',
+    '\n> Loading credentials...',
+    '=====================================',
+    'EDUCATION:',
+    '> MBA.exe --program="Finance & Technology"',
+    '  └─ Frankfurt School of Finance & Management(FS)',
+    '> BTech.exe --field="Electrical Engineering"',
+    '  └─ University of Johannesburg',
+    '\n> cat technical_skills.txt',
+    '┌────────────────────────────────┐',
+    '│ • Full Stack Development       │',
+    '│ • Python | C# | JavaScript     │',
+    '│ • React.js | Angular           │',
+    '│ • GCP | AWS | Azure | Docker   │',
+    '│ • Tensorflow, Pytorch, Pandas  │',
+    '└────────────────────────────────┘',
+    '\n> Check system status...',
+    '[STATUS]: Active & Innovation-Driven',
+    '[MISSION]: Transforming Business Through Technology',
+    '\n> ./execute innovation_pipeline.sh'
   ];
 
   useEffect(() => {
