@@ -173,7 +173,7 @@ const About = () => (
     <Title>A little about Me</Title>
     <CodeBlock>
       {`
-> Identity: Joel Tiogo
+> Identity: Joël Tiogo
 > Status: Active
 > Location: Frankfurt Am Main, Germany
       `}
