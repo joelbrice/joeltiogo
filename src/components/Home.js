@@ -14,9 +14,6 @@ const cursorBlink = keyframes`
 
 const Container = styled.div`
   min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   background-color: #000000;
   background-image:
     linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.9)),
@@ -28,7 +25,7 @@ const Container = styled.div`
   color: #0fbaff; /* Adjusted text color for better contrast */
   font-family: 'Courier New', monospace;
   overflow: hidden;
-  padding: 1rem;
+  padding: 2rem; /* Added padding for content spacing */
   position: relative;
 
   &:before {
@@ -49,25 +46,6 @@ const Container = styled.div`
   }
 `;
 
-const Terminal = styled.div`
-  width: 80vw;
-  max-width: 800px;
-  background: rgba(0, 0, 0, 0.8); /* Adjusted background opacity */
-  border: 1px solid #0fbaff; /* Adjusted border color */
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 0 30px rgba(0, 255, 0, 0.2);
-  padding: 1rem; /* Reduced from 2rem */
-`;
-
-const TerminalHeader = styled.div`
-  background: #2d2d2d;
-  padding: 10px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-`;
-
 const TerminalContent = styled.pre`
   color: #0fbaff; /* Adjusted text color */
   font-family: 'Courier New', monospace;
@@ -78,6 +56,8 @@ const TerminalContent = styled.pre`
   word-wrap: break-word;
   margin: 0.5rem 0; /* Added smaller margins */
   padding: 0.5rem; /* Added smaller padding */
+  text-align: justify; /* Justify text */
+  margin-top: 10rem; /* Add top margin to push content below potential navbar */ 
 
   .command-line {
     display: flex;
@@ -91,9 +71,6 @@ const TerminalContent = styled.pre`
   }
 `;
 
-
-
-
 const Home = () => {
   const [displayText, setDisplayText] = useState('');
   const path = '[root@quantum-core] ~/joeltiogo$ ';
@@ -105,28 +82,27 @@ const Home = () => {
     '>> SYSTEM PROFILE: Joël Tiogo\n',
     '>> ROLE: Data Scientist | AI Consultant | Project Manager\n',
     '> Executing profile.sh...',
-    'Driving innovation through agile methodologies and data-driven solutions',
-    'transforming complex challenges into actionable strategies.\n',
+    'Driving innovation through agile methodologies and data-driven solutions, transforming complex challenges into actionable strategies.\n',
     '> Loading credentials...',
-    '=====================================',
+    '=====================================\n',
     'EDUCATION:\n',
-    '> MBA.exe --Specialization="Finance & Technology"',
+    '> MBA.exe --Specialization="Finance & Technology"\n',
     '  └─ Frankfurt School of Finance & Management(FS), Germany\n',
-    '> BTech.exe --field="Electrical Engineering"',
+    '> BTech.exe --field="Electrical Engineering"\n',
     '  └─ University of Johannesburg(UJ), South Africa\n',
-    '> cat technical_skills.txt',
-    '┌────────────────────────────────┐',
-    '│ • Full Stack Development       │',
-    '│ • Python | C# | JavaScript     │',
-    '│ • React.js | Angular           │',
-    '│ • GCP | AWS | Azure | Docker   │',
-    '│ • Tensorflow, Pytorch, Pandas  │',
-    '│ • Git, MLFlow, Prefect|FastAPI │',
+    '> cat technical_skills.txt\n',
+    '┌────────────────────────────────┐\n',
+    '│ • Full Stack Development       │\n',
+    '│ • Python | C# | JavaScript     │\n',
+    '│ • React.js | Angular           │\n',
+    '│ • GCP | AWS | Azure | Docker   │\n',
+    '│ • Tensorflow, Pytorch, Pandas  │\n',
+    '│ • Git, MLFlow, Prefect|FastAPI │\n',
     '└────────────────────────────────┘\n',
     '> Check system status...',
-    '[STATUS]: Active & Innovation-Driven',
-    '[MISSION]: Contribute to a sustainable future through technology',
-    '\n> ./execute innovation_pipeline.sh'
+    '[STATUS]: Active & Innovation-Driven\n',
+    '[MISSION]: Contribute to a sustainable future through technology\n',
+    '\n> ./execute innovation_pipeline.sh\n'
   ];
 
   useEffect(() => {
@@ -163,17 +139,9 @@ const Home = () => {
 
   return (
     <Container>
-      <Terminal>
-        <TerminalHeader>
-          <div style={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#ff5f56' }} />
-          <div style={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#ffbd2e' }} />
-          <div style={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#27c93f' }} />
-          <span style={{ marginLeft: 20, color: '#00ff00', opacity: 0.8 }}>system-profile.exe</span>
-        </TerminalHeader>
-        <TerminalContent>
-          {displayText}
-        </TerminalContent>
-      </Terminal>
+      <TerminalContent>
+        {displayText}
+      </TerminalContent>
     </Container>
   );
 };
