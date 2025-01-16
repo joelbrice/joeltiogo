@@ -85,7 +85,7 @@ const Home = () => {
     'Driving innovation through agile methodologies and data-driven solutions, transforming complex challenges into actionable strategies.\n\n',
     '> Loading credentials...',
     '=====================================\n',
-    '*** EDUCATION***\n\n',
+    '*** EDUCATION ***\n\n',
     '> MBA.exe --Specialization="Finance & Technology"\n',
     '  └─ Frankfurt School of Finance & Management(FS), Germany\n',
     '> BTech.exe --field="Electrical Engineering"\n',
