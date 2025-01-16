@@ -181,24 +181,46 @@ const Footer = styled.footer`
   border-top: 1px solid #00ff0033;
 `;
 
-// Update modalStyle for hacker theme
+// Update modalStyle for better readability
 const modalStyle = {
-  position: "absolute",
+  position: "fixed", // Change to fixed positioning
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
   width: "90%",
-  maxWidth: "600px",
+  maxWidth: "800px",
+  maxHeight: "80vh",
   bgcolor: "#0a0a0a",
   color: "#00ff00",
   borderRadius: "8px",
-  border: "1px solid #00ff0033",
+  border: "1px solid #00ff00",
   boxShadow: "0 0 30px rgba(0, 255, 0, 0.1)",
-  p: 3,
-  maxHeight: "80vh",
+  padding: "2rem",
   overflowY: "auto",
-  fontFamily: "'Courier New', monospace"
+  marginTop: "0", // Remove margin top
+  zIndex: 1000
 };
+
+// Add styled components for modal content
+const ModalContent = styled.div`
+  position: relative;
+  padding: 20px;
+  
+  h2 {
+    font-size: 1.8rem;
+    margin: 1rem 0 1.5rem;
+    color: #00ff00;
+    border-bottom: 1px solid #00ff00;
+    padding-bottom: 0.5rem;
+  }
+
+  p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin: 1rem 0;
+    color: #00cc00;
+  }
+`;
 
 const blogPosts = [
   {
@@ -245,29 +267,42 @@ function Blog() {
           </BlogCard>
         ))}
       </BlogGrid>
-      <Modal open={open} onClose={handleClose}>
+      <Modal 
+        open={open} 
+        onClose={handleClose}
+        aria-labelledby="modal-title"
+        BackdropProps={{
+          style: {
+            backgroundColor: 'rgba(0, 0, 0, 0.8)'
+          },
+          onClick: handleClose // Add click outside to close
+        }}
+      >
         <Box sx={modalStyle}>
           <IconButton
             onClick={handleClose}
             sx={{
               position: "absolute",
-              right: 16,
-              top: 16,
+              right: 8,
+              top: 8,
               color: "#00ff00",
+              zIndex: 1001,
               '&:hover': {
                 color: "#00cc00",
+                background: "rgba(0, 255, 0, 0.1)"
               }
             }}
           >
             <CloseIcon />
           </IconButton>
-          {selectedPost && (
-            <>
-              <CardIcon>{selectedPost.icon}</CardIcon>
-              <h2 style={{ fontSize: '2rem', marginBottom: '1rem' }}>{selectedPost.title}</h2>
-              <p style={{ fontSize: '1.2rem', lineHeight: '1.8' }}>{selectedPost.content}</p>
-            </>
-          )}
+          <ModalContent>
+            {selectedPost && (
+              <>
+                <h2 id="modal-title">{selectedPost.title}</h2>
+                <p>{selectedPost.content}</p>
+              </>
+            )}
+          </ModalContent>
         </Box>
       </Modal>
     </BlogContainer>
