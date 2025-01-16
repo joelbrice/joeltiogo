@@ -18,14 +18,14 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
   background-color: #000000;
-  background-image: 
+  background-image:
     linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.9)),
     repeating-linear-gradient(0deg,
       transparent 0%,
-      rgba(0, 255, 0, 0.1) 50%,
+      rgba(0, 255, 0, 0.05) 50%,
       transparent 100%);
   background-size: cover;
-  color: #00ff00;
+  color: #0fbaff; /* Adjusted text color for better contrast */
   font-family: 'Courier New', monospace;
   overflow: hidden;
   padding: 1rem;
@@ -52,8 +52,8 @@ const Container = styled.div`
 const Terminal = styled.div`
   width: 80vw;
   max-width: 800px;
-  background: rgba(0, 0, 0, 0.9);
-  border: 1px solid #00ff00;
+  background: rgba(0, 0, 0, 0.8); /* Adjusted background opacity */
+  border: 1px solid #0fbaff; /* Adjusted border color */
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 0 30px rgba(0, 255, 0, 0.2);
@@ -68,9 +68,8 @@ const TerminalHeader = styled.div`
   gap: 8px;
 `;
 
-
 const TerminalContent = styled.pre`
-  color: #00ff00;
+  color: #0fbaff; /* Adjusted text color */
   font-family: 'Courier New', monospace;
   font-size: 1.1rem;
   line-height: 1.4; /* Reduced from 1.6 */
@@ -94,37 +93,39 @@ const TerminalContent = styled.pre`
 
 
 
+
 const Home = () => {
   const [displayText, setDisplayText] = useState('');
   const path = '[root@quantum-core] ~/joeltiogo$ ';
 
   const messages = [
-    '> Initializing system...',
-    '> Running security protocols...',
+    '> Initializing system...\n',
+    '> Running security protocols...\n',
     '> Establishing secure connection...\n',
-    '>> SYSTEM PROFILE: Joël Tiogo',
-    '>> ROLE: Digital Transformation Leader | Innovation Architect',
-    '\n> Executing profile.sh...',
+    '>> SYSTEM PROFILE: Joël Tiogo\n',
+    '>> ROLE: Data Scientist | AI Consultant | Project Manager\n',
+    '> Executing profile.sh...',
     'Driving innovation through agile methodologies and data-driven solutions',
-    'transforming complex challenges into actionable strategies.',
-    '\n> Loading credentials...',
+    'transforming complex challenges into actionable strategies.\n',
+    '> Loading credentials...',
     '=====================================',
-    'EDUCATION:',
-    '> MBA.exe --program="Finance & Technology"',
-    '  └─ Frankfurt School of Finance & Management(FS)',
+    'EDUCATION:\n',
+    '> MBA.exe --Specialization="Finance & Technology"',
+    '  └─ Frankfurt School of Finance & Management(FS), Germany\n',
     '> BTech.exe --field="Electrical Engineering"',
-    '  └─ University of Johannesburg',
-    '\n> cat technical_skills.txt',
+    '  └─ University of Johannesburg(UJ), South Africa\n',
+    '> cat technical_skills.txt',
     '┌────────────────────────────────┐',
     '│ • Full Stack Development       │',
     '│ • Python | C# | JavaScript     │',
     '│ • React.js | Angular           │',
     '│ • GCP | AWS | Azure | Docker   │',
     '│ • Tensorflow, Pytorch, Pandas  │',
+    '│ • Git, MLFlow, Prefect|FastAPI │',
     '└────────────────────────────────┘',
     '\n> Check system status...',
     '[STATUS]: Active & Innovation-Driven',
-    '[MISSION]: Transforming Business Through Technology',
+    '[MISSION]: Contribute to a sustainable future through technology',
     '\n> ./execute innovation_pipeline.sh'
   ];
 
