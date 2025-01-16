@@ -79,7 +79,7 @@ const Home = () => {
     '> Running security protocols...\n',
     '> Establishing secure connection...\n\n',
     '>> *** SYSTEM PROFILE ***\n',
-    '>> NAME: Joel Tiogo\n',
+    '>> NAME: Joël Tiogo\n',
     '>> ROLE: Data Scientist | AI Consultant | Project Manager\n',
     '> Executing profile.sh...',
     'Driving innovation through agile methodologies and data-driven solutions, transforming complex challenges into actionable strategies.\n\n',
