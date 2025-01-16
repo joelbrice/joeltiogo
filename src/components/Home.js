@@ -80,7 +80,7 @@ const Home = () => {
     '> Establishing secure connection...\n\n',
     '>> *** SYSTEM PROFILE ***\n',
     '>> NAME: Joël Tiogo\n',
-    '>> ROLE: Data Scientist | AI Consultant | Project Manager\n',
+    '>> ROLE: Data Scientist | AI Consultant | Project Manager\n\n',
     '> Executing profile.sh...',
     'Driving innovation through agile methodologies and data-driven solutions, transforming complex challenges into actionable strategies.\n\n',
     '> Loading credentials...',
@@ -100,10 +100,10 @@ const Home = () => {
     '│ • GCP | AWS | Azure | Docker   │',
     '│ • Tensorflow, Pytorch, Pandas  │',
     '│ • Git, MLFlow, Prefect|FastAPI │',
-    '└────────────────────────────────┘\n',
+    '└────────────────────────────────┘\n\n',
     '> Check system status...',
     '[STATUS]: Active & Innovation-Driven\n',
-    '[MISSION]: Contribute to a sustainable future through technology\n',
+    '[MISSION]: Contribute to a sustainable future through technology\n\n',
     '\n> ./execute innovation_pipeline.sh\n'
   ];
 
