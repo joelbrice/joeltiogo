@@ -122,8 +122,8 @@ const Home = () => {
     '│ • GCP | AWS | Azure | Docker   │',
     '│ • Tensorflow, Pytorch, Pandas  │',
     '│ • Git, MLFlow, Prefect|FastAPI │',
-    '└────────────────────────────────┘',
-    '\n> Check system status...',
+    '└────────────────────────────────┘\n',
+    '> Check system status...',
     '[STATUS]: Active & Innovation-Driven',
     '[MISSION]: Contribute to a sustainable future through technology',
     '\n> ./execute innovation_pipeline.sh'

@@ -1,7 +1,18 @@
 import React from "react";
 import { Disclosure } from "@headlessui/react";
 import styled from "styled-components";
-import { MenuIcon, XIcon } from "@heroicons/react/outline";
+// Temporary SVG icons until heroicons is installed
+const MenuIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+  </svg>
+);
+
+const CloseIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+  </svg>
+);
 
 const navigation = [
   { href: "/", name: "Home" },
@@ -40,28 +51,89 @@ const Logo = styled.a`
   }
 `;
 
+// Add styled component for burger button
+const BurgerButton = styled(Disclosure.Button)`
+  display: none; /* Initially hide on large screens */
+  @media (max-width: 768px) {
+    display: inline-flex; /* Show only on mobile */
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    background-color: transparent;
+    border: none;
+    border-radius: 4px;
+    color: #00ff00;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+
+    @media (max-width: 768px) {
+      width: 36px;
+      height: 36px;
+    }
+
+    &:hover {
+      background-color: rgba(0, 255, 0, 0.1);
+    }
+
+    svg {
+      width: 24px;
+      height: 24px;
+
+      @media (max-width: 768px) {
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
+`;
+
 const MenuButton = styled(Disclosure.Button)`
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  width: 36px;
+  height: 36px;
   padding: 0.5rem;
+  border: none;
   border-radius: 0.375rem;
   background-color: transparent;
   color: #00ff00;
+  cursor: pointer;
+
   &:hover {
-    background-color: #00cc00;
+    background-color: rgba(0, 255, 0, 0.1);
   }
+
   &:focus {
     outline: 2px solid #00ff00;
     outline-offset: 2px;
   }
+
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+`;
+
+const VisuallyHidden = styled.span`
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 `;
 
 const DesktopNav = styled.div`
-  display: none;
-  @media (min-width: 640px) {
-    display: flex;
-    gap: 2rem;
+  display: flex;
+  gap: 2rem;
+
+  @media (max-width: 640px) {
+    display: none;
   }
 `;
 
@@ -91,19 +163,17 @@ const Nav = () => {
       {({ open }) => (
         <NavbarContainer>
           <NavWrapper>
-            {/* Logo */}
             <Logo href="/">Joel Tiogo</Logo>
 
             {/* Mobile Menu Button */}
-            <div className="sm:hidden">
-              <MenuButton>
-                {open ? (
-                  <XIcon className="block h-6 w-6" />
-                ) : (
-                  <MenuIcon className="block h-6 w-6" />
-                )}
-              </MenuButton>
-            </div>
+            <BurgerButton> 
+              <VisuallyHidden>Open menu</VisuallyHidden>
+              {open ? (
+                <CloseIcon aria-hidden="true" />
+              ) : (
+                <MenuIcon aria-hidden="true" />
+              )}
+            </BurgerButton>
 
             {/* Desktop Navigation */}
             <DesktopNav>
