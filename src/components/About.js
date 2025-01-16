@@ -162,21 +162,21 @@ const skills = [
   // Core Competencies
   {
     icon: <FaBriefcase />,
-    title: 'Business Development & ESG',
+    title: 'Business Development',
     description: 'Strategic growth & sustainability integration',
-    details: 'Product & Project Management, Agile Leadership'
+    details: 'Product & Project Management, ESG, AI'
   },
   {
     icon: <FaCode />,
     title: 'Software Engineering',
-    description: 'Full-stack development & cloud solutions',
-    details: ' Python, C#,JavaScript, React.js, Angular'
+    description: 'Worked as a full-stack developer',
+    details: ' Python, FastAPI,SQL, React, Node.js, MongoDB, Express.js'
   },
   {
     icon: <FaMicrochip />,
     title: 'Electrical Engineering',
-    description: 'I have worked as an Electrical Engineer.',
-    details: 'PVSyst, Digsilent PowerFactory, ETAP, AutoCAD'
+    description: 'I worked as an Electrical Engineer.',
+    details: 'PVSyst, Digsilent PowerFactory, leadership'
   },
   // Technical Skills
   {
@@ -202,7 +202,7 @@ const skills = [
 const About = () => (
   <Container>
     <Section>
-      <Title>System Information</Title>
+      <Title>A little about Me</Title>
       <CodeBlock>
         {`
 > Identity: Joel Tiogo
