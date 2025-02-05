@@ -1,149 +1,57 @@
-import React, { useState, useEffect } from 'react';
-import styled, { keyframes } from 'styled-components';
+import React from 'react';
+import styled from 'styled-components';
 
-// Add matrix background animation
-const matrixRain = keyframes`
-  0% { transform: translateY(-100%); }
-  100% { transform: translateY(100%); }
+// Container to ensure the hero section fills the entire viewport height
+const HeroSection = styled.section`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #111;
+  color: #00ff00;
+  height: 100vh; /* Ensures it takes up the full viewport height */
+  padding: 4rem;
+  box-sizing: border-box;
+  text-align: center;
+  min-height: 100%; /* Ensures no overflow */
 `;
 
-const cursorBlink = keyframes`
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
+const Heading = styled.h1`
+  font-size: 3rem;
+  font-weight: bold;
+  color: #00ff00;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
 `;
 
-const Container = styled.div`
-  min-height: 100vh;
-  background-color: #000000;
-  background-image:
-    linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.9)),
-    repeating-linear-gradient(0deg,
-      transparent 0%,
-      rgba(0, 255, 0, 0.05) 50%,
-      transparent 100%);
-  background-size: cover;
-  color: #0fbaff; /* Adjusted text color for better contrast */
-  font-family: 'Courier New', monospace;
-  overflow: hidden;
-  padding: 2rem; /* Added padding for content spacing */
-  position: relative;
+const Subheading = styled.p`
+  font-size: 1.25rem;
+  color: #00cc00;
+  margin-bottom: 1.5rem;
+  opacity: 0.9;
+`;
 
-  &:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-      rgba(0, 255, 0, 0.03) 50%,
-      rgba(0, 0, 0, 0.1) 50%
-    );
-    background-size: 100% 4px;
-    pointer-events: none;
-    animation: ${matrixRain} 20s linear infinite;
-    opacity: 0.3;
+const Button = styled.a`
+  background-color: #00ff00;
+  color: #111;
+  padding: 1rem 2rem;
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  &:hover {
+    background-color: #00cc00;
   }
 `;
 
-const TerminalContent = styled.pre`
-  color: #0fbaff; /* Adjusted text color */
-  font-family: 'Courier New', monospace;
-  font-size: 1.1rem;
-  line-height: 1.4; /* Reduced from 1.6 */
-  position: relative;
-  white-space: pre-wrap;
-  word-wrap: break-word;
-  margin: 0.5rem 0; /* Added smaller margins */
-  padding: 0.5rem; /* Added smaller padding */
-  margin-top: 5rem; /* Add top margin to push content below potential navbar */ 
+const HomePage = () => (
+  <HeroSection>
+    <Heading>Joël Tiogo – Tech Leader & Innovator</Heading>
+    <Subheading>Driving innovation through strategic leadership in technology</Subheading>
+    <Button href="/about">Learn More About Me</Button>
+  </HeroSection>
+);
 
-  .command-line {
-    display: flex;
-    align-items: flex-start;
-  }
-
-  &:after {
-    content: '█';
-    position: absolute;
-    animation: ${cursorBlink} 1s step-end infinite;
-  }
-`;
-
-const Home = () => {
-  const [displayText, setDisplayText] = useState('');
-  const path = '[root@quantum-core] ~/joeltiogo$ ';
-
-  const messages = [
-    '> Initializing system...\n',
-    '> Running security protocols...',
-    '\n> Establishing secure connection...\n\n',
-    '>> *** SYSTEM PROFILE ***\n',
-    '>> NAME: Joël Tiogo\n',
-    '>> ROLE: Data Scientist | AI Consultant | Project Manager\n\n',
-    '> Executing profile.sh...',
-    'Driving innovation through agile methodologies and data-driven solutions, transforming complex challenges into actionable strategies.\n\n',
-    '> Loading credentials...',
-    '=====================================\n',
-    '*** EDUCATION ***\n\n',
-    '> MBA.exe --Specialization="Finance & Technology"\n',
-    '  └─ Frankfurt School of Finance & Management(FS), Germany\n',
-    '> BTech.exe --field="Electrical Engineering"\n',
-    '  └─ University of Johannesburg(UJ), South Africa\n',
-    '> AI.exe --Bootcamp="Data Science & AI Bootcamp"\n',
-    '  └─ Lewagon GmbH, Germany(Online)\n\n',
-    '> cat technical_skills.txt\n',
-    '┌────────────────────────────────┐',
-    '│ • Full Stack Development       │',
-    '│ • Python | C# | JavaScript     │',
-    '│ • React.js | Angular           │',
-    '│ • GCP | AWS | Azure | Docker   │',
-    '│ • Tensorflow, Pytorch, Pandas  │',
-    '│ • Git, MLFlow, Prefect|FastAPI │',
-    '└────────────────────────────────┘\n\n',
-    '> Check system status...',
-    '[STATUS]: Active & Innovation-Driven\n',
-    '[MISSION]: Contribute to a sustainable future through technology\n\n',
-    '\n> ./execute innovation_pipeline.sh\n'
-  ];
-
-  useEffect(() => {
-    let currentIndex = 0;
-    let currentChar = 0;
-    let timeoutId;
-
-    const typeText = () => {
-      if (currentIndex >= messages.length) {
-        return;
-      }
-      if (currentChar === 0 && !messages[currentIndex].startsWith('>') && !messages[currentIndex].startsWith(' ')) {
-        setDisplayText(prev => prev + (currentIndex === 0 ? path : `\n${path}`));
-      }
-
-      const char = messages[currentIndex][currentChar];
-      setDisplayText(prev => prev + char);
-      currentChar++;
-
-      if (currentChar === messages[currentIndex].length) {
-        currentIndex++;
-        currentChar = 0;
-        timeoutId = setTimeout(typeText, 800); // Delay between messages
-      } else {
-        timeoutId = setTimeout(typeText, 50); // Typing speed
-      }
-    };
-
-    timeoutId = setTimeout(typeText, 500); // Initial delay
-    return () => clearTimeout(timeoutId);
-  }, []);
-
-  return (
-    <Container>
-      <TerminalContent>
-        {displayText}
-      </TerminalContent>
-    </Container>
-  );
-};
-
-export default Home;
+export default HomePage;

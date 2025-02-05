@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from "react"; 
 import styled, { keyframes } from "styled-components";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
@@ -12,18 +12,6 @@ const glowAnimation = keyframes`
   100% { text-shadow: 0 0 10px #00ff00; }
 `;
 
-// Add these new animations
-const matrixRain = keyframes`
-  0% { transform: translateY(-100%); opacity: 0; }
-  50% { opacity: 0.5; }
-  100% { transform: translateY(100%); opacity: 0; }
-`;
-
-const cursorBlink = keyframes`
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
-`;
-
 const BlogContainer = styled.div`
   min-height: 100vh;
   display: grid;
@@ -33,24 +21,12 @@ const BlogContainer = styled.div`
   color: #00ff00;
   padding: 2rem;
   gap: 2rem;
-
-  /* Media queries for responsive adjustments */
-  @media (max-width: 768px) {
-    padding: 1rem;
-    gap: 1rem;
-    grid-template-columns: 1fr; /* Make it single column on smaller screens */
-  }
 `;
 
 const Header = styled.header`
   text-align: center;
   padding: 2rem 0;
   border-bottom: 1px solid #00ff0033;
-
-  /* Media queries for responsive font size */
-  @media (max-width: 768px) {
-    padding: 1rem 0;
-  }
 `;
 
 const Title = styled.h1`
@@ -58,11 +34,6 @@ const Title = styled.h1`
   margin: 0;
   animation: ${glowAnimation} 2s infinite;
   letter-spacing: 2px;
-
-  /* Media queries for responsive font size */
-  @media (max-width: 768px) {
-    font-size: 2.5rem;
-  }
 `;
 
 const Subtitle = styled.p`
@@ -70,14 +41,8 @@ const Subtitle = styled.p`
   color: #00cc00;
   margin-top: 1rem;
   opacity: 0.8;
-
-  /* Media queries for responsive font size */
-  @media (max-width: 768px) {
-    font-size: 1.2rem;
-  }
 `;
 
-// Update BlogGrid for tighter layout
 const BlogGrid = styled.section`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -85,14 +50,8 @@ const BlogGrid = styled.section`
   padding: 1rem;
   max-width: 1200px;
   margin: 0 auto;
-
-  /* Media queries for responsive grid layout */
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr; /* Make it single column on smaller screens */
-  }
 `;
 
-// Update BlogCard with more hacker aesthetics
 const BlogCard = styled.div`
   background: linear-gradient(145deg, #0a0a0a, #151515);
   border: 1px solid #00ff0033;
@@ -103,11 +62,6 @@ const BlogCard = styled.div`
   position: relative;
   overflow: hidden;
   max-width: 400px;
-
-  /* Media queries for responsive card width */
-  @media (max-width: 768px) {
-    max-width: 100%; /* Make cards take full width on smaller screens */
-  }
 
   &:before {
     content: '>';
@@ -134,7 +88,6 @@ const BlogCard = styled.div`
     transform: translateY(-3px);
     border-color: #00ff00;
     box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
-
     &:after {
       opacity: 1;
     }
@@ -148,7 +101,6 @@ const CardIcon = styled.div`
   opacity: 0.9;
 `;
 
-// Update CardTitle for more compact look
 const CardTitle = styled.h3`
   font-size: 1.4rem;
   color: #00ff00;
@@ -157,22 +109,8 @@ const CardTitle = styled.h3`
   font-family: 'Courier New', monospace;
   position: relative;
   padding-left: 1rem;
-
-  /* Media queries for responsive font size */
-  @media (max-width: 768px) {
-    font-size: 1.2rem;
-  }
-
-  &:before {
-    content: '/>';
-    position: absolute;
-    left: -10px;
-    color: #00ff00;
-    opacity: 0.5;
-  }
 `;
 
-// Update CardSummary for terminal feel
 const CardSummary = styled.p`
   font-size: 0.9rem;
   color: #00cc00;
@@ -182,14 +120,8 @@ const CardSummary = styled.p`
   font-family: 'Courier New', monospace;
   position: relative;
   padding-left: 1rem;
-
-  /* Media queries for responsive font size */
-  @media (max-width: 768px) {
-    font-size: 0.8rem;
-  }
 `;
 
-// Update ReadMoreButton for hacker style
 const ReadMoreButton = styled.button`
   font-size: 0.9rem;
   color: #00ff00;
@@ -201,19 +133,6 @@ const ReadMoreButton = styled.button`
   font-family: 'Courier New', monospace;
   transition: all 0.2s ease;
   margin-top: 1rem;
-  position: relative;
-  overflow: hidden;
-
-  /* Media queries for responsive button size */
-  @media (max-width: 768px) {
-    font-size: 0.8rem;
-    padding: 0.4rem 0.8rem;
-  }
-
-  &:after {
-    content: '_';
-    animation: ${cursorBlink} 1s infinite;
-  }
 
   &:hover {
     background-color: rgba(0, 255, 0, 0.1);
@@ -263,15 +182,15 @@ const ModalContent = styled.div`
 const blogPosts = [
   {
     icon: <FaRobot />,
-    title: "The Future of AI: Trends to Watch in 2024",
-    summary: "Explore groundbreaking developments in AI technology, from advanced neural networks to revolutionary applications in healthcare and climate science. Discover how generative AI is reshaping creative industries and what's next in the evolution of machine learning.",
-    content: "Artificial Intelligence continues to evolve at an unprecedented pace, revolutionizing industries across the globe. Key trends include significant advances in generative AI, enabling more creative and nuanced content creation. Natural language processing breakthroughs are enabling more natural human-machine interactions, while ethical AI frameworks are being developed to ensure responsible deployment...",
+    title: "AI for Executive Leaders: Harnessing the Power of Technology",
+    summary: "Gain insights into how AI is transforming businesses and why C-suite leaders need to embrace AI-driven decision-making for a competitive edge.",
+    content: "AI continues to reshape industries with its potential to boost efficiency, optimize operations, and drive business outcomes. For C-suite executives, the key to leveraging AI lies in understanding its strategic applications... The future of AI is about aligning cutting-edge technology with business goals to drive meaningful change across all levels of the organization...",
   },
   {
     icon: <FaBalanceScale />,
-    title: "Ethics in AI: Navigating the Digital Frontier",
-    summary: "Delve into the critical ethical considerations shaping AI development. From bias mitigation to transparency initiatives, learn how researchers and developers are working to create more equitable AI systems.",
-    content: "As AI systems become more prevalent in decision-making processes, the importance of ethical considerations has moved to the forefront. Current initiatives focus on developing explainable AI systems, ensuring algorithmic fairness, and implementing robust privacy protections...",
+    title: "Ethics and AI: A C-Suite Perspective",
+    summary: "A deep dive into the ethical challenges facing AI adoption and how business leaders can ensure their organizations uphold responsible AI practices.",
+    content: "As AI becomes more integrated into decision-making processes, business leaders must consider the ethical implications of its deployment. From fairness and transparency to accountability, the C-suite must lead the charge in ensuring AI systems align with their company's values and ethical standards...",
   },
 ];
 
@@ -289,8 +208,8 @@ function Blog() {
   return (
     <BlogContainer>
       <Header>
-        <Title>{`> Hacker's Guide to AI`}</Title>
-        <Subtitle>Exploring the Digital Frontier of Artificial Intelligence</Subtitle>
+        <Title>{`> Executive's Guide to AI`}</Title>
+        <Subtitle>Strategic Insights on the Future of AI and Tech Leadership</Subtitle>
       </Header>
 
       <BlogGrid>
@@ -305,6 +224,7 @@ function Blog() {
           </BlogCard>
         ))}
       </BlogGrid>
+      
       <Modal
         open={open}
         onClose={handleClose}
