@@ -1,6 +1,7 @@
 import React from "react";
 import { Disclosure } from "@headlessui/react";
 import styled from "styled-components";
+
 // Temporary SVG icons until heroicons is installed
 const MenuIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
@@ -16,14 +17,13 @@ const CloseIcon = () => (
 
 const navigation = [
   { href: "/", name: "Home" },
-  { href: "/about", name: "About" },
-  { href: "/blog", name: "Blog" },
+  { href: "/about", name: "About" }
 ];
 
 // Styled-components for the Navbar
 const NavbarContainer = styled.nav`
-  background-color: black;
-  box-shadow: 0 2px 4px rgba(0, 255, 0, 0.5);
+  background-color: #0a0a0a;
+  box-shadow: 0 2px 8px rgba(0, 255, 0, 0.2);
   position: sticky;
   top: 0;
   z-index: 1000;
@@ -34,18 +34,22 @@ const NavbarContainer = styled.nav`
 const NavWrapper = styled.div`
   max-width: 1280px;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 4rem;
+  height: 5rem;
 `;
 
 const Logo = styled.a`
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   font-weight: 700;
   color: #00ff00;
   text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.1rem;
+  transition: color 0.3s ease;
+
   &:hover {
     color: #00cc00;
   }
@@ -58,61 +62,23 @@ const BurgerButton = styled(Disclosure.Button)`
     display: inline-flex; /* Show only on mobile */
     align-items: center;
     justify-content: center;
-    padding: 0.5rem;
+    padding: 0.8rem;
     background-color: transparent;
     border: none;
     border-radius: 4px;
     color: #00ff00;
     cursor: pointer;
-    width: 40px;
-    height: 40px;
-
-    @media (max-width: 768px) {
-      width: 36px;
-      height: 36px;
-    }
+    width: 48px;
+    height: 48px;
 
     &:hover {
       background-color: rgba(0, 255, 0, 0.1);
     }
 
     svg {
-      width: 24px;
-      height: 24px;
-
-      @media (max-width: 768px) {
-        width: 20px;
-        height: 20px;
-      }
+      width: 28px;
+      height: 28px;
     }
-  }
-`;
-
-const MenuButton = styled(Disclosure.Button)`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  padding: 0.5rem;
-  border: none;
-  border-radius: 0.375rem;
-  background-color: transparent;
-  color: #00ff00;
-  cursor: pointer;
-
-  &:hover {
-    background-color: rgba(0, 255, 0, 0.1);
-  }
-
-  &:focus {
-    outline: 2px solid #00ff00;
-    outline-offset: 2px;
-  }
-
-  svg {
-    width: 20px;
-    height: 20px;
   }
 `;
 
@@ -132,27 +98,31 @@ const DesktopNav = styled.div`
   display: flex;
   gap: 2rem;
 
-  @media (max-width: 640px) {
+  @media (max-width: 768px) {
     display: none;
   }
 `;
 
 const MobileNav = styled.div`
-  padding: 1rem;
+  padding: 1.5rem;
   background-color: #1a1a1a;
   border-top: 1px solid #00ff00;
 `;
 
 const NavLink = styled.a`
   text-decoration: none;
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-weight: 500;
   color: ${(props) => (props.active ? "#00cc00" : "#00ff00")};
   border-bottom: ${(props) => (props.active ? "2px solid #00cc00" : "none")};
-  padding: 0.5rem;
+  padding: 0.5rem 1rem;
   transition: color 0.3s ease, border 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.1rem;
+
   &:hover {
     color: #00cc00;
+    border-bottom: 2px solid #00cc00;
   }
 `;
 
@@ -163,10 +133,8 @@ const Nav = () => {
       {({ open }) => (
         <NavbarContainer>
           <NavWrapper>
-            <Logo href="/">Joel Tiogo</Logo>
-
-            {/* Mobile Menu Button */}
-            <BurgerButton> 
+            <Logo href="/">Joël Tiogo</Logo>
+            <BurgerButton>
               <VisuallyHidden>Open menu</VisuallyHidden>
               {open ? (
                 <CloseIcon aria-hidden="true" />
@@ -174,8 +142,6 @@ const Nav = () => {
                 <MenuIcon aria-hidden="true" />
               )}
             </BurgerButton>
-
-            {/* Desktop Navigation */}
             <DesktopNav>
               {navigation.map((item) => (
                 <NavLink
