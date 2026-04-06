@@ -5,7 +5,8 @@ import { device } from "../utils/breakpoints";
 const navigation = [
   { href: "/", name: "Home" },
   { href: "/about", name: "About" },
-  { href: "/expertise", name: "Expertise" },        // Recommended new page
+  { href: "/expertise", name: "Expertise" },
+  { href: "/insights", name: "Insights" },           // ← Newly added
   { href: "https://linkedin.com/in/joeltiogo", name: "LinkedIn", external: true },
 ];
 
@@ -87,7 +88,7 @@ const BurgerButton = styled.button`
 const DesktopNav = styled.div`
   display: none;
   align-items: center;
-  gap: 2.8rem;
+  gap: 2.6rem;
 
   @media ${device.tablet} {
     display: flex;

@@ -1,26 +1,27 @@
 import Node from "../core/Node.js";
-import { NodeRepresentation, ShaderNodeObject } from "../tsl/TSLCore.js";
 
-export const rangeFogFactor: (near: NodeRepresentation, far: NodeRepresentation) => ShaderNodeObject<Node>;
+export const rangeFogFactor: (near: Node | number, far: Node | number) => Node<"float">;
 
-export const densityFogFactor: (density: NodeRepresentation) => ShaderNodeObject<Node>;
+export const densityFogFactor: (density: Node) => Node<"float">;
 
-export const fog: (color: NodeRepresentation, factor: NodeRepresentation) => ShaderNodeObject<Node>;
+export const exponentialHeightFogFactor: (density: Node, height: Node) => Node;
+
+export const fog: (color: Node, factor: Node) => Node<"vec4">;
 
 /**
  * @deprecated
  */
 export function rangeFog(
-    color: NodeRepresentation,
-    near: NodeRepresentation,
-    far: NodeRepresentation,
-): ShaderNodeObject<Node>;
+    color: Node,
+    near: Node,
+    far: Node,
+): Node;
 
 /**
  * @deprecated
  */
 export function densityFog(
-    color: NodeRepresentation,
-    near: NodeRepresentation,
-    far: NodeRepresentation,
-): ShaderNodeObject<Node>;
+    color: Node,
+    near: Node,
+    far: Node,
+): Node;

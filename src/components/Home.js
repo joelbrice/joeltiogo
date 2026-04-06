@@ -119,7 +119,7 @@ const HomePage = () => (
     <HeroSection>
       <ContentWrapper>
         <ProfilePhoto
-          src="/images/0.jpg"   // ← Put your photo in public/images/joel-tiogo.jpg
+          src="/images/1.jpg"   // ← Put your photo in public/images/joel-tiogo.jpg
           alt="Joël Tiogo"
         />
         <Eyebrow>Business Development Manager &amp; Strategic Leader</Eyebrow>

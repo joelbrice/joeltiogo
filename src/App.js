@@ -5,6 +5,7 @@ import Nav from './components/Navbar';
 import Footer from './components/Footer';
 import './index.css';
 import Expertise from './components/expertise';
+import Insights from './components/Insights';
 
 // Lazy load components for better performance
 const About = React.lazy(() => import('./components/About'));
@@ -69,6 +70,7 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/about" element={<About />} />
               <Route path="/expertise" element ={<Expertise />} />
+              <Route path="/insights" element ={<Insights />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>

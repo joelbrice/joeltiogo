@@ -1,20 +1,25 @@
-import { Events } from '../events';
+import { findFragmentByPTS } from './fragment-finders';
 import { ErrorDetails, ErrorTypes } from '../errors';
+import { Events } from '../events';
+import { HdcpLevels } from '../types/level';
 import { PlaylistContextType, PlaylistLevelType } from '../types/loader';
+import { getCodecsForMimeType } from '../utils/codecs';
 import {
   getRetryConfig,
+  isKeyError,
   isTimeoutError,
+  isUnusableKeyError,
   shouldRetry,
 } from '../utils/error-helper';
-import { findFragmentByPTS } from './fragment-finders';
-import { HdcpLevel, HdcpLevels } from '../types/level';
-import { logger } from '../utils/logger';
-import type Hls from '../hls';
+import { arrayToHex } from '../utils/hex';
+import { Logger } from '../utils/logger';
 import type { RetryConfig } from '../config';
+import type { LevelKey } from '../hls';
+import type Hls from '../hls';
+import type { Fragment, MediaFragment } from '../loader/fragment';
 import type { NetworkComponentAPI } from '../types/component-api';
 import type { ErrorData } from '../types/events';
-import type { Fragment } from '../loader/fragment';
-import type { LevelDetails } from '../loader/level-details';
+import type { HdcpLevel, Level } from '../types/level';
 
 export const enum NetworkErrorAction {
   DoNothing = 0,
@@ -28,8 +33,9 @@ export const enum NetworkErrorAction {
 export const enum ErrorActionFlags {
   None = 0,
   MoveAllAlternatesMatchingHost = 1,
-  MoveAllAlternatesMatchingHDCP = 1 << 1,
-  SwitchToSDR = 1 << 2, // Reserved for future use
+  MoveAllAlternatesMatchingHDCP = 2,
+  MoveAllAlternatesMatchingKey = 4,
+  SwitchToSDR = 8,
 }
 
 export type IErrorAction = {
@@ -41,28 +47,16 @@ export type IErrorAction = {
   nextAutoLevel?: number;
   resolved?: boolean;
 };
-
-type PenalizedRendition = {
-  lastErrorPerfMs: number;
-  errors: ErrorData[];
-  details?: LevelDetails;
-};
-
-type PenalizedRenditions = { [key: number]: PenalizedRendition };
-
-export default class ErrorController implements NetworkComponentAPI {
+export default class ErrorController
+  extends Logger
+  implements NetworkComponentAPI
+{
   private readonly hls: Hls;
   private playlistError: number = 0;
-  private penalizedRenditions: PenalizedRenditions = {};
-  private log: (msg: any) => void;
-  private warn: (msg: any) => void;
-  private error: (msg: any) => void;
 
   constructor(hls: Hls) {
+    super('error-controller', hls.logger);
     this.hls = hls;
-    this.log = logger.log.bind(logger, `[info]:`);
-    this.warn = logger.warn.bind(logger, `[warning]:`);
-    this.error = logger.error.bind(logger, `[error]:`);
     this.registerListeners();
   }
 
@@ -88,7 +82,6 @@ export default class ErrorController implements NetworkComponentAPI {
     this.unregisterListeners();
     // @ts-ignore
     this.hls = null;
-    this.penalizedRenditions = {};
   }
 
   startLoad(startPosition: number): void {}
@@ -98,14 +91,42 @@ export default class ErrorController implements NetworkComponentAPI {
   }
 
   private getVariantLevelIndex(frag: Fragment | undefined): number {
-    return frag?.type === PlaylistLevelType.MAIN
-      ? frag.level
-      : this.hls.loadLevel;
+    if (frag?.type === PlaylistLevelType.MAIN) {
+      return frag.level;
+    }
+    return this.getVariantIndex();
+  }
+
+  private getVariantIndex(): number {
+    const hls = this.hls;
+    const currentLevel = hls.currentLevel;
+    if (hls.loadLevelObj?.details || currentLevel === -1) {
+      return hls.loadLevel;
+    }
+    return currentLevel;
+  }
+
+  private variantHasKey(
+    level: Level | undefined,
+    keyInError: LevelKey,
+  ): boolean {
+    if (level) {
+      if (level.details?.hasKey(keyInError)) {
+        return true;
+      }
+      const audioGroupsIds = level.audioGroups;
+      if (audioGroupsIds) {
+        const audioTracks = this.hls.allAudioTracks.filter(
+          (track) => audioGroupsIds.indexOf(track.groupId) >= 0,
+        );
+        return audioTracks.some((track) => track.details?.hasKey(keyInError));
+      }
+    }
+    return false;
   }
 
   private onManifestLoading() {
     this.playlistError = 0;
-    this.penalizedRenditions = {};
   }
 
   private onLevelUpdated() {
@@ -129,10 +150,7 @@ export default class ErrorController implements NetworkComponentAPI {
       case ErrorDetails.FRAG_PARSING_ERROR:
         // ignore empty segment errors marked as gap
         if (data.frag?.gap) {
-          data.errorAction = {
-            action: NetworkErrorAction.DoNothing,
-            flags: ErrorActionFlags.None,
-          };
+          data.errorAction = createDoNothingErrorAction();
           return;
         }
       // falls through
@@ -180,7 +198,7 @@ export default class ErrorController implements NetworkComponentAPI {
       case ErrorDetails.SUBTITLE_LOAD_ERROR:
       case ErrorDetails.SUBTITLE_TRACK_LOAD_TIMEOUT:
         if (context) {
-          const level = hls.levels[hls.loadLevel];
+          const level = hls.loadLevelObj;
           if (
             level &&
             ((context.type === PlaylistContextType.AUDIO_TRACK &&
@@ -204,26 +222,32 @@ export default class ErrorController implements NetworkComponentAPI {
         return;
       case ErrorDetails.KEY_SYSTEM_STATUS_OUTPUT_RESTRICTED:
         {
-          const level = hls.levels[hls.loadLevel];
-          const restrictedHdcpLevel = level?.attrs['HDCP-LEVEL'];
-          if (restrictedHdcpLevel) {
-            data.errorAction = {
-              action: NetworkErrorAction.SendAlternateToPenaltyBox,
-              flags: ErrorActionFlags.MoveAllAlternatesMatchingHDCP,
-              hdcpLevel: restrictedHdcpLevel,
-            };
-          } else {
-            this.keySystemError(data);
-          }
+          data.errorAction = {
+            action: NetworkErrorAction.SendAlternateToPenaltyBox,
+            flags: ErrorActionFlags.MoveAllAlternatesMatchingHDCP,
+          };
+        }
+        return;
+      case ErrorDetails.KEY_SYSTEM_SESSION_UPDATE_FAILED:
+      case ErrorDetails.KEY_SYSTEM_STATUS_INTERNAL_ERROR:
+      case ErrorDetails.KEY_SYSTEM_NO_SESSION:
+        {
+          data.errorAction = {
+            action: NetworkErrorAction.SendAlternateToPenaltyBox,
+            flags: ErrorActionFlags.MoveAllAlternatesMatchingKey,
+          };
         }
         return;
       case ErrorDetails.BUFFER_ADD_CODEC_ERROR:
       case ErrorDetails.REMUX_ALLOC_ERROR:
       case ErrorDetails.BUFFER_APPEND_ERROR:
-        data.errorAction = this.getLevelSwitchAction(
-          data,
-          data.level ?? hls.loadLevel,
-        );
+        // Buffer-controller can set errorAction when append errors can be ignored or resolved locally
+        if (!data.errorAction) {
+          data.errorAction = this.getLevelSwitchAction(
+            data,
+            data.level ?? hls.loadLevel,
+          );
+        }
         return;
       case ErrorDetails.INTERNAL_EXCEPTION:
       case ErrorDetails.BUFFER_APPENDING_ERROR:
@@ -232,23 +256,15 @@ export default class ErrorController implements NetworkComponentAPI {
       case ErrorDetails.BUFFER_STALLED_ERROR:
       case ErrorDetails.BUFFER_SEEK_OVER_HOLE:
       case ErrorDetails.BUFFER_NUDGE_ON_STALL:
-        data.errorAction = {
-          action: NetworkErrorAction.DoNothing,
-          flags: ErrorActionFlags.None,
-        };
+        data.errorAction = createDoNothingErrorAction();
         return;
     }
 
     if (data.type === ErrorTypes.KEY_SYSTEM_ERROR) {
-      this.keySystemError(data);
+      // Do not retry level. Should be fatal if ErrorDetails.KEY_SYSTEM_<ERROR> not handled with early return above.
+      data.levelRetry = false;
+      data.errorAction = createDoNothingErrorAction();
     }
-  }
-
-  private keySystemError(data: ErrorData) {
-    const levelIndex = this.getVariantLevelIndex(data.frag);
-    // Do not retry level. Escalate to fatal if switching levels fails.
-    data.levelRetry = false;
-    data.errorAction = this.getLevelSwitchAction(data, levelIndex);
   }
 
   private getPlaylistRetryOrSwitchAction(
@@ -288,7 +304,7 @@ export default class ErrorController implements NetworkComponentAPI {
     const level = hls.levels[variantLevelIndex];
     const { fragLoadPolicy, keyLoadPolicy } = hls.config;
     const retryConfig = getRetryConfig(
-      data.details.startsWith('key') ? keyLoadPolicy : fragLoadPolicy,
+      isKeyError(data) ? keyLoadPolicy : fragLoadPolicy,
       data,
     );
     const fragmentErrors = hls.levels.reduce(
@@ -300,19 +316,21 @@ export default class ErrorController implements NetworkComponentAPI {
       if (data.details !== ErrorDetails.FRAG_GAP) {
         level.fragmentError++;
       }
-      const retry = shouldRetry(
-        retryConfig,
-        fragmentErrors,
-        isTimeoutError(data),
-        data.response,
-      );
-      if (retry) {
-        return {
-          action: NetworkErrorAction.RetryRequest,
-          flags: ErrorActionFlags.None,
+      if (!isUnusableKeyError(data)) {
+        const retry = shouldRetry(
           retryConfig,
-          retryCount: fragmentErrors,
-        };
+          fragmentErrors,
+          isTimeoutError(data),
+          data.response,
+        );
+        if (retry) {
+          return {
+            action: NetworkErrorAction.RetryRequest,
+            flags: ErrorActionFlags.None,
+            retryConfig,
+            retryCount: fragmentErrors,
+          };
+        }
       }
     }
     // Reach max retry count, or Missing level reference
@@ -344,7 +362,7 @@ export default class ErrorController implements NetworkComponentAPI {
       // Search for next level to retry
       let nextLevel = -1;
       const { levels, loadLevel, minAutoLevel, maxAutoLevel } = hls;
-      if (!hls.autoLevelEnabled) {
+      if (!hls.autoLevelEnabled && !hls.config.preserveManualLevelOnError) {
         hls.loadLevel = -1;
       }
       const fragErrorType = data.frag?.type;
@@ -389,7 +407,7 @@ export default class ErrorController implements NetworkComponentAPI {
             const levelDetails = levels[candidate].details;
             if (levelDetails) {
               const fragCandidate = findFragmentByPTS(
-                data.frag,
+                data.frag as MediaFragment,
                 levelDetails.fragments,
                 data.frag.start,
               );
@@ -416,10 +434,10 @@ export default class ErrorController implements NetworkComponentAPI {
               )) ||
             (findAudioCodecAlternate &&
               level.audioCodec === levelCandidate.audioCodec) ||
-            (!findAudioCodecAlternate &&
-              level.audioCodec !== levelCandidate.audioCodec) ||
             (findVideoCodecAlternate &&
-              level.codecSet === levelCandidate.codecSet)
+              level.codecSet === levelCandidate.codecSet) ||
+            (!findAudioCodecAlternate &&
+              level.codecSet !== levelCandidate.codecSet)
           ) {
             // For video/audio/subs frag errors find another group ID or fallthrough to redundant fail-over
             continue;
@@ -481,21 +499,64 @@ export default class ErrorController implements NetworkComponentAPI {
     if (!errorAction) {
       return;
     }
-    const { flags, hdcpLevel, nextAutoLevel } = errorAction;
+    const { flags } = errorAction;
+    const nextAutoLevel = errorAction.nextAutoLevel;
 
     switch (flags) {
       case ErrorActionFlags.None:
         this.switchLevel(data, nextAutoLevel);
         break;
-      case ErrorActionFlags.MoveAllAlternatesMatchingHDCP:
-        if (hdcpLevel) {
-          hls.maxHdcpLevel = HdcpLevels[HdcpLevels.indexOf(hdcpLevel) - 1];
+      case ErrorActionFlags.MoveAllAlternatesMatchingHDCP: {
+        const levelIndex = this.getVariantLevelIndex(data.frag);
+        const level = hls.levels[levelIndex];
+        const restrictedHdcpLevel = (level as Level | undefined)?.attrs[
+          'HDCP-LEVEL'
+        ];
+        errorAction.hdcpLevel = restrictedHdcpLevel;
+        if (restrictedHdcpLevel === 'NONE') {
+          this.warn(`HDCP policy resticted output with HDCP-LEVEL=NONE`);
+        } else if (restrictedHdcpLevel) {
+          hls.maxHdcpLevel =
+            HdcpLevels[HdcpLevels.indexOf(restrictedHdcpLevel) - 1];
           errorAction.resolved = true;
+          this.warn(
+            `Restricting playback to HDCP-LEVEL of "${hls.maxHdcpLevel}" or lower`,
+          );
+          break;
         }
-        this.warn(
-          `Restricting playback to HDCP-LEVEL of "${hls.maxHdcpLevel}" or lower`,
-        );
+        // Fallthrough when no HDCP-LEVEL attribute is found
+      }
+      // eslint-disable-next-line no-fallthrough
+      case ErrorActionFlags.MoveAllAlternatesMatchingKey: {
+        const levelKey = data.decryptdata;
+        if (levelKey) {
+          // Penalize all levels with key
+          const levels = this.hls.levels;
+          const levelCountWithError = levels.length;
+          for (let i = levelCountWithError; i--; ) {
+            if (this.variantHasKey(levels[i], levelKey)) {
+              this.log(
+                `Banned key found in level ${i} (${levels[i].bitrate}bps) or audio group "${levels[i].audioGroups?.join(',')}" (${data.frag?.type} fragment) ${arrayToHex(levelKey.keyId || [])}`,
+              );
+              levels[i].fragmentError++;
+              levels[i].loadError++;
+              this.log(`Removing level ${i} with key error (${data.error})`);
+              this.hls.removeLevel(i);
+            }
+          }
+          const frag = data.frag;
+          if (this.hls.levels.length < levelCountWithError) {
+            errorAction.resolved = true;
+          } else if (frag && frag.type !== PlaylistLevelType.MAIN) {
+            // Ignore key error for audio track with unmatched key (main session error)
+            const fragLevelKey = frag.decryptdata;
+            if (fragLevelKey && !levelKey.matches(fragLevelKey)) {
+              errorAction.resolved = true;
+            }
+          }
+        }
         break;
+      }
     }
     // If not resolved by previous actions try to switch to next level
     if (!errorAction.resolved) {
@@ -510,6 +571,33 @@ export default class ErrorController implements NetworkComponentAPI {
       data.errorAction.resolved = true;
       // Stream controller is responsible for this but won't switch on false start
       this.hls.nextLoadLevel = this.hls.nextAutoLevel;
+      if (
+        data.details === ErrorDetails.BUFFER_ADD_CODEC_ERROR &&
+        data.mimeType &&
+        data.sourceBufferName !== 'audiovideo'
+      ) {
+        const codec = getCodecsForMimeType(data.mimeType);
+        const levels = this.hls.levels;
+        for (let i = levels.length; i--; ) {
+          if (levels[i][`${data.sourceBufferName}Codec`] === codec) {
+            this.log(
+              `Removing level ${i} for ${data.details} ("${codec}" not supported)`,
+            );
+            this.hls.removeLevel(i);
+          }
+        }
+      }
     }
   }
+}
+
+export function createDoNothingErrorAction(resolved?: boolean): IErrorAction {
+  const errorAction: IErrorAction = {
+    action: NetworkErrorAction.DoNothing,
+    flags: ErrorActionFlags.None,
+  };
+  if (resolved) {
+    errorAction.resolved = true;
+  }
+  return errorAction;
 }

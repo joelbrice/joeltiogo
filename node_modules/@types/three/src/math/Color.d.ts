@@ -221,6 +221,7 @@ export class Color {
      */
     b: number;
 
+    // eslint-disable-next-line @definitelytyped/no-single-element-tuple-type
     set(...args: [color: ColorRepresentation] | [r: number, g: number, b: number]): this;
 
     /**
@@ -302,7 +303,7 @@ export class Color {
     getHex(colorSpace?: string): number;
 
     /**
-     * Returns the string formated hexadecimal value of this color.
+     * Returns the string formatted hexadecimal value of this color.
      */
     getHexString(colorSpace?: string): string;
 
