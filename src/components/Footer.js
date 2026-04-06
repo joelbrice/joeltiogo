@@ -5,7 +5,7 @@ import { device } from '../utils/breakpoints';
 const FooterContainer = styled.footer`
   background: #1a1a1a;
   color: #B0BEC5;
-  padding: 3.5rem 2rem 2.5rem;
+  padding: 4rem 2rem 2.5rem;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 `;
 
@@ -14,38 +14,39 @@ const FooterContent = styled.div`
   margin: 0 auto;
   display: grid;
   grid-template-columns: 1fr;
-  gap: 2.5rem;
+  gap: 3rem;
 
   @media ${device.tablet} {
-    grid-template-columns: 2fr 1fr 1fr;
-    gap: 3.5rem;
+    grid-template-columns: 2.2fr 1fr 1fr;
+    gap: 4rem;
   }
 `;
 
 const FooterSection = styled.div``;
 
 const FooterTitle = styled.h3`
-  font-size: 1.15rem;
+  font-size: 1.2rem;
   font-weight: 600;
   color: #ffffff;
-  margin-bottom: 1.1rem;
+  margin-bottom: 1.2rem;
+  letter-spacing: -0.01em;
 `;
 
 const FooterText = styled.p`
-  font-size: 0.97rem;
-  line-height: 1.65;
+  font-size: 0.98rem;
+  line-height: 1.7;
   color: #B0BEC5;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.6rem;
 `;
 
 const FooterLinks = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 0.8rem;
+  gap: 0.85rem;
 `;
 
 const FooterLink = styled.a`
-  font-size: 0.96rem;
+  font-size: 0.97rem;
   color: #B0BEC5;
   text-decoration: none;
   transition: color 0.3s ease;
@@ -57,15 +58,15 @@ const FooterLink = styled.a`
 
 const SocialLinks = styled.div`
   display: flex;
-  gap: 1.1rem;
-  margin-top: 1.2rem;
+  gap: 1.2rem;
+  margin-top: 1.4rem;
 `;
 
 const SocialIcon = styled.a`
-  width: 42px;
-  height: 42px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.09);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -76,21 +77,21 @@ const SocialIcon = styled.a`
   &:hover {
     background: #667eea;
     color: #ffffff;
-    transform: translateY(-3px);
+    transform: translateY(-4px);
   }
 
   svg {
-    width: 21px;
-    height: 21px;
+    width: 22px;
+    height: 22px;
   }
 `;
 
 const FooterBottom = styled.div`
   max-width: 1280px;
   margin: 0 auto;
-  margin-top: 3.5rem;
+  margin-top: 4rem;
   padding-top: 2rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
   text-align: center;
   font-size: 0.9rem;
   color: #78909c;
@@ -120,8 +121,8 @@ const Footer = () => (
       <FooterSection>
         <FooterTitle>Joël Tiogo</FooterTitle>
         <FooterText>
-          Business Development Manager and strategic leader specializing in technology-driven market growth,
-          digital innovation, and sustainable business solutions with a focus on circularity and ESG.
+          Strategic Growth Leader combining business development expertise with digital innovation
+          and a strong commitment to sustainability and circular economy principles.
         </FooterText>
         <SocialLinks>
           <SocialIcon
@@ -155,6 +156,7 @@ const Footer = () => (
           <FooterLink href="/">Home</FooterLink>
           <FooterLink href="/about">About</FooterLink>
           <FooterLink href="/expertise">Expertise</FooterLink>
+          <FooterLink href="/insights">Insights</FooterLink>   {/* ← Added */}
           <FooterLink href="mailto:tiogojoel@gmail.com">Get in Touch</FooterLink>
         </FooterLinks>
       </FooterSection>

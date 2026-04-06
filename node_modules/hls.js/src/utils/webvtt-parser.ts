@@ -1,10 +1,9 @@
+import { utf8ArrayToStr } from '@svta/common-media-library/utils/utf8ArrayToStr';
+import { hash } from './hash';
+import { toMpegTsClockFromTimescale } from './timescale-conversion';
 import { VTTParser } from './vttparser';
-import { utf8ArrayToStr } from '../demux/id3';
-import {
-  RationalTimestamp,
-  toMpegTsClockFromTimescale,
-} from './timescale-conversion';
 import { normalizePts } from '../remux/mp4-remuxer';
+import type { TimestampOffset } from './timescale-conversion';
 import type { VTTCCs } from '../types/vtt';
 
 const LINEBREAKS = /\r\n|\n\r|\n|\r/g;
@@ -45,17 +44,6 @@ const cueString2millis = function (timeString: string) {
   return ts;
 };
 
-// From https://github.com/darkskyapp/string-hash
-const hash = function (text: string) {
-  let hash = 5381;
-  let i = text.length;
-  while (i) {
-    hash = (hash * 33) ^ text.charCodeAt(--i);
-  }
-
-  return (hash >>> 0).toString();
-};
-
 // Create a unique hash id for a cue based on start/end times and text.
 // This helps timeline-controller to avoid showing repeated captions.
 export function generateCueId(
@@ -92,7 +80,7 @@ const calculateOffset = function (vttCCs: VTTCCs, cc, presentationTime) {
 
 export function parseWebVTT(
   vttByteArray: ArrayBuffer,
-  initPTS: RationalTimestamp | undefined,
+  initPTS: TimestampOffset | undefined,
   vttCCs: VTTCCs,
   cc: number,
   timeOffset: number,

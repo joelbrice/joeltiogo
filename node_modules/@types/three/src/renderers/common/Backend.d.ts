@@ -7,18 +7,16 @@ declare module "../../core/Object3D.js" {
         count?: number | undefined;
         // See https://github.com/mrdoob/three.js/pull/26335
         occlusionTest?: boolean | undefined;
-        // https://github.com/mrdoob/three.js/pull/29386
-        static?: boolean | undefined;
     }
 }
 
 export interface BackendParameters {
-    canvas?: HTMLCanvasElement | undefined;
+    canvas?: HTMLCanvasElement | OffscreenCanvas | undefined;
 }
 
 export default abstract class Backend {
     renderer: Renderer | null;
-    domElement: HTMLCanvasElement | null;
+    domElement: HTMLCanvasElement | OffscreenCanvas | null;
 
     constructor(parameters?: BackendParameters);
 
@@ -26,5 +24,5 @@ export default abstract class Backend {
 
     abstract get coordinateSystem(): CoordinateSystem;
 
-    getDomElement(): HTMLCanvasElement;
+    getDomElement(): HTMLCanvasElement | OffscreenCanvas;
 }

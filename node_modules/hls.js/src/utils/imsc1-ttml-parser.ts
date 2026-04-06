@@ -1,12 +1,10 @@
+import { utf8ArrayToStr } from '@svta/common-media-library/utils/utf8ArrayToStr';
 import { findBox } from './mp4-tools';
-import { parseTimeStamp } from './vttparser';
+import { toTimescaleFromScale } from './timescale-conversion';
 import VTTCue from './vttcue';
-import { utf8ArrayToStr } from '../demux/id3';
-import {
-  RationalTimestamp,
-  toTimescaleFromScale,
-} from './timescale-conversion';
+import { parseTimeStamp } from './vttparser';
 import { generateCueId } from './webvtt-parser';
+import type { TimestampOffset } from './timescale-conversion';
 
 export const IMSC1_CODEC = 'stpp.ttml.im1t';
 
@@ -26,7 +24,7 @@ const textAlignToLineAlign: Partial<Record<string, LineAlignSetting>> = {
 
 export function parseIMSC1(
   payload: ArrayBuffer,
-  initPTS: RationalTimestamp,
+  initPTS: TimestampOffset,
   callBack: (cues: Array<VTTCue>) => any,
   errorCallBack: (error: Error) => any,
 ) {

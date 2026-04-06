@@ -2,118 +2,152 @@ import {
   flushTextTrackMetadataCueSamples,
   flushTextTrackUserdataCueSamples,
 } from './mp4-remuxer';
-import {
-  InitData,
-  InitDataTrack,
-  patchEncyptionData,
-} from '../utils/mp4-tools';
-import {
-  getDuration,
-  getStartDTS,
-  offsetStartDTS,
-  parseInitSegment,
-} from '../utils/mp4-tools';
 import { ElementaryStreamTypes } from '../loader/fragment';
-import { logger } from '../utils/logger';
 import { getCodecCompatibleName } from '../utils/codecs';
-import type { TrackSet } from '../types/track';
-import type {
-  InitSegmentData,
-  RemuxedTrack,
-  Remuxer,
-  RemuxerResult,
-} from '../types/remuxer';
+import { type ILogger, Logger } from '../utils/logger';
+import { patchEncyptionData } from '../utils/mp4-tools';
+import { getSampleData, parseInitSegment } from '../utils/mp4-tools';
+import type { HlsConfig } from '../config';
+import type { HlsEventEmitter } from '../events';
+import type { DecryptData } from '../loader/level-key';
 import type {
   DemuxedAudioTrack,
   DemuxedMetadataTrack,
   DemuxedUserdataTrack,
   PassthroughTrack,
 } from '../types/demuxer';
-import type { DecryptData } from '../loader/level-key';
-import type { RationalTimestamp } from '../utils/timescale-conversion';
+import type {
+  InitSegmentData,
+  RemuxedTrack,
+  Remuxer,
+  RemuxerResult,
+} from '../types/remuxer';
+import type { TrackSet } from '../types/track';
+import type { TypeSupported } from '../utils/codecs';
+import type { InitData, InitDataTrack, TrackTimes } from '../utils/mp4-tools';
+import type { TimestampOffset } from '../utils/timescale-conversion';
 
-class PassThroughRemuxer implements Remuxer {
+class PassThroughRemuxer extends Logger implements Remuxer {
   private emitInitSegment: boolean = false;
   private audioCodec?: string;
   private videoCodec?: string;
   private initData?: InitData;
-  private initPTS: RationalTimestamp | null = null;
+  private initPTS: TimestampOffset | null = null;
   private initTracks?: TrackSet;
   private lastEndTime: number | null = null;
+  private isVideoContiguous: boolean = false;
+
+  constructor(
+    observer: HlsEventEmitter,
+    config: HlsConfig,
+    typeSupported: TypeSupported,
+    logger: ILogger,
+  ) {
+    super('passthrough-remuxer', logger);
+  }
 
   public destroy() {}
 
-  public resetTimeStamp(defaultInitPTS: RationalTimestamp | null) {
-    this.initPTS = defaultInitPTS;
+  public resetTimeStamp(defaultInitPTS: TimestampOffset | null) {
     this.lastEndTime = null;
+    const initPTS = this.initPTS;
+    if (initPTS && defaultInitPTS) {
+      if (
+        initPTS.baseTime === defaultInitPTS.baseTime &&
+        initPTS.timescale === defaultInitPTS.timescale
+      ) {
+        return;
+      }
+    }
+    this.initPTS = defaultInitPTS;
   }
 
   public resetNextTimestamp() {
+    this.isVideoContiguous = false;
     this.lastEndTime = null;
   }
 
   public resetInitSegment(
-    initSegment: Uint8Array | undefined,
+    initSegment: Uint8Array<ArrayBuffer> | undefined,
     audioCodec: string | undefined,
     videoCodec: string | undefined,
     decryptdata: DecryptData | null,
   ) {
     this.audioCodec = audioCodec;
     this.videoCodec = videoCodec;
-    this.generateInitSegment(patchEncyptionData(initSegment, decryptdata));
+    this.generateInitSegment(initSegment, decryptdata);
     this.emitInitSegment = true;
   }
 
-  private generateInitSegment(initSegment: Uint8Array | undefined): void {
+  private generateInitSegment(
+    initSegment: Uint8Array<ArrayBuffer> | undefined,
+    decryptdata?: DecryptData | null,
+  ) {
     let { audioCodec, videoCodec } = this;
     if (!initSegment?.byteLength) {
       this.initTracks = undefined;
       this.initData = undefined;
       return;
     }
-    const initData = (this.initData = parseInitSegment(initSegment));
+    const { audio, video } = (this.initData = parseInitSegment(initSegment));
 
-    // Get codec from initSegment or fallback to default
-    if (initData.audio) {
+    if (decryptdata) {
+      patchEncyptionData(initSegment, decryptdata);
+    } else {
+      const eitherTrack = audio || video;
+      if (eitherTrack?.encrypted) {
+        this.warn(
+          `Init segment with encrypted track with has no key ("${eitherTrack.codec}")!`,
+        );
+      }
+    }
+
+    // Get codec from initSegment
+    if (audio) {
       audioCodec = getParsedTrackCodec(
-        initData.audio,
+        audio,
         ElementaryStreamTypes.AUDIO,
+        this,
       );
     }
 
-    if (initData.video) {
+    if (video) {
       videoCodec = getParsedTrackCodec(
-        initData.video,
+        video,
         ElementaryStreamTypes.VIDEO,
+        this,
       );
     }
 
     const tracks: TrackSet = {};
-    if (initData.audio && initData.video) {
+    if (audio && video) {
       tracks.audiovideo = {
         container: 'video/mp4',
         codec: audioCodec + ',' + videoCodec,
+        supplemental: video.supplemental,
+        encrypted: video.encrypted,
         initSegment,
         id: 'main',
       };
-    } else if (initData.audio) {
+    } else if (audio) {
       tracks.audio = {
         container: 'audio/mp4',
         codec: audioCodec,
+        encrypted: audio.encrypted,
         initSegment,
         id: 'audio',
       };
-    } else if (initData.video) {
+    } else if (video) {
       tracks.video = {
         container: 'video/mp4',
         codec: videoCodec,
+        supplemental: video.supplemental,
+        encrypted: video.encrypted,
         initSegment,
         id: 'main',
       };
     } else {
-      logger.warn(
-        '[passthrough-remuxer.ts]: initSegment does not contain moov or trak boxes.',
-      );
+      this.warn('initSegment does not contain moov or trak boxes.');
     }
     this.initTracks = tracks;
   }
@@ -145,13 +179,14 @@ class PassThroughRemuxer implements Remuxer {
     // The binary segment data is added to the videoTrack in the mp4demuxer. We don't check to see if the data is only
     // audio or video (or both); adding it to video was an arbitrary choice.
     const data = videoTrack.samples;
-    if (!data?.length) {
+    if (!data.length) {
       return result;
     }
 
     const initSegment: InitSegmentData = {
       initPTS: undefined,
-      timescale: 1,
+      timescale: undefined,
+      trackId: undefined,
     };
     let initData = this.initData;
     if (!initData?.length) {
@@ -160,43 +195,101 @@ class PassThroughRemuxer implements Remuxer {
     }
     if (!initData?.length) {
       // We can't remux if the initSegment could not be generated
-      logger.warn('[passthrough-remuxer.ts]: Failed to generate initSegment.');
+      this.warn('Failed to generate initSegment.');
       return result;
     }
     if (this.emitInitSegment) {
-      initSegment.tracks = this.initTracks as TrackSet;
+      initSegment.tracks = this.initTracks;
       this.emitInitSegment = false;
     }
 
-    const duration = getDuration(data, initData);
-    const startDTS = getStartDTS(initData, data);
-    const decodeTime = startDTS === null ? timeOffset : startDTS;
-    if (
-      isInvalidInitPts(initPTS, decodeTime, timeOffset, duration) ||
-      (initSegment.timescale !== initPTS.timescale && accurateTimeOffset)
-    ) {
-      initSegment.initPTS = decodeTime - timeOffset;
-      if (initPTS && initPTS.timescale === 1) {
-        logger.warn(
-          `Adjusting initPTS by ${initSegment.initPTS - initPTS.baseTime}`,
+    const trackSampleData = getSampleData(data, initData, this);
+    const audioSampleTimestamps = initData.audio
+      ? trackSampleData[initData.audio.id]
+      : null;
+    const videoSampleTimestamps = initData.video
+      ? trackSampleData[initData.video.id]
+      : null;
+
+    const videoStartTime = toStartEndOrDefault(videoSampleTimestamps, Infinity);
+    const audioStartTime = toStartEndOrDefault(audioSampleTimestamps, Infinity);
+    const videoEndTime = toStartEndOrDefault(videoSampleTimestamps, 0, true);
+    const audioEndTime = toStartEndOrDefault(audioSampleTimestamps, 0, true);
+
+    let decodeTime = timeOffset;
+    let duration = 0;
+
+    const syncOnAudio =
+      audioSampleTimestamps &&
+      (!videoSampleTimestamps ||
+        (!initPTS && audioStartTime < videoStartTime) ||
+        (initPTS && initPTS.trackId === initData.audio!.id));
+    const baseOffsetSamples = syncOnAudio
+      ? audioSampleTimestamps
+      : videoSampleTimestamps;
+
+    if (baseOffsetSamples) {
+      const timescale = baseOffsetSamples.timescale;
+      const baseTime = baseOffsetSamples.start - timeOffset * timescale;
+      const trackId = syncOnAudio ? initData.audio!.id : initData.video!.id;
+
+      decodeTime = baseOffsetSamples.start / timescale;
+      duration = syncOnAudio
+        ? audioEndTime - audioStartTime
+        : videoEndTime - videoStartTime;
+
+      if (
+        (accurateTimeOffset || !initPTS) &&
+        (isInvalidInitPts(initPTS, decodeTime, timeOffset, duration) ||
+          timescale !== initPTS.timescale)
+      ) {
+        if (initPTS) {
+          this.warn(
+            `Timestamps at playlist time: ${accurateTimeOffset ? '' : '~'}${timeOffset} ${baseTime / timescale} != initPTS: ${initPTS.baseTime / initPTS.timescale} (${initPTS.baseTime}/${initPTS.timescale}) trackId: ${initPTS.trackId}`,
+          );
+        }
+        this.log(
+          `Found initPTS at playlist time: ${timeOffset} offset: ${decodeTime - timeOffset} (${baseTime}/${timescale}) trackId: ${trackId}`,
         );
+        initPTS = null;
+        initSegment.initPTS = baseTime;
+        initSegment.timescale = timescale;
+        initSegment.trackId = trackId;
+      }
+    } else {
+      this.warn(
+        `No audio or video samples found for initPTS at playlist time: ${timeOffset}`,
+      );
+    }
+    if (!initPTS) {
+      if (
+        !initSegment.timescale ||
+        initSegment.trackId === undefined ||
+        initSegment.initPTS === undefined
+      ) {
+        this.warn('Could not set initPTS');
+        initSegment.initPTS = decodeTime;
+        initSegment.timescale = 1;
+        initSegment.trackId = -1;
       }
       this.initPTS = initPTS = {
         baseTime: initSegment.initPTS,
-        timescale: 1,
+        timescale: initSegment.timescale,
+        trackId: initSegment.trackId,
       };
+    } else {
+      initSegment.initPTS = initPTS.baseTime;
+      initSegment.timescale = initPTS.timescale;
+      initSegment.trackId = initPTS.trackId;
     }
 
-    const startTime = audioTrack
-      ? decodeTime - initPTS.baseTime / initPTS.timescale
-      : (lastEndTime as number);
+    const startTime = decodeTime - initPTS.baseTime / initPTS.timescale;
     const endTime = startTime + duration;
-    offsetStartDTS(initData, data, initPTS.baseTime / initPTS.timescale);
 
     if (duration > 0) {
       this.lastEndTime = endTime;
     } else {
-      logger.warn('Duration parsed from mp4 should be greater than zero');
+      this.warn('Duration parsed from mp4 should be greater than zero');
       this.resetNextTimestamp();
     }
 
@@ -212,6 +305,10 @@ class PassThroughRemuxer implements Remuxer {
       type += 'video';
     }
 
+    const encrypted =
+      (initData.audio ? initData.audio.encrypted : false) ||
+      (initData.video ? initData.video.encrypted : false);
+
     const track: RemuxedTrack = {
       data1: data,
       startPTS: startTime,
@@ -223,10 +320,40 @@ class PassThroughRemuxer implements Remuxer {
       hasVideo,
       nb: 1,
       dropped: 0,
+      encrypted,
     };
 
-    result.audio = track.type === 'audio' ? track : undefined;
-    result.video = track.type !== 'audio' ? track : undefined;
+    result.audio = hasAudio && !hasVideo ? track : undefined;
+    result.video = hasVideo ? track : undefined;
+    const videoSampleCount = videoSampleTimestamps?.sampleCount;
+    if (videoSampleCount) {
+      const firstKeyFrame = videoSampleTimestamps.keyFrameIndex;
+      const independent = firstKeyFrame !== -1;
+      track.nb = videoSampleCount;
+      track.dropped =
+        firstKeyFrame === 0 || this.isVideoContiguous
+          ? 0
+          : independent
+            ? firstKeyFrame
+            : videoSampleCount;
+      track.independent = independent;
+      track.firstKeyFrame = firstKeyFrame;
+      if (independent && videoSampleTimestamps.keyFrameStart) {
+        track.firstKeyFramePTS =
+          (videoSampleTimestamps.keyFrameStart - initPTS.baseTime) /
+          initPTS.timescale;
+      }
+      if (!this.isVideoContiguous) {
+        result.independent = independent;
+      }
+      this.isVideoContiguous ||= independent;
+      if (track.dropped) {
+        this.warn(
+          `fmp4 does not start with IDR: firstIDR ${firstKeyFrame}/${videoSampleCount} dropped: ${track.dropped} start: ${track.firstKeyFramePTS || 'NA'}`,
+        );
+      }
+    }
+
     result.initSegment = initSegment;
     result.id3 = flushTextTrackMetadataCueSamples(
       id3Track,
@@ -247,8 +374,19 @@ class PassThroughRemuxer implements Remuxer {
   }
 }
 
+function toStartEndOrDefault(
+  trackTimes: TrackTimes | null,
+  defaultValue: number,
+  end: boolean = false,
+): number {
+  return trackTimes?.start !== undefined
+    ? (trackTimes.start + (end ? trackTimes.duration : 0)) /
+        trackTimes.timescale
+    : defaultValue;
+}
+
 function isInvalidInitPts(
-  initPTS: RationalTimestamp | null,
+  initPTS: TimestampOffset | null,
   startDTS: number,
   timeOffset: number,
   duration: number,
@@ -265,8 +403,9 @@ function isInvalidInitPts(
 function getParsedTrackCodec(
   track: InitDataTrack,
   type: ElementaryStreamTypes.AUDIO | ElementaryStreamTypes.VIDEO,
+  logger: ILogger,
 ): string {
-  const parsedCodec = track?.codec;
+  const parsedCodec = track.codec;
   if (parsedCodec && parsedCodec.length > 4) {
     return parsedCodec;
   }
@@ -283,21 +422,13 @@ function getParsedTrackCodec(
       const preferManagedMediaSource = false;
       return getCodecCompatibleName(parsedCodec, preferManagedMediaSource);
     }
-    const result = 'mp4a.40.5';
-    logger.info(
-      `Parsed audio codec "${parsedCodec}" or audio object type not handled. Using "${result}"`,
-    );
-    return result;
+
+    logger.warn(`Unhandled audio codec "${parsedCodec}" in mp4 MAP`);
+    return parsedCodec || 'mp4a';
   }
   // Provide defaults based on codec type
   // This allows for some playback of some fmp4 playlists without CODECS defined in manifest
-  logger.warn(`Unhandled video codec "${parsedCodec}"`);
-  if (parsedCodec === 'hvc1' || parsedCodec === 'hev1') {
-    return 'hvc1.1.6.L120.90';
-  }
-  if (parsedCodec === 'av01') {
-    return 'av01.0.04M.08';
-  }
-  return 'avc1.42e01e';
+  logger.warn(`Unhandled video codec "${parsedCodec}" in mp4 MAP`);
+  return parsedCodec || 'avc1';
 }
 export default PassThroughRemuxer;

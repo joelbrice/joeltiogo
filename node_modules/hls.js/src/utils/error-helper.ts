@@ -1,5 +1,5 @@
 import { ErrorDetails } from '../errors';
-import type { LoadPolicy, LoaderConfig, RetryConfig } from '../config';
+import type { LoaderConfig, LoadPolicy, RetryConfig } from '../config';
 import type { ErrorData } from '../types/events';
 import type { LoaderResponse } from '../types/loader';
 
@@ -12,6 +12,14 @@ export function isTimeoutError(error: ErrorData): boolean {
       return true;
   }
   return false;
+}
+
+export function isKeyError(error: ErrorData): boolean {
+  return error.details.startsWith('key');
+}
+
+export function isUnusableKeyError(error: ErrorData): boolean {
+  return isKeyError(error) && !!error.frag && !error.frag.decryptdata;
 }
 
 export function getRetryConfig(
@@ -71,10 +79,14 @@ export function shouldRetry(
     : retry;
 }
 
-export function retryForHttpStatus(httpStatus: number | undefined) {
+export function retryForHttpStatus(httpStatus: number | undefined): boolean {
   // Do not retry on status 4xx, status 0 (CORS error), or undefined (decrypt/gap/parse error)
   return (
-    (httpStatus === 0 && navigator.onLine === false) ||
+    offlineHttpStatus(httpStatus) ||
     (!!httpStatus && (httpStatus < 400 || httpStatus > 499))
   );
+}
+
+export function offlineHttpStatus(httpStatus: number | undefined): boolean {
+  return httpStatus === 0 && navigator.onLine === false;
 }

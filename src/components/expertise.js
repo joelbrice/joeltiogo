@@ -156,7 +156,7 @@ const Expertise = () => (
           <CardTitle>International Business</CardTitle>
           <CardDescription>
             Trilingual (French, English, German) professional with proven experience navigating
-            markets across Europe, Africa, and North America.
+            markets across Europe, Africa, Asia, and North America.
           </CardDescription>
         </ExpertiseCard>
 

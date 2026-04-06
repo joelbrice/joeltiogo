@@ -1,13 +1,13 @@
 import { buildAbsoluteURL } from 'url-toolkit';
-import { LevelKey } from './level-key';
 import { LoadStats } from './load-stats';
-import { AttrList } from '../utils/attr-list';
+import type { LevelKey } from './level-key';
 import type {
   FragmentLoaderContext,
   KeyLoaderContext,
   Loader,
   PlaylistLevelType,
 } from '../types/loader';
+import type { AttrList } from '../utils/attr-list';
 import type { KeySystemFormats } from '../utils/mediakeys-helper';
 
 export const enum ElementaryStreamTypes {
@@ -29,23 +29,28 @@ export type ElementaryStreams = Record<
   ElementaryStreamInfo | null
 >;
 
+export type Base = {
+  url: string;
+};
+
 export class BaseSegment {
   private _byteRange: [number, number] | null = null;
   private _url: string | null = null;
+  private _stats: LoadStats | null = null;
+  private _streams: ElementaryStreams | null = null;
 
   // baseurl is the URL to the playlist
-  public readonly baseurl: string;
+  public readonly base: Base;
+
   // relurl is the portion of the URL that comes from inside the playlist.
   public relurl?: string;
-  // Holds the types of data this fragment supports
-  public elementaryStreams: ElementaryStreams = {
-    [ElementaryStreamTypes.AUDIO]: null,
-    [ElementaryStreamTypes.VIDEO]: null,
-    [ElementaryStreamTypes.AUDIOVIDEO]: null,
-  };
 
-  constructor(baseurl: string) {
-    this.baseurl = baseurl;
+  constructor(base: Base | string) {
+    if (typeof base === 'string') {
+      base = { url: base };
+    }
+    this.base = base;
+    makeEnumerable(this, 'stats');
   }
 
   // setByteRange converts a EXT-X-BYTERANGE attribute into a two element array
@@ -60,8 +65,12 @@ export class BaseSegment {
     this._byteRange = [start, parseInt(params[0]) + start];
   }
 
+  get baseurl(): string {
+    return this.base.url;
+  }
+
   get byteRange(): [number, number] | [] {
-    if (!this._byteRange) {
+    if (this._byteRange === null) {
       return [];
     }
 
@@ -76,6 +85,40 @@ export class BaseSegment {
     return this.byteRange[1];
   }
 
+  get elementaryStreams(): ElementaryStreams {
+    if (this._streams === null) {
+      this._streams = {
+        [ElementaryStreamTypes.AUDIO]: null,
+        [ElementaryStreamTypes.VIDEO]: null,
+        [ElementaryStreamTypes.AUDIOVIDEO]: null,
+      };
+    }
+    return this._streams;
+  }
+
+  set elementaryStreams(value: ElementaryStreams) {
+    this._streams = value;
+  }
+
+  get hasStats(): boolean {
+    return this._stats !== null;
+  }
+
+  get hasStreams(): boolean {
+    return this._streams !== null;
+  }
+
+  get stats(): LoadStats {
+    if (this._stats === null) {
+      this._stats = new LoadStats();
+    }
+    return this._stats;
+  }
+
+  set stats(value: LoadStats) {
+    this._stats = value;
+  }
+
   get url(): string {
     if (!this._url && this.baseurl && this.relurl) {
       this._url = buildAbsoluteURL(this.baseurl, this.relurl, {
@@ -88,6 +131,30 @@ export class BaseSegment {
   set url(value: string) {
     this._url = value;
   }
+
+  clearElementaryStreamInfo() {
+    const { elementaryStreams } = this;
+    elementaryStreams[ElementaryStreamTypes.AUDIO] = null;
+    elementaryStreams[ElementaryStreamTypes.VIDEO] = null;
+    elementaryStreams[ElementaryStreamTypes.AUDIOVIDEO] = null;
+  }
+}
+
+export interface MediaFragment extends Fragment {
+  sn: number;
+  ref: MediaFragmentRef;
+}
+
+export type MediaFragmentRef = {
+  base: Base;
+  start: number;
+  duration: number;
+  sn: number;
+  programDateTime: number | null;
+};
+
+export function isMediaFragment(frag: Fragment): frag is MediaFragment {
+  return frag.sn !== 'initSegment';
 }
 
 /**
@@ -95,9 +162,12 @@ export class BaseSegment {
  */
 export class Fragment extends BaseSegment {
   private _decryptdata: LevelKey | null = null;
+  private _programDateTime: number | null = null;
+  private _ref: MediaFragmentRef | null = null;
+  // Approximate bit rate of the fragment expressed in bits per second (bps) as indicated by the last EXT-X-BITRATE (kbps) tag
+  private _bitrate?: number;
 
   public rawProgramDateTime: string | null = null;
-  public programDateTime: number | null = null;
   public tagList: Array<string[]> = [];
 
   // EXTINF has to be present for a m3u8 to be considered valid
@@ -107,7 +177,7 @@ export class Fragment extends BaseSegment {
   // levelkeys are the EXT-X-KEY tags that apply to this segment for decryption
   // core difference from the private field _decryptdata is the lack of the initialized IV
   // _decryptdata will set the IV for this segment based on the segment number in the fragment
-  public levelkeys?: { [key: string]: LevelKey };
+  public levelkeys?: { [key: string]: LevelKey | undefined };
   // A string representing the fragment type
   public readonly type: PlaylistLevelType;
   // A reference to the loader. Set while the fragment is loading, and removed afterwards. Used to abort fragment loading
@@ -123,19 +193,19 @@ export class Fragment extends BaseSegment {
   // The ending Presentation Time Stamp (PTS) of the fragment. Set after transmux complete.
   public endPTS?: number;
   // The starting Decode Time Stamp (DTS) of the fragment. Set after transmux complete.
-  public startDTS!: number;
+  public startDTS?: number;
   // The ending Decode Time Stamp (DTS) of the fragment. Set after transmux complete.
-  public endDTS!: number;
+  public endDTS?: number;
   // The start time of the fragment, as listed in the manifest. Updated after transmux complete.
   public start: number = 0;
+  // The offset time (seconds) of the fragment from the start of the Playlist
+  public playlistOffset: number = 0;
   // Set by `updateFragPTSDTS` in level-helper
   public deltaPTS?: number;
   // The maximum starting Presentation Time Stamp (audio/video PTS) of the fragment. Set after transmux complete.
   public maxStartPTS?: number;
   // The minimum ending Presentation Time Stamp (audio/video PTS) of the fragment. Set after transmux complete.
   public minEndPTS?: number;
-  // Load/parse timing information
-  public stats: LoadStats = new LoadStats();
   // Init Segment bytes (unset for media segments)
   public data?: Uint8Array;
   // A flag indicating whether the segment was downloaded in order to test bitrate, and was not buffered
@@ -151,30 +221,62 @@ export class Fragment extends BaseSegment {
   // Deprecated
   public urlId: number = 0;
 
-  constructor(type: PlaylistLevelType, baseurl: string) {
-    super(baseurl);
+  constructor(type: PlaylistLevelType, base: Base | string) {
+    super(base);
     this.type = type;
+  }
+
+  get byteLength(): number | null {
+    if (this.hasStats) {
+      const total = this.stats.total;
+      if (total) {
+        return total;
+      }
+    }
+    if (this.byteRange.length) {
+      const start = this.byteRange[0];
+      const end = this.byteRange[1];
+      if (Number.isFinite(start) && Number.isFinite(end)) {
+        return (end as number) - (start as number);
+      }
+    }
+    return null;
+  }
+
+  get bitrate(): number | null {
+    if (this.byteLength) {
+      return (this.byteLength * 8) / this.duration;
+    }
+    if (this._bitrate) {
+      return this._bitrate;
+    }
+    return null;
+  }
+
+  set bitrate(value: number) {
+    this._bitrate = value;
   }
 
   get decryptdata(): LevelKey | null {
     const { levelkeys } = this;
-    if (!levelkeys && !this._decryptdata) {
+
+    if (!levelkeys || levelkeys.NONE) {
       return null;
     }
 
-    if (!this._decryptdata && this.levelkeys && !this.levelkeys.NONE) {
-      const key = this.levelkeys.identity;
-      if (key) {
-        this._decryptdata = key.getDecryptData(this.sn);
-      } else {
-        const keyFormats = Object.keys(this.levelkeys);
-        if (keyFormats.length === 1) {
-          return (this._decryptdata = this.levelkeys[
-            keyFormats[0]
-          ].getDecryptData(this.sn));
-        } else {
-          // Multiple keys. key-loader to call Fragment.setKeyFormat based on selected key-system.
+    if (levelkeys.identity) {
+      if (!this._decryptdata) {
+        this._decryptdata = levelkeys.identity.getDecryptData(this.sn);
+      }
+    } else if (!this._decryptdata?.keyId) {
+      const keyFormats = Object.keys(levelkeys);
+      if (keyFormats.length === 1) {
+        const levelKey = (this._decryptdata = levelkeys[keyFormats[0]] || null);
+        if (levelKey) {
+          this._decryptdata = levelKey.getDecryptData(this.sn, levelkeys);
         }
+      } else {
+        // Multiple keys. key-loader to call Fragment.setKeyFormat based on selected key-system.
       }
     }
 
@@ -187,10 +289,6 @@ export class Fragment extends BaseSegment {
 
   get endProgramDateTime() {
     if (this.programDateTime === null) {
-      return null;
-    }
-
-    if (!Number.isFinite(this.programDateTime)) {
       return null;
     }
 
@@ -208,19 +306,68 @@ export class Fragment extends BaseSegment {
     } else if (this.levelkeys) {
       const keyFormats = Object.keys(this.levelkeys);
       const len = keyFormats.length;
-      if (len > 1 || (len === 1 && this.levelkeys[keyFormats[0]].encrypted)) {
+      if (len > 1 || (len === 1 && this.levelkeys[keyFormats[0]]?.encrypted)) {
         return true;
       }
     }
-
     return false;
   }
 
+  get programDateTime(): number | null {
+    if (this._programDateTime === null && this.rawProgramDateTime) {
+      this.programDateTime = Date.parse(this.rawProgramDateTime);
+    }
+    return this._programDateTime;
+  }
+
+  set programDateTime(value: number | null) {
+    if (!Number.isFinite(value)) {
+      this._programDateTime = this.rawProgramDateTime = null;
+      return;
+    }
+    this._programDateTime = value;
+  }
+
+  get ref(): MediaFragmentRef | null {
+    if (!isMediaFragment(this)) {
+      return null;
+    }
+    if (!this._ref) {
+      this._ref = {
+        base: this.base,
+        start: this.start,
+        duration: this.duration,
+        sn: this.sn,
+        programDateTime: this.programDateTime,
+      };
+    }
+    return this._ref;
+  }
+
+  addStart(value: number) {
+    this.setStart(this.start + value);
+  }
+
+  setStart(value: number) {
+    this.start = value;
+    if (this._ref) {
+      this._ref.start = value;
+    }
+  }
+
+  setDuration(value: number) {
+    this.duration = value;
+    if (this._ref) {
+      this._ref.duration = value;
+    }
+  }
+
   setKeyFormat(keyFormat: KeySystemFormats) {
-    if (this.levelkeys) {
-      const key = this.levelkeys[keyFormat];
-      if (key && !this._decryptdata) {
-        this._decryptdata = key.getDecryptData(this.sn);
+    const levelkeys = this.levelkeys;
+    if (levelkeys) {
+      const key = levelkeys[keyFormat];
+      if (key && !this._decryptdata?.keyId) {
+        this._decryptdata = key.getDecryptData(this.sn, levelkeys);
       }
     }
   }
@@ -256,13 +403,6 @@ export class Fragment extends BaseSegment {
     info.startDTS = Math.min(info.startDTS, startDTS);
     info.endDTS = Math.max(info.endDTS, endDTS);
   }
-
-  clearElementaryStreamInfo() {
-    const { elementaryStreams } = this;
-    elementaryStreams[ElementaryStreamTypes.AUDIO] = null;
-    elementaryStreams[ElementaryStreamTypes.VIDEO] = null;
-    elementaryStreams[ElementaryStreamTypes.AUDIOVIDEO] = null;
-  }
 }
 
 /**
@@ -274,18 +414,17 @@ export class Part extends BaseSegment {
   public readonly gap: boolean = false;
   public readonly independent: boolean = false;
   public readonly relurl: string;
-  public readonly fragment: Fragment;
+  public readonly fragment: MediaFragment;
   public readonly index: number;
-  public stats: LoadStats = new LoadStats();
 
   constructor(
     partAttrs: AttrList,
-    frag: Fragment,
-    baseurl: string,
+    frag: MediaFragment,
+    base: Base | string,
     index: number,
     previous?: Part,
   ) {
-    super(baseurl);
+    super(base);
     this.duration = partAttrs.decimalFloatingPoint('DURATION');
     this.gap = partAttrs.bool('GAP');
     this.independent = partAttrs.bool('INDEPENDENT');
@@ -316,5 +455,30 @@ export class Part extends BaseSegment {
       elementaryStreams.video ||
       elementaryStreams.audiovideo
     );
+  }
+}
+
+function getOwnPropertyDescriptorFromPrototypeChain(
+  object: Object | undefined,
+  property: string,
+) {
+  const prototype = Object.getPrototypeOf(object);
+  if (prototype) {
+    const propertyDescriptor = Object.getOwnPropertyDescriptor(
+      prototype,
+      property,
+    );
+    if (propertyDescriptor) {
+      return propertyDescriptor;
+    }
+    return getOwnPropertyDescriptorFromPrototypeChain(prototype, property);
+  }
+}
+
+function makeEnumerable(object: Object, property: string) {
+  const d = getOwnPropertyDescriptorFromPrototypeChain(object, property);
+  if (d) {
+    d.enumerable = true;
+    Object.defineProperty(object, property, d);
   }
 }

@@ -1,8 +1,9 @@
-import { Part } from './fragment';
-import type { Fragment } from './fragment';
-import type { AttrList } from '../utils/attr-list';
 import type { DateRange } from './date-range';
+import type { Fragment, MediaFragment, Part } from './fragment';
+import type { LevelKey } from './level-key';
 import type { VariableMap } from '../types/level';
+import type { AttrList } from '../utils/attr-list';
+import type { KeySystemFormats } from '../utils/mediakeys-helper';
 
 const DEFAULT_TARGET_DURATION = 10;
 
@@ -15,16 +16,17 @@ export class LevelDetails {
   public averagetargetduration?: number;
   public endCC: number = 0;
   public endSN: number = 0;
-  public fragments: Fragment[];
-  public fragmentHint?: Fragment;
+  public fragments: MediaFragment[];
+  public fragmentHint?: MediaFragment;
   public partList: Part[] | null = null;
-  public dateRanges: Record<string, DateRange>;
+  public dateRanges: Record<string, DateRange | undefined>;
+  public dateRangeTagCount: number = 0;
   public live: boolean = true;
+  public requestScheduled: number = -1;
   public ageHeader: number = 0;
   public advancedDateTime?: number;
   public updated: boolean = true;
   public advanced: boolean = true;
-  public availabilityDelay?: number; // Manifest reload synchronization
   public misses: number = 0;
   public startCC: number = 0;
   public startSN: number = 0;
@@ -55,6 +57,7 @@ export class LevelDetails {
   public playlistParsingError: Error | null = null;
   public variableList: VariableMap | null = null;
   public hasVariableRefs = false;
+  public appliedTimelineOffset?: number;
 
   constructor(baseUrl: string) {
     this.fragments = [];
@@ -85,13 +88,23 @@ export class LevelDetails {
     } else {
       this.misses = previous.misses + 1;
     }
-    this.availabilityDelay = previous.availabilityDelay;
+  }
+
+  hasKey(levelKey: LevelKey): boolean {
+    return this.encryptedFragments.some((frag) => {
+      let decryptdata = frag.decryptdata;
+      if (!decryptdata) {
+        frag.setKeyFormat(levelKey.keyFormat as KeySystemFormats);
+        decryptdata = frag.decryptdata;
+      }
+      return !!decryptdata && levelKey.matches(decryptdata);
+    });
   }
 
   get hasProgramDateTime(): boolean {
     if (this.fragments.length) {
       return Number.isFinite(
-        this.fragments[this.fragments.length - 1].programDateTime as number,
+        this.fragments[this.fragments.length - 1].programDateTime,
       );
     }
     return false;
@@ -126,8 +139,15 @@ export class LevelDetails {
   }
 
   get fragmentEnd(): number {
-    if (this.fragments?.length) {
+    if (this.fragments.length) {
       return this.fragments[this.fragments.length - 1].end;
+    }
+    return 0;
+  }
+
+  get fragmentStart(): number {
+    if (this.fragments.length) {
+      return this.fragments[0].start;
     }
     return 0;
   }
@@ -146,10 +166,38 @@ export class LevelDetails {
     return -1;
   }
 
+  get maxPartIndex(): number {
+    const partList = this.partList;
+    if (partList) {
+      const lastIndex = this.lastPartIndex;
+      if (lastIndex !== -1) {
+        for (let i = partList.length; i--; ) {
+          if (partList[i].index > lastIndex) {
+            return partList[i].index;
+          }
+        }
+        return lastIndex;
+      }
+    }
+    return 0;
+  }
+
   get lastPartSn(): number {
     if (this.partList?.length) {
-      return this.partList[this.partList.length - 1].fragment.sn as number;
+      return this.partList[this.partList.length - 1].fragment.sn;
     }
     return this.endSN;
+  }
+
+  get expired(): boolean {
+    if (this.live && this.age && this.misses < 3) {
+      const playlistWindowDuration = this.partEnd - this.fragmentStart;
+      return (
+        this.age >
+        Math.max(playlistWindowDuration, this.totalduration) +
+          this.levelTargetDuration
+      );
+    }
+    return false;
   }
 }
