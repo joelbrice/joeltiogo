@@ -85,7 +85,7 @@ const SectionImage = styled.img`
 const About = () => (
   <Container>
     <Hero>
-      <HeroTitle>About Joël Tiogo</HeroTitle>
+      <HeroTitle>About me</HeroTitle>
       <HeroSubtitle>
         Strategic Growth Leader • Technology Enabler • Sustainability Advocate
       </HeroSubtitle>
