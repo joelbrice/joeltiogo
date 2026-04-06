@@ -1,34 +1,21 @@
-import React from "react";
-import { Disclosure } from "@headlessui/react";
+import React, { useState } from "react";
 import styled from "styled-components";
-
-// Temporary SVG icons until heroicons is installed
-const MenuIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-  </svg>
-);
-
-const CloseIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-  </svg>
-);
+import { device } from "../utils/breakpoints";
 
 const navigation = [
   { href: "/", name: "Home" },
-  { href: "/about", name: "About" }
+  { href: "/about", name: "About" },
+  { href: "/expertise", name: "Expertise" },        // Recommended new page
+  { href: "https://linkedin.com/in/joeltiogo", name: "LinkedIn", external: true },
 ];
 
-// Styled-components for the Navbar
 const NavbarContainer = styled.nav`
-  background-color: #0a0a0a;
-  box-shadow: 0 2px 8px rgba(0, 255, 0, 0.2);
+  background-color: #ffffff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
   position: sticky;
   top: 0;
   z-index: 1000;
-  font-family: "Courier New", Courier, monospace;
-  color: #00ff00;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 `;
 
 const NavWrapper = styled.div`
@@ -38,141 +25,196 @@ const NavWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 5rem;
+  height: 4.75rem;
 `;
 
 const Logo = styled.a`
-  font-size: 1.8rem;
+  font-size: 1.55rem;
   font-weight: 700;
-  color: #00ff00;
+  color: #1a1a1a;
   text-decoration: none;
-  text-transform: uppercase;
-  letter-spacing: 0.1rem;
+  letter-spacing: -0.02em;
   transition: color 0.3s ease;
 
   &:hover {
-    color: #00cc00;
+    color: #667eea;
   }
 `;
 
-// Add styled component for burger button
-const BurgerButton = styled(Disclosure.Button)`
-  display: none; /* Initially hide on large screens */
+const BurgerButton = styled.button`
+  display: none;
+
   @media (max-width: 768px) {
-    display: inline-flex; /* Show only on mobile */
-    align-items: center;
-    justify-content: center;
-    padding: 0.8rem;
-    background-color: transparent;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 2rem;
+    height: 2rem;
+    background: transparent;
     border: none;
-    border-radius: 4px;
-    color: #00ff00;
     cursor: pointer;
-    width: 48px;
-    height: 48px;
+    padding: 0;
+    z-index: 10;
 
-    &:hover {
-      background-color: rgba(0, 255, 0, 0.1);
+    &:focus {
+      outline: none;
     }
 
-    svg {
-      width: 28px;
-      height: 28px;
+    div {
+      width: 2rem;
+      height: 0.25rem;
+      background: #1a1a1a;
+      border-radius: 10px;
+      transition: all 0.3s linear;
+      transform-origin: 1px;
+
+      &:first-child {
+        transform: ${({ open }) => (open ? "rotate(45deg)" : "rotate(0)")};
+      }
+
+      &:nth-child(2) {
+        opacity: ${({ open }) => (open ? "0" : "1")};
+        transform: ${({ open }) => (open ? "translateX(20px)" : "translateX(0)")};
+      }
+
+      &:nth-child(3) {
+        transform: ${({ open }) => (open ? "rotate(-45deg)" : "rotate(0)")};
+      }
     }
   }
-`;
-
-const VisuallyHidden = styled.span`
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
 `;
 
 const DesktopNav = styled.div`
-  display: flex;
-  gap: 2rem;
+  display: none;
+  align-items: center;
+  gap: 2.8rem;
 
-  @media (max-width: 768px) {
-    display: none;
+  @media ${device.tablet} {
+    display: flex;
   }
 `;
 
 const MobileNav = styled.div`
-  padding: 1.5rem;
-  background-color: #1a1a1a;
-  border-top: 1px solid #00ff00;
+  position: fixed;
+  top: 4.75rem;
+  right: 0;
+  height: calc(100vh - 4.75rem);
+  width: 75%;
+  max-width: 320px;
+  background: #ffffff;
+  padding: 2.5rem 2rem;
+  transform: ${({ open }) => (open ? "translateX(0)" : "translateX(100%)")};
+  transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+
+  @media ${device.tablet} {
+    display: none;
+  }
 `;
 
 const NavLink = styled.a`
   text-decoration: none;
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   font-weight: 500;
-  color: ${(props) => (props.active ? "#00cc00" : "#00ff00")};
-  border-bottom: ${(props) => (props.active ? "2px solid #00cc00" : "none")};
-  padding: 0.5rem 1rem;
-  transition: color 0.3s ease, border 0.3s ease;
-  text-transform: uppercase;
-  letter-spacing: 0.1rem;
+  color: ${(props) => (props.active ? "#667eea" : "#37474f")};
+  transition: color 0.3s ease;
+  position: relative;
 
   &:hover {
-    color: #00cc00;
-    border-bottom: 2px solid #00cc00;
+    color: #667eea;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: ${(props) => (props.active ? "100%" : "0")};
+    height: 2.5px;
+    background: #667eea;
+    transition: width 0.3s ease;
+  }
+
+  &:hover::after {
+    width: 100%;
   }
 `;
 
-// Navbar Component
-const Nav = () => {
-  return (
-    <Disclosure>
-      {({ open }) => (
-        <NavbarContainer>
-          <NavWrapper>
-            <Logo href="/">Joël Tiogo</Logo>
-            <BurgerButton>
-              <VisuallyHidden>Open menu</VisuallyHidden>
-              {open ? (
-                <CloseIcon aria-hidden="true" />
-              ) : (
-                <MenuIcon aria-hidden="true" />
-              )}
-            </BurgerButton>
-            <DesktopNav>
-              {navigation.map((item) => (
-                <NavLink
-                  key={item.name}
-                  href={item.href}
-                  active={window.location.pathname === item.href}
-                >
-                  {item.name}
-                </NavLink>
-              ))}
-            </DesktopNav>
-          </NavWrapper>
+const ContactButton = styled.a`
+  padding: 0.65rem 1.8rem;
+  background: linear-gradient(135deg, #667eea 0%, #5a67d8 100%);
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 600;
+  border-radius: 8px;
+  font-size: 0.98rem;
+  transition: all 0.3s ease;
 
-          {/* Mobile Navigation */}
-          <Disclosure.Panel>
-            <MobileNav>
-              {navigation.map((item) => (
-                <NavLink
-                  key={item.name}
-                  href={item.href}
-                  active={window.location.pathname === item.href}
-                  style={{ display: "block", marginBottom: "1rem" }}
-                >
-                  {item.name}
-                </NavLink>
-              ))}
-            </MobileNav>
-          </Disclosure.Panel>
-        </NavbarContainer>
-      )}
-    </Disclosure>
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.35);
+  }
+`;
+
+const Nav = () => {
+  const [open, setOpen] = useState(false);
+  const currentPath = typeof window !== "undefined" ? window.location.pathname : "/";
+
+  const toggleMenu = () => setOpen(!open);
+
+  return (
+    <NavbarContainer>
+      <NavWrapper>
+        <Logo href="/">Joël Tiogo</Logo>
+
+        <BurgerButton open={open} onClick={toggleMenu}>
+          <div />
+          <div />
+          <div />
+        </BurgerButton>
+
+        <DesktopNav>
+          {navigation.map((item) => (
+            <NavLink
+              key={item.name}
+              href={item.href}
+              active={!item.external && currentPath === item.href}
+              target={item.external ? "_blank" : undefined}
+              rel={item.external ? "noopener noreferrer" : undefined}
+            >
+              {item.name}
+            </NavLink>
+          ))}
+          <ContactButton href="mailto:tiogojoel@gmail.com">
+            Get in Touch
+          </ContactButton>
+        </DesktopNav>
+
+        <MobileNav open={open}>
+          {navigation.map((item) => (
+            <NavLink
+              key={item.name}
+              href={item.href}
+              active={!item.external && currentPath === item.href}
+              onClick={() => setOpen(false)}
+              target={item.external ? "_blank" : undefined}
+              rel={item.external ? "noopener noreferrer" : undefined}
+            >
+              {item.name}
+            </NavLink>
+          ))}
+          <ContactButton
+            href="mailto:tiogojoel@gmail.com"
+            onClick={() => setOpen(false)}
+          >
+            Get in Touch
+          </ContactButton>
+        </MobileNav>
+      </NavWrapper>
+    </NavbarContainer>
   );
 };
 
