@@ -1,6 +1,8 @@
 {
-  "name": "joeltiogo",
-  "version": "0.1.0",
+  "name": "joel-tiogo-portfolio",
+  "version": "1.0.0",
+  "description": "Professional portfolio website for Joël Tiogo - AI Consultant & Business Solutions Architect",
+  "author": "Joël Tiogo <tiogojoel@gmail.com>",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -25,7 +27,7 @@
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
     "react-three-fiber": "^6.0.13",
-    "styled-components": "^5.3.11",
+    "styled-components": "^6.1.0",
     "three": "^0.139.2",
     "web-vitals": "^2.1.4"
   },
