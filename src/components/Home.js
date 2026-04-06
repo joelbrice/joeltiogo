@@ -119,11 +119,11 @@ const HomePage = () => (
     <HeroSection>
       <ContentWrapper>
         <ProfilePhoto
-          src="/images/1.jpg"   // ← Put your photo in public/images/joel-tiogo.jpg
+          src="/images/1.jpg"
           alt="Joël Tiogo"
         />
         <Eyebrow>Business Development Manager &amp; Strategic Leader</Eyebrow>
-        <MainHeading>Joël Tiogo</MainHeading>
+        <MainHeading>Joël Brice Voumo Tiogo</MainHeading>
         <Subtitle>
           Driven by curiosity and empathy, I help organizations unlock sustainable growth
           by bridging technology, market opportunities, and circular economy principles.
