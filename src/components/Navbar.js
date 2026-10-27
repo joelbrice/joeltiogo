@@ -1,221 +1,266 @@
-import React, { useState } from "react";
-import styled from "styled-components";
-import { device } from "../utils/breakpoints";
+import React, { useEffect, useState } from 'react';
+import styled, { keyframes } from 'styled-components';
+import { Link, NavLink as RouterNavLink, useLocation } from 'react-router-dom';
+import { t } from '../theme';
+import { contact } from '../data/profile';
 
 const navigation = [
-  { href: "/", name: "Home" },
-  { href: "/about", name: "About" },
-  { href: "/expertise", name: "Expertise" },
-  { href: "/insights", name: "Insights" },           // ← Newly added
-  { href: "https://linkedin.com/in/joeltiogo", name: "LinkedIn", external: true },
+  { to: '/', name: 'Home' },
+  { to: '/about', name: 'About' },
+  { to: '/expertise', name: 'Expertise' },
+  { to: '/insights', name: 'Insights' },
 ];
 
-const NavbarContainer = styled.nav`
-  background-color: #ffffff;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+const blink = keyframes`
+  50% { opacity: 0; }
+`;
+
+const Bar = styled.header`
   position: sticky;
   top: 0;
   z-index: 1000;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: saturate(180%) blur(10px);
+  -webkit-backdrop-filter: saturate(180%) blur(10px);
+  border-bottom: 1px solid ${t.line};
 `;
 
-const NavWrapper = styled.div`
-  max-width: 1280px;
+const Wrap = styled.nav`
+  max-width: ${t.maxWidth};
   margin: 0 auto;
-  padding: 0 2rem;
+  padding: 0 1rem;
+  height: 4.25rem;
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  align-items: center;
-  height: 4.75rem;
+
+  @media ${t.tablet} {
+    padding: 0 2rem;
+  }
 `;
 
-const Logo = styled.a`
-  font-size: 1.55rem;
+const Logo = styled(Link)`
+  font-size: 1.2rem;
   font-weight: 700;
-  color: #1a1a1a;
+  letter-spacing: -0.01em;
+  color: ${t.ink};
   text-decoration: none;
-  letter-spacing: -0.02em;
-  transition: color 0.3s ease;
+  display: inline-flex;
+  align-items: baseline;
 
-  &:hover {
-    color: #667eea;
+  span {
+    font-family: ${t.mono};
+    color: ${t.accent};
+    margin-left: 1px;
+    animation: ${blink} 1.2s step-end infinite;
   }
 `;
 
-const BurgerButton = styled.button`
-  display: none;
-
-  @media (max-width: 768px) {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    width: 2rem;
-    height: 2rem;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-    z-index: 10;
-
-    &:focus {
-      outline: none;
-    }
-
-    div {
-      width: 2rem;
-      height: 0.25rem;
-      background: #1a1a1a;
-      border-radius: 10px;
-      transition: all 0.3s linear;
-      transform-origin: 1px;
-
-      &:first-child {
-        transform: ${({ open }) => (open ? "rotate(45deg)" : "rotate(0)")};
-      }
-
-      &:nth-child(2) {
-        opacity: ${({ open }) => (open ? "0" : "1")};
-        transform: ${({ open }) => (open ? "translateX(20px)" : "translateX(0)")};
-      }
-
-      &:nth-child(3) {
-        transform: ${({ open }) => (open ? "rotate(-45deg)" : "rotate(0)")};
-      }
-    }
-  }
-`;
-
-const DesktopNav = styled.div`
+const Desktop = styled.div`
   display: none;
   align-items: center;
-  gap: 2.6rem;
-
-  @media ${device.tablet} {
-    display: flex;
-  }
-`;
-
-const MobileNav = styled.div`
-  position: fixed;
-  top: 4.75rem;
-  right: 0;
-  height: calc(100vh - 4.75rem);
-  width: 75%;
-  max-width: 320px;
-  background: #ffffff;
-  padding: 2.5rem 2rem;
-  transform: ${({ open }) => (open ? "translateX(0)" : "translateX(100%)")};
-  transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
-  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.12);
-  display: flex;
-  flex-direction: column;
   gap: 2rem;
 
-  @media ${device.tablet} {
-    display: none;
+  @media ${t.tablet} {
+    display: flex;
   }
 `;
 
-const NavLink = styled.a`
-  text-decoration: none;
-  font-size: 1.05rem;
-  font-weight: 500;
-  color: ${(props) => (props.active ? "#667eea" : "#37474f")};
-  transition: color 0.3s ease;
+const Item = styled(RouterNavLink)`
   position: relative;
+  color: ${t.text};
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.98rem;
+  transition: color 0.2s ease;
 
-  &:hover {
-    color: #667eea;
+  &:hover,
+  &.active {
+    color: ${t.ink};
   }
 
   &::after {
     content: '';
     position: absolute;
-    bottom: -5px;
     left: 0;
-    width: ${(props) => (props.active ? "100%" : "0")};
-    height: 2.5px;
-    background: #667eea;
-    transition: width 0.3s ease;
+    bottom: -6px;
+    height: 2px;
+    width: 0;
+    background: ${t.accent};
+    transition: width 0.25s ease;
   }
 
-  &:hover::after {
+  &:hover::after,
+  &.active::after {
     width: 100%;
   }
 `;
 
-const ContactButton = styled.a`
-  padding: 0.65rem 1.8rem;
-  background: linear-gradient(135deg, #667eea 0%, #5a67d8 100%);
-  color: #ffffff;
+const External = styled.a`
+  color: ${t.text};
   text-decoration: none;
-  font-weight: 600;
-  border-radius: 8px;
+  font-weight: 500;
   font-size: 0.98rem;
-  transition: all 0.3s ease;
 
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.35);
+    color: ${t.ink};
+  }
+`;
+
+const Cta = styled.a`
+  padding: 0.6rem 1.15rem;
+  border-radius: 9px;
+  background: ${t.ink};
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(11, 18, 32, 0.2);
+  }
+`;
+
+const Burger = styled.button`
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 44px;
+  height: 44px;
+  margin-right: -10px;
+  padding: 10px;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+
+  span {
+    display: block;
+    height: 2px;
+    width: 100%;
+    border-radius: 2px;
+    background: ${t.ink};
+    transition: transform 0.25s ease, opacity 0.2s ease;
+  }
+
+  span:nth-child(1) {
+    transform: ${({ $open }) => ($open ? 'translateY(7px) rotate(45deg)' : 'none')};
+  }
+  span:nth-child(2) {
+    opacity: ${({ $open }) => ($open ? 0 : 1)};
+  }
+  span:nth-child(3) {
+    transform: ${({ $open }) => ($open ? 'translateY(-7px) rotate(-45deg)' : 'none')};
+  }
+
+  &:focus-visible {
+    outline: 3px solid ${t.accent};
+    outline-offset: 2px;
+    border-radius: 8px;
+  }
+
+  @media ${t.tablet} {
+    display: none;
+  }
+`;
+
+const Mobile = styled.div`
+  position: fixed;
+  top: 4.25rem;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #fff;
+  padding: 1.5rem 1rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  opacity: ${({ $open }) => ($open ? 1 : 0)};
+  visibility: ${({ $open }) => ($open ? 'visible' : 'hidden')};
+  transform: ${({ $open }) => ($open ? 'none' : 'translateY(-8px)')};
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+
+  a {
+    font-size: 1.15rem;
+    padding: 0.85rem 0;
+    border-bottom: 1px solid ${t.line};
+  }
+
+  a::after {
+    display: none;
+  }
+
+  ${Cta} {
+    margin-top: 1.4rem;
+    text-align: center;
+    border-bottom: 0;
+  }
+
+  @media ${t.tablet} {
+    display: none;
   }
 `;
 
 const Nav = () => {
   const [open, setOpen] = useState(false);
-  const currentPath = typeof window !== "undefined" ? window.location.pathname : "/";
+  const location = useLocation();
 
-  const toggleMenu = () => setOpen(!open);
+  // Close the mobile menu whenever the route changes.
+  useEffect(() => {
+    setOpen(false);
+  }, [location.pathname]);
+
+  // Stop the page behind the open menu from scrolling.
+  useEffect(() => {
+    document.body.style.overflow = open ? 'hidden' : '';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [open]);
+
+  const links = (
+    <>
+      {navigation.map((item) => (
+        <Item key={item.to} to={item.to} end={item.to === '/'}>
+          {item.name}
+        </Item>
+      ))}
+      <External href={contact.linkedin} target="_blank" rel="noopener noreferrer">
+        LinkedIn
+      </External>
+      <Cta href={`mailto:${contact.email}`}>Get in touch</Cta>
+    </>
+  );
 
   return (
-    <NavbarContainer>
-      <NavWrapper>
-        <Logo href="/">Joël Tiogo</Logo>
+    <Bar>
+      <Wrap aria-label="Main">
+        <Logo to="/" aria-label="Joël Tiogo — home">
+          Joël Tiogo<span aria-hidden="true">_</span>
+        </Logo>
 
-        <BurgerButton open={open} onClick={toggleMenu}>
-          <div />
-          <div />
-          <div />
-        </BurgerButton>
+        <Desktop>{links}</Desktop>
 
-        <DesktopNav>
-          {navigation.map((item) => (
-            <NavLink
-              key={item.name}
-              href={item.href}
-              active={!item.external && currentPath === item.href}
-              target={item.external ? "_blank" : undefined}
-              rel={item.external ? "noopener noreferrer" : undefined}
-            >
-              {item.name}
-            </NavLink>
-          ))}
-          <ContactButton href="mailto:tiogojoel@gmail.com">
-            Get in Touch
-          </ContactButton>
-        </DesktopNav>
+        <Burger
+          type="button"
+          $open={open}
+          aria-expanded={open}
+          aria-controls="mobile-menu"
+          aria-label={open ? 'Close menu' : 'Open menu'}
+          onClick={() => setOpen((o) => !o)}
+        >
+          <span />
+          <span />
+          <span />
+        </Burger>
+      </Wrap>
 
-        <MobileNav open={open}>
-          {navigation.map((item) => (
-            <NavLink
-              key={item.name}
-              href={item.href}
-              active={!item.external && currentPath === item.href}
-              onClick={() => setOpen(false)}
-              target={item.external ? "_blank" : undefined}
-              rel={item.external ? "noopener noreferrer" : undefined}
-            >
-              {item.name}
-            </NavLink>
-          ))}
-          <ContactButton
-            href="mailto:tiogojoel@gmail.com"
-            onClick={() => setOpen(false)}
-          >
-            Get in Touch
-          </ContactButton>
-        </MobileNav>
-      </NavWrapper>
-    </NavbarContainer>
+      <Mobile id="mobile-menu" $open={open} aria-hidden={!open}>
+        {links}
+      </Mobile>
+    </Bar>
   );
 };
 

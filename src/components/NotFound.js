@@ -1,68 +1,51 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useLocation } from 'react-router-dom';
+import { t, Section, Inner, H1, Lead, PrimaryButton, SecondaryButton, ButtonRow } from '../theme';
 
-const Container = styled.div`
-  min-height: 80vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background: #f8f9fa;
-  padding: 2rem;
-  text-align: center;
-`;
+const Term = styled.pre`
+  margin: 0 0 2rem;
+  padding: 1.2rem 1.1rem;
+  background: ${t.term.bg};
+  border: 1px solid ${t.term.border};
+  border-radius: 12px;
+  color: ${t.term.text};
+  font-family: ${t.mono};
+  font-size: 0.88rem;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  word-break: break-all;
 
-const ErrorCode = styled.h1`
-  font-size: 8rem;
-  font-weight: 700;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  margin: 0;
-  line-height: 1;
-`;
+  b {
+    color: ${t.term.green};
+    font-weight: 400;
+  }
 
-const ErrorTitle = styled.h2`
-  font-size: 2rem;
-  font-weight: 600;
-  color: #1a1a1a;
-  margin: 1.5rem 0 1rem;
-`;
-
-const ErrorText = styled.p`
-  font-size: 1.1rem;
-  color: #546e7a;
-  margin-bottom: 2rem;
-  max-width: 500px;
-`;
-
-const HomeButton = styled.a`
-  display: inline-block;
-  padding: 1rem 2.5rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: #ffffff;
-  text-decoration: none;
-  font-weight: 600;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  i {
+    color: #ff7b72;
+    font-style: normal;
   }
 `;
 
-const NotFound = () => (
-  <Container>
-    <ErrorCode>404</ErrorCode>
-    <ErrorTitle>Page Not Found</ErrorTitle>
-    <ErrorText>
-      The page you're looking for doesn't exist or has been moved.
-    </ErrorText>
-    <HomeButton href="/">Return Home</HomeButton>
-  </Container>
-);
+const NotFound = () => {
+  const { pathname } = useLocation();
+  return (
+    <Section>
+      <Inner style={{ maxWidth: 720, minHeight: '55vh' }}>
+        <Term aria-hidden="true">
+          <b>joel@portfolio:~$</b> cd {pathname}
+          {'\n'}
+          <i>cd: no such file or directory: {pathname}</i>
+        </Term>
+        <H1>404 — page not found</H1>
+        <Lead>The page you’re looking for doesn’t exist or has been moved.</Lead>
+        <ButtonRow>
+          <PrimaryButton to="/">Back to home</PrimaryButton>
+          <SecondaryButton to="/about">Read my story</SecondaryButton>
+        </ButtonRow>
+      </Inner>
+    </Section>
+  );
+};
 
 export default NotFound;
