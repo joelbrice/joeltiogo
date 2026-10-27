@@ -1,181 +1,180 @@
 import React from 'react';
 import styled from 'styled-components';
-import { device } from '../utils/breakpoints';
+import { Link } from 'react-router-dom';
+import { t } from '../theme';
+import { contact, identity } from '../data/profile';
 
-const FooterContainer = styled.footer`
-  background: #1a1a1a;
-  color: #B0BEC5;
-  padding: 4rem 2rem 2.5rem;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+const Wrap = styled.footer`
+  background: #070b14;
+  color: #94a3b8;
+  padding: 3.5rem 1rem 2rem;
+
+  @media ${t.tablet} {
+    padding: 4.5rem 2rem 2.5rem;
+  }
 `;
 
-const FooterContent = styled.div`
-  max-width: 1280px;
+const Grid = styled.div`
+  max-width: ${t.maxWidth};
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 3rem;
+  gap: 2.5rem;
 
-  @media ${device.tablet} {
-    grid-template-columns: 2.2fr 1fr 1fr;
-    gap: 4rem;
+  @media ${t.tablet} {
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 3.5rem;
   }
 `;
 
-const FooterSection = styled.div``;
-
-const FooterTitle = styled.h3`
-  font-size: 1.2rem;
+const Title = styled.h2`
+  font-size: 1.05rem;
   font-weight: 600;
-  color: #ffffff;
-  margin-bottom: 1.2rem;
-  letter-spacing: -0.01em;
+  color: #fff;
+  margin: 0 0 1rem;
 `;
 
-const FooterText = styled.p`
-  font-size: 0.98rem;
+const Text = styled.p`
+  font-size: 0.95rem;
   line-height: 1.7;
-  color: #B0BEC5;
-  margin-bottom: 1.6rem;
+  margin: 0 0 1.3rem;
+  max-width: 420px;
 `;
 
-const FooterLinks = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.85rem;
+const Mono = styled.p`
+  font-family: ${t.mono};
+  font-size: 0.8rem;
+  color: #64748b;
+  margin: 0;
 `;
 
-const FooterLink = styled.a`
-  font-size: 0.97rem;
-  color: #B0BEC5;
-  text-decoration: none;
-  transition: color 0.3s ease;
+const List = styled.ul`
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.7rem;
+  font-size: 0.95rem;
 
-  &:hover {
-    color: #667eea;
+  a {
+    color: #94a3b8;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  a:hover {
+    color: #fff;
   }
 `;
 
-const SocialLinks = styled.div`
+const Social = styled.div`
   display: flex;
-  gap: 1.2rem;
-  margin-top: 1.4rem;
+  gap: 0.8rem;
+  margin-bottom: 1.4rem;
 `;
 
-const SocialIcon = styled.a`
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.09);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #B0BEC5;
-  text-decoration: none;
-  transition: all 0.3s ease;
+const Icon = styled.a`
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  color: #cbd5e1;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
 
   &:hover {
-    background: #667eea;
-    color: #ffffff;
-    transform: translateY(-4px);
+    background: ${t.accent};
+    color: #fff;
+    transform: translateY(-2px);
   }
 
   svg {
-    width: 22px;
-    height: 22px;
+    width: 20px;
+    height: 20px;
   }
 `;
 
-const FooterBottom = styled.div`
-  max-width: 1280px;
-  margin: 0 auto;
-  margin-top: 4rem;
-  padding-top: 2rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
-  text-align: center;
-  font-size: 0.9rem;
-  color: #78909c;
+const Bottom = styled.div`
+  max-width: ${t.maxWidth};
+  margin: 3rem auto 0;
+  padding-top: 1.6rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 2rem;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: #64748b;
 `;
 
 const LinkedInIcon = () => (
-  <svg fill="currentColor" viewBox="0 0 24 24">
-    <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
-  </svg>
-);
-
-const EmailIcon = () => (
-  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+  <svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
   </svg>
 );
 
 const GitHubIcon = () => (
-  <svg fill="currentColor" viewBox="0 0 24 24">
-    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.430.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+  <svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+  </svg>
+);
+
+const EmailIcon = () => (
+  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
   </svg>
 );
 
 const Footer = () => (
-  <FooterContainer>
-    <FooterContent>
-      <FooterSection>
-        <FooterTitle>Joël Tiogo</FooterTitle>
-        <FooterText>
-          Strategic Growth Leader combining business development expertise with digital innovation
-          and a strong commitment to sustainability and circular economy principles.
-        </FooterText>
-        <SocialLinks>
-          <SocialIcon
-            href="https://linkedin.com/in/joeltiogo"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="LinkedIn"
-          >
+  <Wrap>
+    <Grid>
+      <div>
+        <Title>{identity.name}</Title>
+        <Text>
+          Business development leader with an engineer’s toolkit — bridging technology, market
+          opportunities and circular economy principles.
+        </Text>
+        <Social>
+          <Icon href={contact.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
             <LinkedInIcon />
-          </SocialIcon>
-          <SocialIcon
-            href="https://github.com/joelbrice"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="GitHub"
-          >
+          </Icon>
+          <Icon href={contact.github} target="_blank" rel="noopener noreferrer" aria-label="GitHub">
             <GitHubIcon />
-          </SocialIcon>
-          <SocialIcon
-            href="mailto:tiogojoel@gmail.com"
-            aria-label="Email"
-          >
+          </Icon>
+          <Icon href={`mailto:${contact.email}`} aria-label="Email">
             <EmailIcon />
-          </SocialIcon>
-        </SocialLinks>
-      </FooterSection>
+          </Icon>
+        </Social>
+        <Mono>$ echo "{identity.tagline}"</Mono>
+      </div>
 
-      <FooterSection>
-        <FooterTitle>Quick Links</FooterTitle>
-        <FooterLinks>
-          <FooterLink href="/">Home</FooterLink>
-          <FooterLink href="/about">About</FooterLink>
-          <FooterLink href="/expertise">Expertise</FooterLink>
-          <FooterLink href="/insights">Insights</FooterLink>   {/* ← Added */}
-          <FooterLink href="mailto:tiogojoel@gmail.com">Get in Touch</FooterLink>
-        </FooterLinks>
-      </FooterSection>
+      <div>
+        <Title>Explore</Title>
+        <List>
+          <li><Link to="/">Home</Link></li>
+          <li><Link to="/about">About</Link></li>
+          <li><Link to="/expertise">Expertise</Link></li>
+          <li><Link to="/insights">Insights</Link></li>
+        </List>
+      </div>
 
-      <FooterSection>
-        <FooterTitle>Areas of Focus</FooterTitle>
-        <FooterLinks>
-          <FooterLink as="span">Business Development</FooterLink>
-          <FooterLink as="span">Market Growth Strategy</FooterLink>
-          <FooterLink as="span">Digital Innovation</FooterLink>
-          <FooterLink as="span">ESG &amp; Circularity</FooterLink>
-        </FooterLinks>
-      </FooterSection>
-    </FooterContent>
+      <div>
+        <Title>Focus areas</Title>
+        <List>
+          <li>Business development</li>
+          <li>Cloud &amp; digital transformation</li>
+          <li>ESG &amp; circularity</li>
+          <li>Engineering, data &amp; AI</li>
+        </List>
+      </div>
+    </Grid>
 
-    <FooterBottom>
-      <p>&copy; {new Date().getFullYear()} Joël Tiogo. All rights reserved.</p>
-    </FooterBottom>
-  </FooterContainer>
+    <Bottom>
+      <span>&copy; {new Date().getFullYear()} {identity.fullName}. All rights reserved.</span>
+      <span>Built with React.</span>
+    </Bottom>
+  </Wrap>
 );
 
 export default Footer;
