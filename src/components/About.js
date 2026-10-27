@@ -14,7 +14,7 @@ import {
   PrimaryButton,
   ButtonRow,
 } from '../theme';
-import { journey, offDuty } from '../data/profile';
+import { journey, offDuty, prologue, epilogue, languageStory } from '../data/profile';
 
 const HeroGrid = styled.div`
   display: grid;
@@ -36,6 +36,14 @@ const HeroPhoto = styled.img`
   border-radius: ${t.radius};
   box-shadow: 0 24px 50px rgba(11, 18, 32, 0.16);
   background: ${t.bgAlt};
+`;
+
+const Hook = styled.p`
+  font-size: clamp(1.15rem, 2.6vw, 1.4rem);
+  line-height: 1.6;
+  color: ${t.ink};
+  margin: 0 0 1.2rem;
+  max-width: 680px;
 `;
 
 /* ---------- Timeline ---------- */
@@ -92,7 +100,7 @@ const Num = styled.span`
   font-weight: 700;
   color: #fff;
   background: ${t.ink};
-  box-shadow: 0 0 0 5px #fff;
+  box-shadow: 0 0 0 5px ${t.bgAlt};
 
   @media ${t.tablet} {
     width: 2.8rem;
@@ -142,7 +150,91 @@ const StepPhoto = styled.figure`
   }
 `;
 
-/* ---------- Off duty ---------- */
+/* ---------- Languages ---------- */
+
+const LangGrid = styled.ol`
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 1rem;
+
+  @media ${t.tablet} {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.2rem;
+  }
+
+  @media ${t.laptop} {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+`;
+
+const Lang = styled.li`
+  background: #fff;
+  border: 1px solid ${t.line};
+  border-radius: ${t.radius};
+  padding: 1.5rem 1.4rem;
+  color: ${t.text};
+
+  &:first-child {
+    background: ${t.ink};
+    border-color: ${t.ink};
+    color: #cbd5e1;
+  }
+
+  code {
+    display: inline-block;
+    font-family: ${t.mono};
+    font-size: 0.75rem;
+    padding: 0.25rem 0.45rem;
+    border-radius: 5px;
+    background: ${t.accentSoft};
+    color: ${t.accent};
+    margin-bottom: 1rem;
+  }
+
+  &:first-child code {
+    background: rgba(255, 255, 255, 0.1);
+    color: ${t.term.green};
+  }
+
+  h3 {
+    font-size: 1.35rem;
+    margin: 0 0 0.15rem;
+    color: ${t.ink};
+  }
+
+  &:first-child h3 {
+    color: #fff;
+  }
+
+  em {
+    display: block;
+    font-style: normal;
+    font-family: ${t.mono};
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    opacity: 0.75;
+    margin-bottom: 0.8rem;
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.97rem;
+    line-height: 1.65;
+  }
+`;
+
+/* ---------- Epilogue & off duty ---------- */
+
+const Epilogue = styled.p`
+  font-size: clamp(1.2rem, 2.8vw, 1.55rem);
+  line-height: 1.55;
+  color: ${t.ink};
+  max-width: 860px;
+  margin: 0 0 2.5rem;
+`;
 
 const Hobbies = styled.ul`
   list-style: none;
@@ -182,7 +274,7 @@ const Quote = styled.blockquote`
   margin: 0;
   padding: 1.6rem 1.6rem 1.6rem 1.4rem;
   border-left: 4px solid ${t.accent};
-  background: ${t.accentSoft};
+  background: #fff;
   border-radius: 0 12px 12px 0;
   color: ${t.ink};
   font-size: clamp(1.05rem, 2.2vw, 1.25rem);
@@ -206,19 +298,10 @@ const About = () => (
       <Inner>
         <HeroGrid>
           <div>
-            <Eyebrow>about</Eyebrow>
+            <Eyebrow>about · prologue</Eyebrow>
             <H1>From circuits to strategy</H1>
-            <Lead>
-              I’m a people-oriented leader who values empathy, trust and meaningful connections —
-              and an engineer at heart. My journey across Cameroon, South Africa and Europe has
-              taken me from electrical engineering and software development to founding a start-up,
-              an MBA, and leading business development in technology.
-            </Lead>
-            <Body>
-              Being trilingual in French, English and German lets me connect naturally with people
-              from diverse cultures and backgrounds, and has sharpened my ability to build strong
-              networks and lead with both vision and compassion.
-            </Body>
+            <Hook>{prologue[0]}</Hook>
+            <Lead>{prologue[1]}</Lead>
           </div>
           <HeroPhoto
             src="/images/web/boardroom.jpg"
@@ -235,7 +318,7 @@ const About = () => (
         <SectionHead>
           <Eyebrow>git log --reverse</Eyebrow>
           <H2>The journey so far</H2>
-          <Lead>Every chapter added a new layer — the engineering never left.</Lead>
+          <Lead>Seven chapters across three countries — and the engineering never left.</Lead>
         </SectionHead>
 
         <Timeline>
@@ -261,13 +344,40 @@ const About = () => (
 
     <Section>
       <Inner>
+        <SectionHead>
+          <Eyebrow>i18n</Eyebrow>
+          <H2>Four languages, one story</H2>
+          <Lead>
+            Every language I speak marks a chapter of my life. Together they let me connect
+            naturally with people from very different cultures and backgrounds — something I truly
+            value.
+          </Lead>
+        </SectionHead>
+        <LangGrid>
+          {languageStory.map((l) => (
+            <Lang key={l.code}>
+              <code>{l.code}</code>
+              <h3 lang={l.code}>{l.name}</h3>
+              <em>{l.role}</em>
+              <p>{l.body}</p>
+            </Lang>
+          ))}
+        </LangGrid>
+      </Inner>
+    </Section>
+
+    <Section $alt>
+      <Inner>
+        <Eyebrow>epilogue</Eyebrow>
+        <H2>What connects it all</H2>
+        <Epilogue>{epilogue}</Epilogue>
         <TwoCol>
           <div>
-            <Eyebrow>leadership & community</Eyebrow>
-            <H2>Leadership beyond business</H2>
+            <H3>Leadership beyond business</H3>
             <Body>
-              I believe true leadership extends beyond business. I’m actively involved in initiatives
-              that empower others through ideas, mentorship and community development.
+              I’m a people-oriented leader who values empathy, trust and meaningful connections. I
+              believe true leadership extends beyond business, and I’m actively involved in
+              initiatives that empower others through ideas, mentorship and community development.
             </Body>
           </div>
           <Quote>
@@ -277,7 +387,7 @@ const About = () => (
       </Inner>
     </Section>
 
-    <Section $alt>
+    <Section>
       <Inner>
         <SectionHead>
           <Eyebrow>off duty</Eyebrow>

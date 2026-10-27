@@ -20,3 +20,13 @@ test('home page introduces Joël', async () => {
     await screen.findByRole('heading', { level: 1, name: /Joël Brice Voumo Tiogo/ })
   ).toBeInTheDocument();
 });
+
+test('insights articles open as full pages', async () => {
+  window.history.pushState({}, '', '/insights/battery-passports');
+  render(<App />);
+  expect(
+    await screen.findByRole('heading', { level: 1, name: /Digital Battery Passports/ })
+  ).toBeInTheDocument();
+  expect(screen.getByText(/is not legal advice/)).toBeInTheDocument();
+  window.history.pushState({}, '', '/');
+});

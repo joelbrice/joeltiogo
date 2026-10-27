@@ -11,6 +11,7 @@ import { t } from './theme';
 const About = React.lazy(() => import('./components/About'));
 const Home = React.lazy(() => import('./components/Home'));
 const NotFound = React.lazy(() => import('./components/NotFound'));
+const Article = React.lazy(() => import('./components/Article'));
 
 const AppContainer = styled.div`
   min-height: 100vh;
@@ -58,6 +59,7 @@ function App() {
               <Route path="/about" element={<About />} />
               <Route path="/expertise" element={<Expertise />} />
               <Route path="/insights" element={<Insights />} />
+              <Route path="/insights/:slug" element={<Article />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
