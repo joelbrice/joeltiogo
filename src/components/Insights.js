@@ -1,171 +1,118 @@
 import React from 'react';
 import styled from 'styled-components';
+import { t, Section, Inner, Eyebrow, H1, H3, Lead, Body, SectionHead, Card, Grid } from '../theme';
+import { contact } from '../data/profile';
 
-const Container = styled.div`
-  padding: 4rem 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
-  background-color: #f9fafb;
-  min-height: 100vh;
-`;
+// Themes Joël writes and speaks about. The full articles are not published
+// on this site yet; add a `href` to a topic once its article is live.
+const topics = [
+  {
+    tag: 'battery-passports',
+    title: 'The Strategic Value of Digital Battery Passports: Beyond Compliance',
+    body: 'How battery passports can become a tool for competitive advantage, new business models and genuine circularity in the automotive sector.',
+  },
+  {
+    tag: 'chess',
+    title: 'What Chess Taught Me About Business Development and Negotiation',
+    body: 'How strategic thinking, anticipation and adaptability from the chessboard translate into successful partnerships and high-stakes negotiations.',
+  },
+  {
+    tag: 'digital-transformation',
+    title: 'Why Most Digital Transformation Initiatives Fail — And How to Succeed',
+    body: 'Lessons from my entrepreneurial journey on aligning technology adoption with real business value and ESG goals.',
+  },
+  {
+    tag: 'global-perspective',
+    title: 'Bridging Technology and Sustainability: Lessons from a Global Trotter',
+    body: 'What living and working across Africa and Europe has taught me about cross-cultural collaboration and sustainable innovation.',
+  },
+];
 
-const Header = styled.div`
-  text-align: center;
-  margin-bottom: 4.5rem;
-`;
+const Tag = styled.span`
+  display: inline-block;
+  align-self: flex-start;
+  font-family: ${t.mono};
+  font-size: 0.78rem;
+  color: ${t.accent};
+  background: ${t.accentSoft};
+  padding: 0.35rem 0.6rem;
+  border-radius: 6px;
+  margin-bottom: 1.1rem;
 
-const PageTitle = styled.h1`
-  font-size: 3rem;
-  color: #1a202c;
-  font-weight: 700;
-  margin-bottom: 1rem;
-`;
-
-const PageSubtitle = styled.p`
-  font-size: 1.35rem;
-  color: #475569;
-  max-width: 680px;
-  margin: 0 auto;
-  line-height: 1.6;
-`;
-
-const InsightsGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
-  gap: 2.2rem;
-`;
-
-const InsightCard = styled.div`
-  background: #ffffff;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-  transition: all 0.4s ease;
-  border: 1px solid #f1f5f9;
-
-  &:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-    border-color: #667eea;
+  &::before {
+    content: '#';
+    opacity: 0.6;
   }
 `;
 
-const CardImage = styled.div`
-  height: 220px;
-  background: linear-gradient(135deg, #667eea 0%, #5a67d8 100%);
+const TopicCard = styled(Card)`
   display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 3.5rem;
+  flex-direction: column;
 `;
 
-const CardContent = styled.div`
-  padding: 1.8rem;
-`;
-
-const CardDate = styled.p`
-  font-size: 0.9rem;
-  color: #94a3b8;
-  margin-bottom: 0.8rem;
-`;
-
-const CardTitle = styled.h3`
-  font-size: 1.35rem;
-  color: #1e2937;
-  margin-bottom: 0.9rem;
-  line-height: 1.4;
-  font-weight: 700;
-`;
-
-const CardExcerpt = styled.p`
-  font-size: 1.02rem;
-  color: #475569;
-  line-height: 1.7;
-  margin-bottom: 1.4rem;
-`;
-
-const ReadMore = styled.a`
-  color: #667eea;
+const Discuss = styled.a`
+  margin-top: auto;
+  padding-top: 0.6rem;
   font-weight: 600;
+  color: ${t.ink};
   text-decoration: none;
-  font-size: 1rem;
+  align-self: flex-start;
+  border-bottom: 2px solid ${t.accentSoft};
+  transition: border-color 0.2s ease;
 
   &:hover {
-    text-decoration: underline;
+    border-color: ${t.accent};
+  }
+
+  &:focus-visible {
+    outline: 3px solid ${t.accent};
+    outline-offset: 3px;
   }
 `;
+
+const Note = styled.p`
+  margin: 2.5rem 0 0;
+  font-size: 0.88rem;
+  color: ${t.muted};
+  font-style: italic;
+`;
+
+const mailto = (title) =>
+  `mailto:${contact.email}?subject=${encodeURIComponent(`Re: ${title}`)}`;
 
 const Insights = () => (
-  <Container>
-    <Header>
-      <PageTitle>Insights</PageTitle>
-      <PageSubtitle>
-        Thoughts on strategic growth, digital innovation, sustainability,
-        and the intersection of technology and business.
-      </PageSubtitle>
-    </Header>
+  <Section>
+    <Inner>
+      <SectionHead>
+        <Eyebrow>insights</Eyebrow>
+        <H1>Ideas I’m working through</H1>
+        <Lead>
+          Themes I think, write and speak about — where strategic growth, technology and
+          sustainability meet. If one of them is on your mind too, let’s compare notes.
+        </Lead>
+      </SectionHead>
 
-    <InsightsGrid>
+      <Grid $cols={2}>
+        {topics.map((topic) => (
+          <TopicCard key={topic.tag}>
+            <Tag>{topic.tag}</Tag>
+            <H3>{topic.title}</H3>
+            <Body>{topic.body}</Body>
+            {topic.href ? (
+              <Discuss href={topic.href}>Read the article →</Discuss>
+            ) : (
+              <Discuss href={mailto(topic.title)}>Let’s discuss →</Discuss>
+            )}
+          </TopicCard>
+        ))}
+      </Grid>
 
-      {/* Post 1 */}
-      <InsightCard>
-        <CardImage>♟️</CardImage>
-        <CardContent>
-          <CardDate>March 2026</CardDate>
-          <CardTitle>What Chess Taught Me About Business Development and Negotiation</CardTitle>
-          <CardExcerpt>
-            How strategic thinking, anticipation, and adaptability from the chessboard
-            translate into successful partnerships and high-stakes negotiations.
-          </CardExcerpt>
-          <ReadMore href="/insights/chess-business">Read Article →</ReadMore>
-        </CardContent>
-      </InsightCard>
-
-      {/* Post 2 */}
-      <InsightCard>
-        <CardImage>🔋</CardImage>
-        <CardContent>
-          <CardDate>February 2026</CardDate>
-          <CardTitle>The Strategic Value of Digital Battery Passports: Beyond Compliance</CardTitle>
-          <CardExcerpt>
-            How Battery Passports are becoming a powerful tool for competitive advantage,
-            new business models, and genuine circularity in the automotive sector.
-          </CardExcerpt>
-          <ReadMore href="/insights/battery-passports">Read Article →</ReadMore>
-        </CardContent>
-      </InsightCard>
-
-      {/* Post 3 */}
-      <InsightCard>
-        <CardImage>🌍</CardImage>
-        <CardContent>
-          <CardDate>January 2026</CardDate>
-          <CardTitle>Bridging Technology and Sustainability: Lessons from a Global Trotter</CardTitle>
-          <CardExcerpt>
-            What living and working across Europe and Africa has taught me about
-            cross-cultural collaboration and sustainable innovation.
-          </CardExcerpt>
-          <ReadMore href="/insights/global-perspective">Read Article →</ReadMore>
-        </CardContent>
-      </InsightCard>
-
-      {/* Post 4 */}
-      <InsightCard>
-        <CardImage>🚀</CardImage>
-        <CardContent>
-          <CardDate>December 2025</CardDate>
-          <CardTitle>Why Most Digital Transformation Initiatives Fail — And How to Succeed</CardTitle>
-          <CardExcerpt>
-            Practical lessons from my entrepreneurial journey on aligning technology
-            adoption with real business value and ESG goals.
-          </CardExcerpt>
-          <ReadMore href="/insights/digital-transformation">Read Article →</ReadMore>
-        </CardContent>
-      </InsightCard>
-
-    </InsightsGrid>
-  </Container>
+      <Note>
+        Views expressed on this site are my own and do not necessarily reflect those of my
+        employer.
+      </Note>
+    </Inner>
+  </Section>
 );
 
 export default Insights;

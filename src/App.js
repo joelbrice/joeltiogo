@@ -1,11 +1,11 @@
-import React, { Suspense } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import React, { Suspense, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import Nav from './components/Navbar';
 import Footer from './components/Footer';
-import './index.css';
 import Expertise from './components/expertise';
 import Insights from './components/Insights';
+import { t } from './theme';
 
 // Lazy load components for better performance
 const About = React.lazy(() => import('./components/About'));
@@ -27,41 +27,28 @@ const LoadingContainer = styled.div`
   justify-content: center;
   align-items: center;
   min-height: 60vh;
-`;
-
-const LoadingSpinner = styled.div`
-  width: 50px;
-  height: 50px;
-  border: 4px solid rgba(102, 126, 234, 0.1);
-  border-top-color: #667eea;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-
-  @keyframes spin {
-    to {
-      transform: rotate(360deg);
-    }
-  }
-`;
-
-const LoadingText = styled.p`
-  margin-top: 1rem;
-  font-size: 1.1rem;
-  color: #667eea;
+  font-family: ${t.mono};
+  font-size: 0.95rem;
+  color: ${t.muted};
 `;
 
 const LoadingFallback = () => (
-  <LoadingContainer>
-    <div style={{ textAlign: 'center' }}>
-      <LoadingSpinner />
-      <LoadingText>Loading...</LoadingText>
-    </div>
-  </LoadingContainer>
+  <LoadingContainer role="status">loading…</LoadingContainer>
 );
+
+// Start each new page at the top.
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+};
 
 function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <AppContainer>
         <Nav />
         <MainContent>
@@ -69,8 +56,8 @@ function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/about" element={<About />} />
-              <Route path="/expertise" element ={<Expertise />} />
-              <Route path="/insights" element ={<Insights />} />
+              <Route path="/expertise" element={<Expertise />} />
+              <Route path="/insights" element={<Insights />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
