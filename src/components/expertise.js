@@ -41,7 +41,7 @@ const areas = [
   },
   {
     title: 'International Business',
-    body: 'Trilingual (French, English, German) professional with experience navigating markets across Europe, Africa, Asia and North America.',
+    body: 'Speaking Yemba, French, English and German, with experience navigating markets across Europe, Africa, Asia and North America.',
   },
 ];
 
@@ -266,7 +266,7 @@ const Expertise = () => (
           ))}
         </EduList>
         <Body style={{ marginTop: '1.6rem' }}>
-          <strong style={{ color: t.ink }}>Languages:</strong> {identity.languages.join(' · ')}
+          <strong style={{ color: t.ink }}>Languages:</strong> Yemba (mother tongue) · French · English · German
         </Body>
       </Inner>
     </Section>

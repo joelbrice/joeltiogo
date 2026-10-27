@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 import {
   t,
   Section,
@@ -19,7 +20,7 @@ import {
   Grid,
 } from '../theme';
 import TerminalCard from './TerminalCard';
-import { identity, highlights, contact } from '../data/profile';
+import { identity, highlights, contact, storyTeaser } from '../data/profile';
 
 /* ---------- Hero ---------- */
 
@@ -111,6 +112,85 @@ const Meta = styled.ul`
   li::before {
     content: '▸ ';
     color: ${t.accent};
+  }
+`;
+
+/* ---------- Story teaser ---------- */
+
+const Steps = styled.ol`
+  list-style: none;
+  margin: 0 0 2rem;
+  padding: 0;
+  display: grid;
+  gap: 0.8rem;
+
+  @media ${t.laptop} {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0;
+  }
+`;
+
+const StepItem = styled.li`
+  position: relative;
+  display: grid;
+  grid-template-columns: 2.6rem 1fr;
+  align-items: start;
+  padding: 1rem 1.1rem;
+  background: #fff;
+  border: 1px solid ${t.line};
+  border-radius: 12px;
+
+  @media ${t.laptop} {
+    display: block;
+    border-radius: 0;
+    border-right-width: 0;
+    padding: 1.4rem 1.2rem 1.5rem;
+
+    &:first-child {
+      border-radius: 12px 0 0 12px;
+    }
+    &:last-child {
+      border-radius: 0 12px 12px 0;
+      border-right-width: 1px;
+    }
+  }
+
+  span {
+    font-family: ${t.mono};
+    font-size: 0.78rem;
+    color: ${t.accent};
+    padding-top: 0.15rem;
+
+    @media ${t.laptop} {
+      display: block;
+      margin-bottom: 0.7rem;
+    }
+  }
+
+  strong {
+    display: block;
+    color: ${t.ink};
+    font-size: 1.02rem;
+    margin-bottom: 0.2rem;
+  }
+
+  small {
+    display: block;
+    color: ${t.muted};
+    font-size: 0.92rem;
+    line-height: 1.45;
+  }
+`;
+
+const TextLink = styled(Link)`
+  font-weight: 600;
+  color: ${t.ink};
+  text-decoration: none;
+  border-bottom: 2px solid ${t.accentSoft};
+  transition: border-color 0.2s ease;
+
+  &:hover {
+    border-color: ${t.accent};
   }
 `;
 
@@ -252,7 +332,7 @@ const boardroom = [
   'Strategic partnerships & stakeholder management',
   'ESG, circularity & battery-ecosystem transparency',
   'Former founder & CEO of a tech start-up',
-  'Trilingual: French, English, German',
+  'Four languages: Yemba, French, English, German',
 ];
 
 const commandLine = [
@@ -293,7 +373,7 @@ const HomePage = () => (
           </ButtonRow>
 
           <Meta aria-label="Quick facts">
-            <li>FR · EN · DE</li>
+            <li>Yemba · FR · EN · DE</li>
             <li>Cameroon → South Africa → Europe</li>
             <li>Engineer · Developer · Founder · MBA</li>
           </Meta>
@@ -304,6 +384,31 @@ const HomePage = () => (
     </Hero>
 
     <Section $alt>
+      <Inner>
+        <SectionHead>
+          <Eyebrow>the story so far</Eyebrow>
+          <H2>Five chapters, one thread</H2>
+          <Lead>
+            From a technical lycée in Dschang to business development at AVL — every chapter
+            added a new skill, and the engineer never left.
+          </Lead>
+        </SectionHead>
+        <Steps>
+          {storyTeaser.map((s, i) => (
+            <StepItem key={s.step}>
+              <span>{String(i + 1).padStart(2, '0')}</span>
+              <div>
+                <strong>{s.step}</strong>
+                <small>{s.text}</small>
+              </div>
+            </StepItem>
+          ))}
+        </Steps>
+        <TextLink to="/about">Read the full story →</TextLink>
+      </Inner>
+    </Section>
+
+    <Section>
       <Inner>
         <SectionHead>
           <Eyebrow>leader + builder</Eyebrow>
@@ -336,7 +441,7 @@ const HomePage = () => (
       </Inner>
     </Section>
 
-    <Section>
+    <Section $alt>
       <Inner>
         <SectionHead>
           <Eyebrow>proof of work</Eyebrow>
@@ -355,7 +460,7 @@ const HomePage = () => (
       </Inner>
     </Section>
 
-    <Section $alt>
+    <Section>
       <Inner>
         <SectionHead>
           <Eyebrow>field notes</Eyebrow>

@@ -128,7 +128,7 @@ const rows = [
   ['focus', list(['cloud', 'electrification', 'battery transparency'])],
   ['studied', list(['Electrical Engineering', 'MBA', 'Data Science & AI'])],
   ['writes', list(['Python', 'JavaScript', 'C#'])],
-  ['speaks', list(['fr', 'en', 'de'])],
+  ['speaks', list(['ybb', 'fr', 'en', 'de'])],
   ['off_duty', list(['chess', 'football', 'embedded systems'])],
 ];
 
