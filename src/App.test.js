@@ -30,3 +30,12 @@ test('insights articles open as full pages', async () => {
   expect(screen.getByText(/is not legal advice/)).toBeInTheDocument();
   window.history.pushState({}, '', '/');
 });
+
+test('McKinsey.org Forward badge links to its Credly verification page', async () => {
+  render(<App />);
+  const badge = await screen.findByRole('link', { name: /McKinsey\.org Forward Program.*verify on Credly/i });
+  expect(badge).toHaveAttribute(
+    'href',
+    'https://www.credly.com/badges/9fc66d90-473f-4d39-8a82-35baef122ade'
+  );
+});

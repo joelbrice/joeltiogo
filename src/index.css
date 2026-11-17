@@ -31,6 +31,16 @@ img {
   color: #ffffff;
 }
 
+/* Scroll reveal (see Section in src/theme.js) */
+[data-reveal] {
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+[data-reveal='pending'] {
+  opacity: 0;
+  transform: translateY(18px);
+}
+
 .sr-only {
   position: absolute;
   width: 1px;

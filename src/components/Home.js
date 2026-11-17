@@ -19,7 +19,15 @@ import {
   Rule,
 } from '../theme';
 import TerminalCard from './TerminalCard';
-import { identity, contact, focusAreas, experience, markets, industries } from '../data/profile';
+import {
+  identity,
+  contact,
+  focusAreas,
+  experience,
+  markets,
+  industries,
+  credentials,
+} from '../data/profile';
 import { articles } from '../data/articles';
 
 /* ---------- Hero ---------- */
@@ -131,6 +139,26 @@ const Cred = styled.li`
     line-height: 1.45;
   }
 `;
+
+const BadgeLink = styled.a`
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  text-decoration: none;
+
+  img {
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    flex-shrink: 0;
+  }
+
+  &:hover span {
+    color: ${t.accent};
+  }
+`;
+
+const mckinsey = credentials.find((c) => c.badge);
 
 /* ---------- Experience ---------- */
 
@@ -305,13 +333,19 @@ const HomePage = () => (
       <HeroGrid>
         <div>
           <Avatar src="/images/web/headshot.jpg" alt="" width="88" height="88" />
-          <Eyebrow>Strategy · Business Development · Go-to-Market</Eyebrow>
+          <Eyebrow>
+            Strategy · Business Development ·{' '}
+            <span style={{ whiteSpace: 'nowrap' }}>Go-to-Market</span>
+          </Eyebrow>
           <H1>{identity.name}</H1>
-          <Statement>Turning technology into commercial growth.</Statement>
+          <Statement>
+            Built it. Taught it.
+            <br />
+            Took it to market.
+          </Statement>
           <Lead>
-            {identity.role} at {identity.employer}. MBA, former founder &amp; CEO and engineer by
-            training — I pair an understanding of market dynamics with a deep grasp of the
-            technology.
+            Engineer, founder and robotics &amp; 4IR trainer — now {identity.role} at{' '}
+            {identity.employer}, with an MBA and a deep grasp of both markets and technology.
           </Lead>
           <ButtonRow>
             <ExternalButton $dark href={`mailto:${contact.email}`}>
@@ -337,8 +371,18 @@ const HomePage = () => (
             <span>Frankfurt School of Finance &amp; Management</span>
           </Cred>
           <Cred>
-            <strong>McKinsey Forward</strong>
-            <span>Program graduate</span>
+            <BadgeLink
+              href={mckinsey.badge.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="McKinsey.org Forward Program, completed 2025 — verify on Credly"
+            >
+              <img src={mckinsey.badge.src} alt="" width="44" height="44" />
+              <div>
+                <strong>McKinsey.org Forward</strong>
+                <span>Completed 2025 · Verify ↗</span>
+              </div>
+            </BadgeLink>
           </Cred>
           <Cred>
             <strong>Design Thinking &amp; Innovation</strong>
