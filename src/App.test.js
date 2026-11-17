@@ -17,7 +17,7 @@ test('mobile menu opens and shows the contact link', () => {
 test('home page introduces Joël', async () => {
   render(<App />);
   expect(
-    await screen.findByRole('heading', { level: 1, name: /Joël Brice Voumo Tiogo/ })
+    await screen.findByRole('heading', { level: 1, name: /Joël Tiogo/ })
   ).toBeInTheDocument();
 });
 
