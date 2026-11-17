@@ -19,7 +19,7 @@ import {
   Rule,
 } from '../theme';
 import TerminalCard from './TerminalCard';
-import { identity, contact, focusAreas, experience, markets } from '../data/profile';
+import { identity, contact, focusAreas, experience, markets, industries } from '../data/profile';
 import { articles } from '../data/articles';
 
 /* ---------- Hero ---------- */
@@ -171,6 +171,12 @@ const ExpItem = styled.li`
     margin: 0;
     color: ${t.text};
     line-height: 1.6;
+  }
+
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 1.2rem;
   }
 
   a {
@@ -362,6 +368,10 @@ const HomePage = () => (
           ))}
         </Grid>
         <Markets>
+          <strong>Industries</strong>
+          {industries.map((i) => i.title).join(' · ')}
+        </Markets>
+        <Markets style={{ marginTop: '0.5rem' }}>
           <strong>Markets</strong>
           {markets.join(' · ')}
         </Markets>
@@ -384,10 +394,14 @@ const HomePage = () => (
               </div>
               <div>
                 <p>{e.note}</p>
-                {e.link && (
-                  <a href={e.link.href} target="_blank" rel="noopener noreferrer">
-                    {e.link.label} ↗
-                  </a>
+                {e.links && (
+                  <span className="links">
+                    {e.links.map((l) => (
+                      <a key={l.href} href={l.href} target="_blank" rel="noopener noreferrer">
+                        {l.label} ↗
+                      </a>
+                    ))}
+                  </span>
                 )}
               </div>
             </ExpItem>
