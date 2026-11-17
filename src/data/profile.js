@@ -49,18 +49,27 @@ export const experience = [
   },
   {
     role: 'New Business Development',
-    org: 'Syenah',
-    note: 'ESG platform: strategic alliances, data sourcing and ESG taxonomies and frameworks.',
+    org: 'Syenah · AI-driven ESG risk intelligence',
+    // Provided by Joël (Nov 2026); product described on syenah.ai.
+    note: 'Drove new business development, contributed product ideas and acted as the in-house expert on sustainability questions.',
   },
   {
     role: 'Founder, CEO & Lead Engineer',
     org: 'Expotech Industries',
-    note: 'Built and led a consultancy in electrical engineering, software and 4IR skills development.',
-    // Independent source naming Joël as founder (Belgium Campus, Oct 2019).
-    link: {
-      href: 'https://www.belgiumcampus.ac.za/2019/10/16/bcmusketeers-participate-in-wrc-symposium-hackathon/',
-      label: 'In the news',
-    },
+    note: 'Founded and led a Fourth Industrial Revolution (4IR) company: engineering and software consulting, plus robotics and 4IR training for young people and adults.',
+    // Independent sources: Belgium Campus news (Oct 2019) names Joël as
+    // founder; GH Online Radio (Aug 2020) describes Expotech's robotics
+    // training for primary and high-school students.
+    links: [
+      {
+        href: 'https://www.belgiumcampus.ac.za/2019/10/16/bcmusketeers-participate-in-wrc-symposium-hackathon/',
+        label: 'In the news',
+      },
+      {
+        href: 'https://podcasters.spotify.com/pod/show/gh-radio/episodes/Joel-Tiogo---The-Morning-Spotlight-eibn6m',
+        label: 'Radio interview',
+      },
+    ],
   },
   {
     role: 'Full-Stack Software Developer',
@@ -86,6 +95,30 @@ export const languages = ['English', 'French', 'German'];
 export const motherTongue = 'Yemba';
 
 export const markets = ['Europe', 'Africa', 'Asia', 'North America'];
+
+// Industries Joël has worked in — each backed by a role above.
+export const industries = [
+  {
+    title: 'Automotive & mobility',
+    body: 'Cloud solutions for automotive and electrification.',
+  },
+  {
+    title: 'Energy & electrification',
+    body: 'Electrical engineering roots in power and solar; battery-ecosystem compliance today.',
+  },
+  {
+    title: 'Robotics & 4IR',
+    body: 'Founded a 4IR company; trained young people and adults in robotics and 4IR skills.',
+  },
+  {
+    title: 'ESG, risk & compliance',
+    body: 'AI-driven ESG risk intelligence; in-house expert on sustainability questions.',
+  },
+  {
+    title: 'Software, cloud & AI',
+    body: 'Full-stack development, data science and AI, cloud platforms.',
+  },
+];
 
 // The engineer behind the strategist — kept short on purpose.
 export const toolkit = [

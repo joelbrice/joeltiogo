@@ -2,22 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { t, Section, Inner, Eyebrow, H1, H2, H3, Lead, Body, SectionHead, Card, Grid, Rule } from '../theme';
 import TerminalCard from './TerminalCard';
-import { focusAreas, markets } from '../data/profile';
-
-const domains = [
-  {
-    title: 'Automotive & electrification',
-    body: 'Cloud solutions for automotive, electrification and other industries.',
-  },
-  {
-    title: 'Battery ecosystem & ESG',
-    body: 'Transparency and compliance in the battery value chain; ESG strategy and circularity.',
-  },
-  {
-    title: 'Entrepreneurship',
-    body: 'Former founder, CEO and lead engineer — strategic vision with practical execution.',
-  },
-];
+import { focusAreas, markets, industries } from '../data/profile';
 
 const Split = styled.div`
   display: grid;
@@ -75,11 +60,15 @@ const Expertise = () => (
     <Section $alt>
       <Inner>
         <SectionHead>
-          <Eyebrow>Domains &amp; markets</Eyebrow>
-          <H2>Industry knowledge</H2>
+          <Eyebrow>Industries &amp; markets</Eyebrow>
+          <H2>Across technology-driven industries</H2>
+          <Lead style={{ marginBottom: 0 }}>
+            The common thread: complex technology that needs a clear business case, the right
+            partners and a route to market.
+          </Lead>
         </SectionHead>
         <Grid $cols={3}>
-          {domains.map((d) => (
+          {industries.map((d) => (
             <Card key={d.title}>
               <H3>{d.title}</H3>
               <Body style={{ marginBottom: 0, fontSize: '0.95rem' }}>{d.body}</Body>
