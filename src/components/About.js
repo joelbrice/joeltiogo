@@ -81,6 +81,28 @@ const List = styled.ul`
     font-size: 0.9rem;
     color: ${t.muted};
   }
+
+  .badge {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    text-decoration: none;
+  }
+
+  .badge img {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    flex-shrink: 0;
+  }
+
+  .badge .text {
+    font-size: 1rem;
+  }
+
+  .badge:hover .text span {
+    color: ${t.accent};
+  }
 `;
 
 const Small = styled.p`
@@ -175,8 +197,26 @@ const About = () => (
               <List>
                 {credentials.map((c) => (
                   <li key={c.title}>
-                    <strong>{c.title}</strong>
-                    <span>{c.school}</span>
+                    {c.badge ? (
+                      <a
+                        className="badge"
+                        href={c.badge.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`${c.title}, ${c.school} — verify on Credly`}
+                      >
+                        <img src={c.badge.src} alt="" width="40" height="40" />
+                        <span className="text">
+                          <strong>{c.title}</strong>
+                          <span>{c.school} · Verify ↗</span>
+                        </span>
+                      </a>
+                    ) : (
+                      <>
+                        <strong>{c.title}</strong>
+                        <span>{c.school}</span>
+                      </>
+                    )}
                   </li>
                 ))}
               </List>

@@ -85,7 +85,15 @@ export const experience = [
 
 export const credentials = [
   { title: 'MBA', school: 'Frankfurt School of Finance & Management' },
-  { title: 'McKinsey Forward Program', school: 'McKinsey & Company · Graduate' },
+  {
+    title: 'McKinsey.org Forward Program',
+    school: 'McKinsey.org · Completed 2025',
+    // Verified Credly badge (issued 7 Jul 2025 by McKinsey.org).
+    badge: {
+      src: '/images/badges/mckinsey-forward.png',
+      href: 'https://www.credly.com/badges/9fc66d90-473f-4d39-8a82-35baef122ade',
+    },
+  },
   { title: 'Design Thinking and Innovation', school: 'Harvard Business School Online · In progress' },
   { title: 'B.Tech, Electrical Engineering', school: 'University of Johannesburg' },
   { title: 'Data Science & AI Bootcamp', school: 'Le Wagon' },
