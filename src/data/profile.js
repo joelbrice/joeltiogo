@@ -57,17 +57,11 @@ export const experience = [
     role: 'Founder, CEO & Lead Engineer',
     org: 'Expotech Industries',
     note: 'Founded and led a Fourth Industrial Revolution (4IR) company: engineering and software consulting, plus robotics and 4IR training for young people and adults.',
-    // Independent sources: Belgium Campus news (Oct 2019) names Joël as
-    // founder; GH Online Radio (Aug 2020) describes Expotech's robotics
-    // training for primary and high-school students.
+    // Independent source naming Joël as founder (Belgium Campus, Oct 2019).
     links: [
       {
         href: 'https://www.belgiumcampus.ac.za/2019/10/16/bcmusketeers-participate-in-wrc-symposium-hackathon/',
         label: 'In the news',
-      },
-      {
-        href: 'https://podcasters.spotify.com/pod/show/gh-radio/episodes/Joel-Tiogo---The-Morning-Spotlight-eibn6m',
-        label: 'Radio interview',
       },
     ],
   },
