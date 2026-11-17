@@ -1,6 +1,6 @@
 {
   "short_name": "Joël Tiogo",
-  "name": "Joël Tiogo — Business Development Manager & Engineer",
+  "name": "Joël Tiogo — Strategy & Business Development",
   "icons": [
     {
       "src": "images/web/headshot.jpg",
@@ -10,6 +10,6 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#0b1220",
+  "theme_color": "#0e1a2b",
   "background_color": "#ffffff"
 }

@@ -13,8 +13,7 @@ const Column = styled.article`
 
 const Back = styled(Link)`
   display: inline-block;
-  font-family: ${t.mono};
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   color: ${t.muted};
   text-decoration: none;
   margin-bottom: 2rem;
@@ -25,8 +24,7 @@ const Back = styled(Link)`
 `;
 
 const Meta = styled.p`
-  font-family: ${t.mono};
-  font-size: 0.82rem;
+  font-size: 0.88rem;
   color: ${t.muted};
   margin: 0 0 1.6rem;
 `;
@@ -39,6 +37,7 @@ const Prose = styled.div`
   line-height: 1.8;
 
   h2 {
+    font-family: ${t.serif};
     font-size: clamp(1.35rem, 3vw, 1.6rem);
     line-height: 1.25;
     color: ${t.ink};
@@ -103,8 +102,9 @@ const Next = styled(Link)`
 
   span {
     display: block;
-    font-family: ${t.mono};
-    font-size: 0.8rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
     color: ${t.accent};
     margin-bottom: 0.4rem;
   }
@@ -145,8 +145,8 @@ const Article = () => {
   return (
     <Section>
       <Column>
-        <Back to="/insights">← cd ../insights</Back>
-        <Eyebrow>{article.tag}</Eyebrow>
+        <Back to="/insights">← All insights</Back>
+        <Eyebrow>Insights</Eyebrow>
         <H1 style={{ fontSize: 'clamp(1.9rem, 5vw, 2.8rem)' }}>{article.title}</H1>
         <Meta>
           {identity.name} · {readingMinutes(article)} min read
@@ -173,7 +173,7 @@ const Article = () => {
         </End>
 
         <Next to={`/insights/${next.slug}`}>
-          <span>next →</span>
+          <span>Next</span>
           <strong>{next.title}</strong>
         </Next>
       </Column>

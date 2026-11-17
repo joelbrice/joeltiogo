@@ -1,25 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { t, Section, Inner, Eyebrow, H1, H3, Lead, Body, SectionHead, Card, Grid } from '../theme';
+import { t, Section, Inner, Eyebrow, H1, H3, Lead, Body, SectionHead, Card, Grid, Rule } from '../theme';
 import { articles, readingMinutes } from '../data/articles';
-
-const Tag = styled.span`
-  display: inline-block;
-  align-self: flex-start;
-  font-family: ${t.mono};
-  font-size: 0.78rem;
-  color: ${t.accent};
-  background: ${t.accentSoft};
-  padding: 0.35rem 0.6rem;
-  border-radius: 6px;
-  margin-bottom: 1.1rem;
-
-  &::before {
-    content: '#';
-    opacity: 0.6;
-  }
-`;
 
 const TopicCard = styled(Card)`
   display: flex;
@@ -52,7 +35,6 @@ const ReadLink = styled(Link)`
   }
 
   small {
-    font-family: ${t.mono};
     font-weight: 400;
     color: ${t.muted};
     margin-left: 0.6rem;
@@ -70,18 +52,17 @@ const Insights = () => (
   <Section>
     <Inner>
       <SectionHead>
-        <Eyebrow>insights</Eyebrow>
+        <Eyebrow>Perspectives</Eyebrow>
         <H1>Insights</H1>
         <Lead>
-          Short essays where strategic growth, technology and sustainability meet — from battery
-          passports to what the chessboard teaches about negotiation.
+          Short essays on strategy, growth, technology and sustainability.
         </Lead>
       </SectionHead>
 
       <Grid $cols={2}>
         {articles.map((a) => (
           <TopicCard key={a.slug}>
-            <Tag>{a.tag}</Tag>
+            <Rule />
             <H3>{a.title}</H3>
             <Body>{a.summary}</Body>
             <ReadLink to={`/insights/${a.slug}`}>
