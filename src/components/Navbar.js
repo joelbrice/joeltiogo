@@ -1,19 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 import { Link, NavLink as RouterNavLink, useLocation } from 'react-router-dom';
 import { t } from '../theme';
 import { contact } from '../data/profile';
 
 const navigation = [
-  { to: '/', name: 'Home' },
   { to: '/about', name: 'About' },
   { to: '/expertise', name: 'Expertise' },
   { to: '/insights', name: 'Insights' },
 ];
-
-const blink = keyframes`
-  50% { opacity: 0; }
-`;
 
 const Bar = styled.header`
   position: sticky;
@@ -40,20 +35,11 @@ const Wrap = styled.nav`
 `;
 
 const Logo = styled(Link)`
-  font-size: 1.2rem;
-  font-weight: 700;
-  letter-spacing: -0.01em;
+  font-family: ${t.serif};
+  font-size: 1.3rem;
+  font-weight: 600;
   color: ${t.ink};
   text-decoration: none;
-  display: inline-flex;
-  align-items: baseline;
-
-  span {
-    font-family: ${t.mono};
-    color: ${t.accent};
-    margin-left: 1px;
-    animation: ${blink} 1.2s step-end infinite;
-  }
 `;
 
 const Desktop = styled.div`
@@ -109,7 +95,7 @@ const External = styled.a`
 
 const Cta = styled.a`
   padding: 0.6rem 1.15rem;
-  border-radius: 9px;
+  border-radius: 6px;
   background: ${t.ink};
   color: #fff;
   font-weight: 600;
@@ -238,7 +224,7 @@ const Nav = () => {
     <Bar>
       <Wrap aria-label="Main">
         <Logo to="/" aria-label="Joël Tiogo — home">
-          Joël Tiogo<span aria-hidden="true">_</span>
+          Joël Tiogo
         </Logo>
 
         <Desktop>{links}</Desktop>

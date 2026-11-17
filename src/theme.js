@@ -3,15 +3,15 @@ import { Link } from 'react-router-dom';
 
 // Design tokens shared by every page.
 export const t = {
-  ink: '#0b1220',
-  text: '#334155',
-  muted: '#64748b',
-  line: '#e2e8f0',
+  ink: '#0e1a2b',
+  text: '#3b4656',
+  muted: '#6b7685',
+  line: '#e3e6eb',
   bg: '#ffffff',
-  bgAlt: '#f5f7fb',
-  accent: '#4c51bf',
-  accentSoft: '#eef0ff',
-  // Terminal palette (GitHub dark)
+  bgAlt: '#f6f5f2',
+  accent: '#8a6a2f',
+  accentSoft: '#f3ede2',
+  // Terminal palette (GitHub dark) — used only for the "engineer" touches
   term: {
     bg: '#0d1117',
     bar: '#161b22',
@@ -23,20 +23,21 @@ export const t = {
     purple: '#d2a8ff',
     amber: '#e3b341',
   },
+  serif: "'Source Serif 4', Georgia, 'Times New Roman', serif",
   sans: "'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif",
   mono: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
-  maxWidth: '1160px',
-  radius: '14px',
+  maxWidth: '1120px',
+  radius: '10px',
   tablet: '(min-width: 768px)',
   laptop: '(min-width: 1024px)',
 };
 
 export const Section = styled.section`
-  padding: 4.5rem 1rem;
+  padding: 4rem 1rem;
   background: ${({ $alt }) => ($alt ? t.bgAlt : t.bg)};
 
   @media ${t.tablet} {
-    padding: 6rem 2rem;
+    padding: 5.5rem 2rem;
   }
 `;
 
@@ -45,80 +46,75 @@ export const Inner = styled.div`
   margin: 0 auto;
 `;
 
-// Small monospace label, e.g. "// about"
+// Small uppercase label above a heading.
 export const Eyebrow = styled.p`
-  font-family: ${t.mono};
-  font-size: 0.85rem;
-  letter-spacing: 0.02em;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
   color: ${t.accent};
   margin: 0 0 0.9rem;
-
-  &::before {
-    content: '// ';
-    opacity: 0.6;
-  }
 `;
 
 export const H1 = styled.h1`
-  font-size: clamp(2.2rem, 6vw, 3.6rem);
-  line-height: 1.08;
-  letter-spacing: -0.02em;
+  font-family: ${t.serif};
+  font-size: clamp(2.4rem, 6vw, 3.8rem);
+  line-height: 1.05;
+  letter-spacing: -0.015em;
   color: ${t.ink};
-  font-weight: 700;
+  font-weight: 600;
   margin: 0 0 1.1rem;
 `;
 
 export const H2 = styled.h2`
-  font-size: clamp(1.7rem, 4vw, 2.4rem);
+  font-family: ${t.serif};
+  font-size: clamp(1.7rem, 3.6vw, 2.3rem);
   line-height: 1.15;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.01em;
   color: ${t.ink};
-  font-weight: 700;
-  margin: 0 0 1rem;
+  font-weight: 600;
+  margin: 0 0 0.9rem;
 `;
 
 export const H3 = styled.h3`
-  font-size: 1.2rem;
-  line-height: 1.3;
+  font-size: 1.08rem;
+  line-height: 1.35;
   color: ${t.ink};
-  font-weight: 700;
-  margin: 0 0 0.6rem;
+  font-weight: 600;
+  margin: 0 0 0.45rem;
 `;
 
 export const Lead = styled.p`
-  font-size: clamp(1.05rem, 2.2vw, 1.22rem);
-  line-height: 1.7;
+  font-size: clamp(1.05rem, 2.1vw, 1.2rem);
+  line-height: 1.65;
   color: ${t.text};
-  max-width: 720px;
+  max-width: 640px;
   margin: 0 0 1.4rem;
 `;
 
 export const Body = styled.p`
-  font-size: 1.02rem;
-  line-height: 1.75;
+  font-size: 1rem;
+  line-height: 1.7;
   color: ${t.text};
   margin: 0 0 1rem;
 `;
 
 export const SectionHead = styled.div`
-  max-width: 760px;
-  margin-bottom: 2.8rem;
+  max-width: 680px;
+  margin-bottom: 2.4rem;
 `;
 
 const buttonBase = css`
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.85rem 1.6rem;
-  border-radius: 10px;
-  font-weight: 600;
-  font-size: 1rem;
+  padding: 0.85rem 1.5rem;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 0.98rem;
+  letter-spacing: 0.01em;
   text-decoration: none;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
-
-  &:hover {
-    transform: translateY(-2px);
-  }
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 
   &:focus-visible {
     outline: 3px solid ${t.accent};
@@ -130,9 +126,10 @@ export const PrimaryButton = styled(Link)`
   ${buttonBase}
   background: ${t.ink};
   color: #fff;
+  border: 1.5px solid ${t.ink};
 
   &:hover {
-    box-shadow: 0 10px 24px rgba(11, 18, 32, 0.22);
+    background: #1d2d45;
   }
 `;
 
@@ -140,7 +137,7 @@ export const SecondaryButton = styled(Link)`
   ${buttonBase}
   background: transparent;
   color: ${t.ink};
-  border: 1.5px solid ${t.line};
+  border: 1.5px solid #c9ced6;
 
   &:hover {
     border-color: ${t.ink};
@@ -151,7 +148,7 @@ export const ExternalButton = styled.a`
   ${buttonBase}
   background: ${({ $dark }) => ($dark ? t.ink : 'transparent')};
   color: ${({ $dark }) => ($dark ? '#fff' : t.ink)};
-  border: 1.5px solid ${({ $dark }) => ($dark ? t.ink : t.line)};
+  border: 1.5px solid ${({ $dark }) => ($dark ? t.ink : '#c9ced6')};
 
   &:hover {
     border-color: ${t.ink};
@@ -164,52 +161,43 @@ export const ButtonRow = styled.div`
   gap: 0.8rem;
 `;
 
-export const Chip = styled.span`
-  display: inline-block;
-  font-family: ${t.mono};
-  font-size: 0.8rem;
-  line-height: 1;
-  padding: 0.45rem 0.65rem;
-  border-radius: 6px;
-  background: ${t.accentSoft};
-  color: ${t.accent};
-  white-space: nowrap;
-`;
-
-export const ChipList = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.45rem;
-`;
-
 export const Card = styled.div`
   background: #fff;
   border: 1px solid ${t.line};
   border-radius: ${t.radius};
-  padding: 1.6rem;
-  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+  padding: 1.5rem;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
 
   &:hover {
-    border-color: #c7cbe8;
-    box-shadow: 0 14px 34px rgba(15, 23, 42, 0.07);
+    border-color: #cfd4db;
+    box-shadow: 0 12px 30px rgba(14, 26, 43, 0.06);
   }
 
   @media ${t.tablet} {
-    padding: 2rem;
+    padding: 1.8rem;
   }
 `;
 
 export const Grid = styled.div`
   display: grid;
-  gap: 1.2rem;
+  gap: 1.1rem;
   grid-template-columns: 1fr;
 
   @media ${t.tablet} {
     grid-template-columns: repeat(${({ $cols }) => Math.min($cols || 2, 2)}, minmax(0, 1fr));
-    gap: 1.5rem;
+    gap: 1.3rem;
   }
 
   @media ${t.laptop} {
     grid-template-columns: repeat(${({ $cols }) => $cols || 2}, minmax(0, 1fr));
   }
+`;
+
+// Thin gold rule used to open a card or section.
+export const Rule = styled.span`
+  display: block;
+  width: 32px;
+  height: 2px;
+  background: ${t.accent};
+  margin-bottom: 1.1rem;
 `;

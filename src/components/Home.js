@@ -12,30 +12,24 @@ import {
   Lead,
   Body,
   SectionHead,
-  PrimaryButton,
-  SecondaryButton,
   ExternalButton,
   ButtonRow,
   Card,
   Grid,
+  Rule,
 } from '../theme';
 import TerminalCard from './TerminalCard';
-import { identity, highlights, contact, storyTeaser } from '../data/profile';
+import { identity, contact, focusAreas, experience, markets } from '../data/profile';
+import { articles } from '../data/articles';
 
 /* ---------- Hero ---------- */
 
 const Hero = styled.section`
-  position: relative;
-  padding: 3.5rem 1rem 4.5rem;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #ffffff 100%),
-    linear-gradient(${t.bgAlt} 1px, transparent 1px) 0 0 / 28px 28px,
-    linear-gradient(90deg, ${t.bgAlt} 1px, transparent 1px) 0 0 / 28px 28px,
-    #fbfcfe;
-  overflow: hidden;
+  padding: 3rem 1rem 3.5rem;
+  background: ${t.bg};
 
   @media ${t.tablet} {
-    padding: 5.5rem 2rem 6rem;
+    padding: 5rem 2rem 5rem;
   }
 `;
 
@@ -47,248 +41,221 @@ const HeroGrid = styled.div`
   align-items: center;
 
   @media ${t.laptop} {
-    grid-template-columns: 1.1fr 0.9fr;
-    gap: 4rem;
+    grid-template-columns: 1.25fr 0.75fr;
+    gap: 5rem;
   }
-`;
-
-const Identity = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.9rem;
-  margin-bottom: 1.6rem;
 `;
 
 const Avatar = styled.img`
-  width: 64px;
-  height: 64px;
+  width: 88px;
+  height: 88px;
   border-radius: 50%;
   object-fit: cover;
-  border: 3px solid #fff;
-  box-shadow: 0 6px 18px rgba(11, 18, 32, 0.15);
-`;
+  margin-bottom: 1.6rem;
 
-const Status = styled.div`
-  font-size: 0.92rem;
-  line-height: 1.4;
-  color: ${t.text};
-
-  strong {
-    display: block;
-    color: ${t.ink};
-    font-weight: 600;
+  @media ${t.laptop} {
+    display: none;
   }
 `;
 
-const Dot = styled.span`
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #22c55e;
-  margin-right: 0.4rem;
-  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.18);
+const Portrait = styled.img`
+  display: none;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  object-position: 50% 25%;
+  border-radius: ${t.radius};
+  background: ${t.bgAlt};
+
+  @media ${t.laptop} {
+    display: block;
+  }
 `;
 
-const Tagline = styled.p`
-  font-size: clamp(1.15rem, 2.6vw, 1.45rem);
-  font-weight: 500;
-  line-height: 1.45;
-  color: ${t.accent};
+const Statement = styled.p`
+  font-family: ${t.serif};
+  font-size: clamp(1.35rem, 3vw, 1.75rem);
+  line-height: 1.35;
+  color: ${t.ink};
   margin: 0 0 1.2rem;
+  max-width: 560px;
 `;
 
-const Meta = styled.ul`
+/* ---------- Credentials bar ---------- */
+
+const CredBar = styled.ul`
   list-style: none;
-  padding: 0;
-  margin: 1.8rem 0 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem 1.4rem;
-  font-family: ${t.mono};
-  font-size: 0.82rem;
-  color: ${t.muted};
-
-  li::before {
-    content: '▸ ';
-    color: ${t.accent};
-  }
-`;
-
-/* ---------- Story teaser ---------- */
-
-const Steps = styled.ol`
-  list-style: none;
-  margin: 0 0 2rem;
+  margin: 0;
   padding: 0;
   display: grid;
-  gap: 0.8rem;
+  gap: 0;
+  border-top: 1px solid ${t.line};
+
+  @media ${t.tablet} {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 
   @media ${t.laptop} {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: 0;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    border-bottom: 1px solid ${t.line};
   }
 `;
 
-const StepItem = styled.li`
-  position: relative;
-  display: grid;
-  grid-template-columns: 2.6rem 1fr;
-  align-items: start;
-  padding: 1rem 1.1rem;
-  background: #fff;
-  border: 1px solid ${t.line};
-  border-radius: 12px;
+const Cred = styled.li`
+  padding: 1.2rem 0;
+  border-bottom: 1px solid ${t.line};
 
   @media ${t.laptop} {
-    display: block;
-    border-radius: 0;
-    border-right-width: 0;
-    padding: 1.4rem 1.2rem 1.5rem;
+    border-bottom: 0;
+    padding: 1.5rem 1.5rem 1.5rem 0;
 
-    &:first-child {
-      border-radius: 12px 0 0 12px;
-    }
-    &:last-child {
-      border-radius: 0 12px 12px 0;
-      border-right-width: 1px;
-    }
-  }
-
-  span {
-    font-family: ${t.mono};
-    font-size: 0.78rem;
-    color: ${t.accent};
-    padding-top: 0.15rem;
-
-    @media ${t.laptop} {
-      display: block;
-      margin-bottom: 0.7rem;
+    & + & {
+      padding-left: 1.5rem;
+      border-left: 1px solid ${t.line};
     }
   }
 
   strong {
     display: block;
+    font-family: ${t.serif};
+    font-weight: 600;
+    font-size: 1.12rem;
     color: ${t.ink};
-    font-size: 1.02rem;
     margin-bottom: 0.2rem;
   }
 
-  small {
-    display: block;
+  span {
+    font-size: 0.88rem;
     color: ${t.muted};
-    font-size: 0.92rem;
     line-height: 1.45;
   }
 `;
 
-const TextLink = styled(Link)`
-  font-weight: 600;
-  color: ${t.ink};
-  text-decoration: none;
-  border-bottom: 2px solid ${t.accentSoft};
-  transition: border-color 0.2s ease;
+/* ---------- Experience ---------- */
 
-  &:hover {
-    border-color: ${t.accent};
-  }
+const Anchor = styled.div`
+  scroll-margin-top: 5rem;
 `;
 
-/* ---------- Leader + builder ---------- */
+const ExpList = styled.ol`
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid ${t.line};
+`;
 
-const Split = styled.div`
+const ExpItem = styled.li`
   display: grid;
-  gap: 1.2rem;
+  gap: 0.35rem;
+  padding: 1.35rem 0;
+  border-bottom: 1px solid ${t.line};
 
   @media ${t.tablet} {
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
-  }
-`;
-
-const Panel = styled.div`
-  border-radius: ${t.radius};
-  padding: 1.8rem 1.5rem;
-  border: 1px solid ${({ $dark }) => ($dark ? t.term.border : t.line)};
-  background: ${({ $dark }) => ($dark ? t.term.bg : '#fff')};
-  color: ${({ $dark }) => ($dark ? t.term.text : t.text)};
-
-  @media ${t.tablet} {
-    padding: 2.2rem 2rem;
+    grid-template-columns: 0.9fr 1.1fr;
+    gap: 2.5rem;
   }
 
   h3 {
-    color: ${({ $dark }) => ($dark ? '#fff' : t.ink)};
-    font-family: ${({ $dark }) => ($dark ? t.mono : 'inherit')};
-    font-size: 1.15rem;
-    margin: 0 0 1.2rem;
-  }
-
-  ul {
-    list-style: none;
-    padding: 0;
     margin: 0;
-    display: grid;
-    gap: 0.75rem;
   }
 
-  li {
-    display: grid;
-    grid-template-columns: 1.4rem 1fr;
-    line-height: 1.5;
-    font-family: ${({ $dark }) => ($dark ? t.mono : 'inherit')};
-    font-size: ${({ $dark }) => ($dark ? '0.9rem' : '1rem')};
-  }
-
-  li::before {
-    content: '${({ $dark }) => ($dark ? '$' : '→')}';
-    color: ${({ $dark }) => ($dark ? t.term.green : t.accent)};
-    font-weight: 700;
-  }
-`;
-
-/* ---------- Highlights ---------- */
-
-const Label = styled.span`
-  display: inline-block;
-  font-family: ${t.mono};
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: ${t.accent};
-  margin-bottom: 0.9rem;
-`;
-
-/* ---------- Field notes ---------- */
-
-const Gallery = styled.div`
-  display: grid;
-  gap: 1rem;
-
-  @media ${t.tablet} {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1.4rem;
-  }
-`;
-
-const Shot = styled.figure`
-  margin: 0;
-
-  img {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 4 / 5;
-    object-fit: cover;
-    object-position: ${({ $pos }) => $pos || 'center'};
-    border-radius: ${t.radius};
-    background: ${t.bgAlt};
-  }
-
-  figcaption {
-    margin-top: 0.7rem;
-    font-family: ${t.mono};
-    font-size: 0.8rem;
+  .org {
+    display: block;
     color: ${t.muted};
+    font-size: 0.95rem;
+    margin-top: 0.15rem;
+  }
+
+  p {
+    margin: 0;
+    color: ${t.text};
+    line-height: 1.6;
+  }
+
+  a {
+    display: inline-block;
+    margin-top: 0.4rem;
+    font-size: 0.88rem;
+    color: ${t.accent};
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+`;
+
+const Markets = styled.p`
+  margin: 1.6rem 0 0;
+  font-size: 0.92rem;
+  color: ${t.muted};
+
+  strong {
+    color: ${t.ink};
+    font-weight: 500;
+    margin-right: 0.4rem;
+  }
+`;
+
+/* ---------- Engineer band ---------- */
+
+const Split = styled.div`
+  display: grid;
+  gap: 2rem;
+  align-items: center;
+
+  @media ${t.laptop} {
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+  }
+`;
+
+/* ---------- Insights ---------- */
+
+const Reads = styled.ul`
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid ${t.line};
+`;
+
+const Read = styled.li`
+  border-bottom: 1px solid ${t.line};
+
+  a {
+    display: flex;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: 1.15rem 0;
+    color: ${t.ink};
+    text-decoration: none;
+    font-family: ${t.serif};
+    font-size: clamp(1.05rem, 2.2vw, 1.22rem);
+    line-height: 1.4;
+  }
+
+  a::after {
+    content: '→';
+    color: ${t.accent};
+    font-family: ${t.sans};
+  }
+
+  a:hover {
+    color: ${t.accent};
+  }
+`;
+
+const More = styled(Link)`
+  display: inline-block;
+  margin-top: 1.4rem;
+  color: ${t.accent};
+  font-weight: 500;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
   }
 `;
 
@@ -296,11 +263,10 @@ const Shot = styled.figure`
 
 const ContactBand = styled.section`
   background: ${t.ink};
-  color: #cbd5e1;
-  padding: 4.5rem 1rem;
+  padding: 4rem 1rem;
 
   @media ${t.tablet} {
-    padding: 6rem 2rem;
+    padding: 5rem 2rem;
   }
 
   h2 {
@@ -308,7 +274,7 @@ const ContactBand = styled.section`
   }
 
   p {
-    color: #cbd5e1;
+    color: #c3cad5;
   }
 `;
 
@@ -327,195 +293,155 @@ const GhostLight = styled(ExternalButton)`
   }
 `;
 
-const boardroom = [
-  'Business development & go-to-market strategy',
-  'Strategic partnerships & stakeholder management',
-  'ESG, circularity & battery-ecosystem transparency',
-  'Former founder & CEO of a tech start-up',
-  'Four languages: Yemba, French, English, German',
-];
-
-const commandLine = [
-  'Electrical engineer — energy sector & solar',
-  'Former full-stack developer (C#, React, Node.js, Python)',
-  'Data science & AI — Le Wagon bootcamp',
-  'IoT and embedded systems',
-  'Hackathons since university',
-];
-
 const HomePage = () => (
   <>
     <Hero>
       <HeroGrid>
         <div>
-          <Identity>
-            <Avatar src="/images/web/headshot.jpg" alt="Portrait of Joël Tiogo" width="64" height="64" />
-            <Status>
-              <strong>
-                <Dot aria-hidden="true" />
-                {identity.role}
-              </strong>
-              {identity.employer}
-            </Status>
-          </Identity>
-
-          <H1>{identity.fullName}</H1>
-          <Tagline>{identity.tagline}</Tagline>
+          <Avatar src="/images/web/headshot.jpg" alt="" width="88" height="88" />
+          <Eyebrow>Strategy · Business Development · Go-to-Market</Eyebrow>
+          <H1>{identity.name}</H1>
+          <Statement>Turning technology into commercial growth.</Statement>
           <Lead>
-            I lead cloud solutions for automotive, electrification and other industries — and I bring
-            the depth of someone who has worked as an electrical engineer, built software as a
-            full-stack developer and founded a tech start-up. Curiosity and empathy drive how I work.
+            {identity.role} at {identity.employer}. MBA, former founder &amp; CEO and engineer by
+            training — I pair an understanding of market dynamics with a deep grasp of the
+            technology.
           </Lead>
-
           <ButtonRow>
-            <PrimaryButton to="/about">Read my story</PrimaryButton>
-            <SecondaryButton to="/expertise">See my expertise</SecondaryButton>
+            <ExternalButton $dark href={`mailto:${contact.email}`}>
+              Get in touch
+            </ExternalButton>
+            <ExternalButton href="#experience">View experience</ExternalButton>
           </ButtonRow>
-
-          <Meta aria-label="Quick facts">
-            <li>Yemba · FR · EN · DE</li>
-            <li>Cameroon → South Africa → Europe</li>
-            <li>Engineer · Developer · Founder · MBA</li>
-          </Meta>
         </div>
-
-        <TerminalCard />
+        <Portrait
+          src="/images/web/boardroom.jpg"
+          alt="Portrait of Joël Tiogo in a navy suit"
+          width="1400"
+          height="934"
+        />
       </HeroGrid>
     </Hero>
 
-    <Section $alt>
+    <section style={{ padding: '0 1rem' }}>
+      <Inner>
+        <CredBar aria-label="Credentials">
+          <Cred>
+            <strong>MBA</strong>
+            <span>Frankfurt School of Finance &amp; Management</span>
+          </Cred>
+          <Cred>
+            <strong>McKinsey Forward</strong>
+            <span>Program graduate</span>
+          </Cred>
+          <Cred>
+            <strong>Design Thinking &amp; Innovation</strong>
+            <span>Harvard Business School Online · in progress</span>
+          </Cred>
+          <Cred>
+            <strong>Founder &amp; CEO</strong>
+            <span>Expotech Industries · former</span>
+          </Cred>
+        </CredBar>
+      </Inner>
+    </section>
+
+    <Section>
       <Inner>
         <SectionHead>
-          <Eyebrow>the story so far</Eyebrow>
-          <H2>Five chapters, one thread</H2>
-          <Lead>
-            From a technical lycée in Dschang to business development at AVL — every chapter
-            added a new skill, and the engineer never left.
-          </Lead>
+          <Eyebrow>Focus</Eyebrow>
+          <H2>Where I add value</H2>
         </SectionHead>
-        <Steps>
-          {storyTeaser.map((s, i) => (
-            <StepItem key={s.step}>
-              <span>{String(i + 1).padStart(2, '0')}</span>
-              <div>
-                <strong>{s.step}</strong>
-                <small>{s.text}</small>
-              </div>
-            </StepItem>
+        <Grid $cols={4}>
+          {focusAreas.map((f) => (
+            <Card key={f.title}>
+              <Rule />
+              <H3>{f.title}</H3>
+              <Body style={{ marginBottom: 0, fontSize: '0.95rem' }}>{f.body}</Body>
+            </Card>
           ))}
-        </Steps>
-        <TextLink to="/about">Read the full story →</TextLink>
+        </Grid>
+        <Markets>
+          <strong>Markets</strong>
+          {markets.join(' · ')}
+        </Markets>
+      </Inner>
+    </Section>
+
+    <Section $alt>
+      <Inner>
+        <Anchor id="experience" />
+        <SectionHead>
+          <Eyebrow>Experience</Eyebrow>
+          <H2>From engineering to the commercial front line</H2>
+        </SectionHead>
+        <ExpList>
+          {experience.map((e) => (
+            <ExpItem key={e.role}>
+              <div>
+                <H3>{e.role}</H3>
+                <span className="org">{e.org}</span>
+              </div>
+              <div>
+                <p>{e.note}</p>
+                {e.link && (
+                  <a href={e.link.href} target="_blank" rel="noopener noreferrer">
+                    {e.link.label} ↗
+                  </a>
+                )}
+              </div>
+            </ExpItem>
+          ))}
+        </ExpList>
       </Inner>
     </Section>
 
     <Section>
       <Inner>
-        <SectionHead>
-          <Eyebrow>leader + builder</Eyebrow>
-          <H2>At home in the boardroom and at the command line</H2>
-          <Lead>
-            My path ran through substations, codebases and my own start-up before it reached business
-            development. That lets me speak both languages — strategy with decision-makers,
-            architecture with engineers — and translate between them.
-          </Lead>
-        </SectionHead>
-
         <Split>
-          <Panel>
-            <h3>In the boardroom</h3>
-            <ul>
-              {boardroom.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          </Panel>
-          <Panel $dark>
-            <h3>~/at-the-command-line</h3>
-            <ul>
-              {commandLine.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          </Panel>
+          <div>
+            <Eyebrow>The engineer behind the strategy</Eyebrow>
+            <H2>Fluent in technology</H2>
+            <Lead style={{ marginBottom: 0 }}>
+              Before business development, I worked as an electrical engineer and a full-stack
+              developer. I can go deep with technical teams — and translate what matters for the
+              business.
+            </Lead>
+          </div>
+          <TerminalCard />
         </Split>
       </Inner>
     </Section>
 
     <Section $alt>
       <Inner>
-        <SectionHead>
-          <Eyebrow>proof of work</Eyebrow>
-          <H2>Built, founded, pitched</H2>
-          <Lead>A few things from the journey that shaped how I lead today.</Lead>
+        <SectionHead style={{ marginBottom: '1.6rem' }}>
+          <Eyebrow>Insights</Eyebrow>
+          <H2>Selected thinking</H2>
         </SectionHead>
-        <Grid $cols={4}>
-          {highlights.map((h) => (
-            <Card key={h.title}>
-              <Label>{h.label}</Label>
-              <H3>{h.title}</H3>
-              <Body style={{ marginBottom: 0 }}>{h.body}</Body>
-            </Card>
+        <Reads>
+          {articles.map((a) => (
+            <Read key={a.slug}>
+              <Link to={`/insights/${a.slug}`}>{a.title}</Link>
+            </Read>
           ))}
-        </Grid>
-      </Inner>
-    </Section>
-
-    <Section>
-      <Inner>
-        <SectionHead>
-          <Eyebrow>field notes</Eyebrow>
-          <H2>Hard hats, labs and pitch stages</H2>
-        </SectionHead>
-        <Gallery>
-          <Shot>
-            <img
-              src="/images/web/field-install.jpg"
-              alt="Joël in a yellow hard hat and safety glasses doing electrical installation work"
-              loading="lazy"
-              width="750"
-              height="1000"
-            />
-            <figcaption>Hands-on electrical work</figcaption>
-          </Shot>
-          <Shot $pos="50% 30%">
-            <img
-              src="/images/web/uj-lab.jpg"
-              alt="Joël presenting at the front of a University of Johannesburg computer lab"
-              loading="lazy"
-              width="1400"
-              height="1051"
-            />
-            <figcaption>Presenting in a University of Johannesburg computer lab</figcaption>
-          </Shot>
-          <Shot $pos="20% center">
-            <img
-              src="/images/web/wrc-pitch.jpg"
-              alt="Joël pitching with a microphone at the 4th WRC Symposium"
-              loading="lazy"
-              width="1080"
-              height="1200"
-            />
-            <figcaption>Pitching at the 4th WRC Symposium hackathon</figcaption>
-          </Shot>
-        </Gallery>
+        </Reads>
+        <More to="/insights">All insights →</More>
       </Inner>
     </Section>
 
     <ContactBand>
       <Inner>
-        <SectionHead style={{ marginBottom: '2rem' }}>
-          <Eyebrow>open channel</Eyebrow>
-          <H2>Let’s build something impactful together</H2>
-          <Lead>
-            I’m always energized by meaningful conversations and new opportunities to collaborate —
-            whether you’re exploring fresh ideas, building strategic partnerships, or curious how
-            technology can create real value.
-          </Lead>
+        <SectionHead style={{ marginBottom: '1.8rem' }}>
+          <H2>Let’s talk</H2>
+          <p style={{ fontSize: '1.1rem', margin: 0 }}>
+            About strategy, partnerships or new opportunities.
+          </p>
         </SectionHead>
         <ButtonRow>
           <LightButton href={`mailto:${contact.email}`}>Email me</LightButton>
           <GhostLight href={contact.linkedin} target="_blank" rel="noopener noreferrer">
-            Connect on LinkedIn
+            LinkedIn
           </GhostLight>
         </ButtonRow>
       </Inner>
