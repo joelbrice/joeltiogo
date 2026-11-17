@@ -3,9 +3,14 @@
   "name": "Joël Tiogo — Strategy & Business Development",
   "icons": [
     {
-      "src": "images/web/headshot.jpg",
-      "type": "image/jpeg",
-      "sizes": "400x400"
+      "src": "icons/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
     }
   ],
   "start_url": ".",

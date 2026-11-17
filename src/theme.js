@@ -1,3 +1,4 @@
+import React, { useEffect, useRef } from 'react';
 import styled, { css } from 'styled-components';
 import { Link } from 'react-router-dom';
 
@@ -32,7 +33,7 @@ export const t = {
   laptop: '(min-width: 1024px)',
 };
 
-export const Section = styled.section`
+const SectionBase = styled.section`
   padding: 4rem 1rem;
   background: ${({ $alt }) => ($alt ? t.bgAlt : t.bg)};
 
@@ -40,6 +41,37 @@ export const Section = styled.section`
     padding: 5.5rem 2rem;
   }
 `;
+
+// A page section that fades in as it scrolls into view. Sections already
+// on screen at load are shown immediately, as is everything when the
+// browser lacks IntersectionObserver or the visitor prefers reduced motion.
+export const Section = (props) => {
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || !('IntersectionObserver' in window)) return undefined;
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      return undefined;
+    }
+    if (el.getBoundingClientRect().top < window.innerHeight) return undefined;
+
+    el.dataset.reveal = 'pending';
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          el.dataset.reveal = 'shown';
+          observer.disconnect();
+        }
+      },
+      { rootMargin: '0px 0px -8% 0px' }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  return <SectionBase ref={ref} {...props} />;
+};
 
 export const Inner = styled.div`
   max-width: ${t.maxWidth};
