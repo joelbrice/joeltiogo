@@ -333,13 +333,19 @@ const HomePage = () => (
       <HeroGrid>
         <div>
           <Avatar src="/images/web/headshot.jpg" alt="" width="88" height="88" />
-          <Eyebrow>Strategy · Business Development · Go-to-Market</Eyebrow>
+          <Eyebrow>
+            Strategy · Business Development ·{' '}
+            <span style={{ whiteSpace: 'nowrap' }}>Go-to-Market</span>
+          </Eyebrow>
           <H1>{identity.name}</H1>
-          <Statement>Turning technology into commercial growth.</Statement>
+          <Statement>
+            Built it. Taught it.
+            <br />
+            Took it to market.
+          </Statement>
           <Lead>
-            {identity.role} at {identity.employer}. MBA, former founder &amp; CEO and engineer by
-            training — I pair an understanding of market dynamics with a deep grasp of the
-            technology.
+            Engineer, founder and robotics &amp; 4IR trainer — now {identity.role} at{' '}
+            {identity.employer}, with an MBA and a deep grasp of both markets and technology.
           </Lead>
           <ButtonRow>
             <ExternalButton $dark href={`mailto:${contact.email}`}>
