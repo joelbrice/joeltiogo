@@ -51,8 +51,11 @@ function App() {
     <BrowserRouter>
       <ScrollToTop />
       <AppContainer>
+        <a className="skip-link" href="#main">
+          Skip to content
+        </a>
         <Nav />
-        <MainContent>
+        <MainContent id="main" tabIndex={-1}>
           <Suspense fallback={<LoadingFallback />}>
             <Routes>
               <Route path="/" element={<Home />} />

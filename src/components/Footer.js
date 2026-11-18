@@ -63,7 +63,7 @@ const Bottom = styled.div`
   gap: 0.6rem 2rem;
   justify-content: space-between;
   font-size: 0.82rem;
-  color: #6f7b8b;
+  color: #7d8999;
 `;
 
 const Footer = () => (

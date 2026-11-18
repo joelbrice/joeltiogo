@@ -5,6 +5,7 @@ import { t, Section, Eyebrow, H1, Lead, ExternalButton, ButtonRow } from '../the
 import { articles, articleBySlug, readingMinutes } from '../data/articles';
 import { contact, identity } from '../data/profile';
 import NotFound from './NotFound';
+import usePageTitle from '../usePageTitle';
 
 const Column = styled.article`
   max-width: 720px;
@@ -136,6 +137,7 @@ const renderBlock = (b, i) => {
 const Article = () => {
   const { slug } = useParams();
   const article = articleBySlug(slug);
+  usePageTitle(article ? article.title : 'Page not found');
   if (!article) return <NotFound />;
 
   const index = articles.indexOf(article);
