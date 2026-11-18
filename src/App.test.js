@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import App from './App';
 
 test('mobile menu opens and shows the contact link', () => {
@@ -38,4 +38,13 @@ test('McKinsey.org Forward badge links to its Credly verification page', async (
     'href',
     'https://www.credly.com/badges/9fc66d90-473f-4d39-8a82-35baef122ade'
   );
+});
+
+test('each page sets its own browser-tab title', async () => {
+  window.history.pushState({}, '', '/about');
+  render(<App />);
+  await screen.findByRole('heading', { level: 1, name: /Strategist with an engineer/ });
+  // The title is set in an effect that runs just after the page renders.
+  await waitFor(() => expect(document.title).toBe('About — Joël Tiogo'));
+  window.history.pushState({}, '', '/');
 });

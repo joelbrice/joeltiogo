@@ -41,6 +41,27 @@ img {
   transform: translateY(18px);
 }
 
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -3rem;
+  z-index: 2000;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  background: #0e1a2b;
+  color: #ffffff;
+  text-decoration: none;
+  transition: top 0.15s ease;
+}
+
+.skip-link:focus {
+  top: 0.75rem;
+}
+
+main:focus {
+  outline: none;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;

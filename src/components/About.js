@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import usePageTitle from '../usePageTitle';
 import {
   t,
   Section,
@@ -152,7 +153,9 @@ const Shot = styled.figure`
   }
 `;
 
-const About = () => (
+const About = () => {
+  usePageTitle('About');
+  return (
   <>
     <Section>
       <Inner>
@@ -162,8 +165,8 @@ const About = () => (
             <H1>Strategist with an engineer’s foundation</H1>
             <Lead>
               My path runs from electrical engineering and software in South Africa, through
-              founding my own tech company, to an MBA in Frankfurt and business development in
-              automotive and electrification.
+              founding my own tech company, to an MBA in Frankfurt and business development across
+              technology-driven markets.
             </Lead>
             <Body>
               Curiosity and empathy shape how I lead. The rest of the story is best told in
@@ -268,5 +271,6 @@ const About = () => (
     </Section>
   </>
 );
+};
 
 export default About;

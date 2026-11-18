@@ -19,6 +19,7 @@ import {
   Rule,
 } from '../theme';
 import TerminalCard from './TerminalCard';
+import usePageTitle from '../usePageTitle';
 import {
   identity,
   contact,
@@ -318,6 +319,20 @@ const LightButton = styled(ExternalButton)`
   border-color: #fff;
 `;
 
+const CvLink = styled.a`
+  display: inline-block;
+  margin-top: 1.4rem;
+  font-size: 0.95rem;
+  color: #c3cad5;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(195, 202, 213, 0.4);
+
+  &:hover {
+    color: #fff;
+    border-color: #fff;
+  }
+`;
+
 const GhostLight = styled(ExternalButton)`
   color: #fff;
   border-color: rgba(255, 255, 255, 0.35);
@@ -327,7 +342,9 @@ const GhostLight = styled(ExternalButton)`
   }
 `;
 
-const HomePage = () => (
+const HomePage = () => {
+  usePageTitle(null);
+  return (
   <>
     <Hero>
       <HeroGrid>
@@ -402,7 +419,7 @@ const HomePage = () => (
           <Eyebrow>Focus</Eyebrow>
           <H2>Where I add value</H2>
         </SectionHead>
-        <Grid $cols={4}>
+        <Grid $cols={3}>
           {focusAreas.map((f) => (
             <Card key={f.title}>
               <Rule />
@@ -412,7 +429,7 @@ const HomePage = () => (
           ))}
         </Grid>
         <Markets>
-          <strong>Industries</strong>
+          <strong>Sectors so far</strong>
           {industries.map((i) => i.title).join(' · ')}
         </Markets>
         <Markets style={{ marginTop: '0.5rem' }}>
@@ -502,9 +519,13 @@ const HomePage = () => (
             LinkedIn
           </GhostLight>
         </ButtonRow>
+        <CvLink href={`mailto:${contact.email}?subject=${encodeURIComponent('CV request')}`}>
+          CV available on request →
+        </CvLink>
       </Inner>
     </ContactBand>
   </>
 );
+};
 
 export default HomePage;

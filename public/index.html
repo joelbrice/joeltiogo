@@ -27,6 +27,34 @@
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <!-- Fonts are self-hosted via @fontsource (see src/index.js); no third-party font requests. -->
 
+    <!-- Structured data: helps search engines describe Joël when someone searches his name. -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Joël Tiogo",
+      "alternateName": "Joël Brice Voumo Tiogo",
+      "url": "https://joeltiogo.netlify.app/",
+      "image": "https://joeltiogo.netlify.app/og-image.jpg",
+      "jobTitle": "Business Development Manager",
+      "worksFor": { "@type": "Organization", "name": "AVL Analytical Technologies" },
+      "alumniOf": [
+        { "@type": "CollegeOrUniversity", "name": "Frankfurt School of Finance & Management" },
+        { "@type": "CollegeOrUniversity", "name": "University of Johannesburg" }
+      ],
+      "hasCredential": {
+        "@type": "EducationalOccupationalCredential",
+        "name": "McKinsey.org Forward Program",
+        "credentialCategory": "badge",
+        "recognizedBy": { "@type": "Organization", "name": "McKinsey.org" },
+        "url": "https://www.credly.com/badges/9fc66d90-473f-4d39-8a82-35baef122ade"
+      },
+      "knowsAbout": ["Strategy", "Innovation", "Business development", "Go-to-market", "Sales", "Business solutions architecture", "Leadership"],
+      "knowsLanguage": ["en", "fr", "de"],
+      "sameAs": ["https://www.linkedin.com/in/joeltiogo", "https://github.com/joelbrice"]
+    }
+    </script>
+
     <title>Joël Tiogo — Strategy &amp; Business Development</title>
 </head>
 

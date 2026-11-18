@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { t, Section, Inner, Eyebrow, H1, H2, H3, Lead, Body, SectionHead, Card, Grid, Rule } from '../theme';
 import TerminalCard from './TerminalCard';
+import usePageTitle from '../usePageTitle';
 import { focusAreas, markets, industries } from '../data/profile';
 
 const Split = styled.div`
@@ -12,6 +13,24 @@ const Split = styled.div`
   @media ${t.laptop} {
     grid-template-columns: 1fr 1fr;
     gap: 4rem;
+  }
+`;
+
+const Beyond = styled.div`
+  border-radius: ${t.radius};
+  padding: 1.5rem;
+  background: ${t.ink};
+
+  h3 {
+    color: #fff;
+  }
+
+  p {
+    color: #c3cad5;
+  }
+
+  @media ${t.tablet} {
+    padding: 1.8rem;
   }
 `;
 
@@ -33,7 +52,9 @@ const MarketRow = styled.ul`
   }
 `;
 
-const Expertise = () => (
+const Expertise = () => {
+  usePageTitle('Expertise');
+  return (
   <>
     <Section>
       <Inner>
@@ -45,7 +66,7 @@ const Expertise = () => (
             understanding of the product.
           </Lead>
         </SectionHead>
-        <Grid $cols={2}>
+        <Grid $cols={3}>
           {focusAreas.map((f) => (
             <Card key={f.title}>
               <Rule />
@@ -61,10 +82,10 @@ const Expertise = () => (
       <Inner>
         <SectionHead>
           <Eyebrow>Industries &amp; markets</Eyebrow>
-          <H2>Across technology-driven industries</H2>
+          <H2>Industry-agnostic, technology-fluent</H2>
           <Lead style={{ marginBottom: 0 }}>
-            The common thread: complex technology that needs a clear business case, the right
-            partners and a route to market.
+            Strategy, business development and go-to-market skills travel across industries. The
+            sectors I have worked in so far:
           </Lead>
         </SectionHead>
         <Grid $cols={3}>
@@ -74,6 +95,13 @@ const Expertise = () => (
               <Body style={{ marginBottom: 0, fontSize: '0.95rem' }}>{d.body}</Body>
             </Card>
           ))}
+          <Beyond>
+            <H3>And beyond</H3>
+            <Body style={{ marginBottom: 0, fontSize: '0.95rem' }}>
+              The same playbook works wherever a business needs a clear strategy, the right
+              partners and a route to market.
+            </Body>
+          </Beyond>
         </Grid>
         <div style={{ marginTop: '2rem' }}>
           <Body style={{ color: t.muted, fontSize: '0.92rem' }}>Markets navigated</Body>
@@ -103,5 +131,6 @@ const Expertise = () => (
     </Section>
   </>
 );
+};
 
 export default Expertise;

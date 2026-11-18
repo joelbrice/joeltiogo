@@ -23,8 +23,12 @@ export const identity = {
 // Current focus (provided by Joël, Nov 2026).
 export const focusAreas = [
   {
-    title: 'Strategy & Innovation',
-    body: 'Shaping where to play and how to win, using structured problem solving and design thinking.',
+    title: 'Strategy',
+    body: 'Shaping where to play and how to win, with structured problem solving.',
+  },
+  {
+    title: 'Innovation',
+    body: 'Turning ideas into viable products and services, using design thinking.',
   },
   {
     title: 'Business Development & Partnerships',
@@ -37,6 +41,10 @@ export const focusAreas = [
   {
     title: 'Business Solutions Architecture',
     body: 'Translating customer needs into solutions that work both technically and commercially.',
+  },
+  {
+    title: 'Leadership & Business Management',
+    body: 'Leading teams and running a business end to end, as a former founder and CEO.',
   },
 ];
 
@@ -98,7 +106,8 @@ export const motherTongue = 'Yemba';
 
 export const markets = ['Europe', 'Africa', 'Asia', 'North America'];
 
-// Industries Joël has worked in — each backed by a role above.
+// Sectors Joël has worked in so far — each backed by a role above. Shown as
+// examples, not limits: his skills transfer to any technology-driven business.
 export const industries = [
   {
     title: 'Automotive & mobility',
