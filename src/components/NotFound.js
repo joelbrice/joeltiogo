@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useLocation } from 'react-router-dom';
+import usePageTitle from '../usePageTitle';
 import { t, Section, Inner, H1, Lead, PrimaryButton, SecondaryButton, ButtonRow } from '../theme';
 
 const Term = styled.pre`
@@ -29,6 +30,7 @@ const Term = styled.pre`
 
 const NotFound = () => {
   const { pathname } = useLocation();
+  usePageTitle('Page not found');
   return (
     <Section>
       <Inner style={{ maxWidth: 720, minHeight: '55vh' }}>

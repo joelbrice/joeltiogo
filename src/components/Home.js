@@ -19,6 +19,7 @@ import {
   Rule,
 } from '../theme';
 import TerminalCard from './TerminalCard';
+import usePageTitle from '../usePageTitle';
 import {
   identity,
   contact,
@@ -327,7 +328,9 @@ const GhostLight = styled(ExternalButton)`
   }
 `;
 
-const HomePage = () => (
+const HomePage = () => {
+  usePageTitle(null);
+  return (
   <>
     <Hero>
       <HeroGrid>
@@ -402,7 +405,7 @@ const HomePage = () => (
           <Eyebrow>Focus</Eyebrow>
           <H2>Where I add value</H2>
         </SectionHead>
-        <Grid $cols={4}>
+        <Grid $cols={3}>
           {focusAreas.map((f) => (
             <Card key={f.title}>
               <Rule />
@@ -412,7 +415,7 @@ const HomePage = () => (
           ))}
         </Grid>
         <Markets>
-          <strong>Industries</strong>
+          <strong>Sectors so far</strong>
           {industries.map((i) => i.title).join(' · ')}
         </Markets>
         <Markets style={{ marginTop: '0.5rem' }}>
@@ -506,5 +509,6 @@ const HomePage = () => (
     </ContactBand>
   </>
 );
+};
 
 export default HomePage;

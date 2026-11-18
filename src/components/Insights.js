@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import usePageTitle from '../usePageTitle';
 import { t, Section, Inner, Eyebrow, H1, H3, Lead, Body, SectionHead, Card, Grid, Rule } from '../theme';
 import { articles, readingMinutes } from '../data/articles';
 
@@ -48,7 +49,9 @@ const Note = styled.p`
   font-style: italic;
 `;
 
-const Insights = () => (
+const Insights = () => {
+  usePageTitle('Insights');
+  return (
   <Section>
     <Inner>
       <SectionHead>
@@ -79,5 +82,6 @@ const Insights = () => (
     </Inner>
   </Section>
 );
+};
 
 export default Insights;

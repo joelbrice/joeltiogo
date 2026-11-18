@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 export const t = {
   ink: '#0e1a2b',
   text: '#3b4656',
-  muted: '#6b7685',
+  muted: '#626d7c',
   line: '#e3e6eb',
   bg: '#ffffff',
   bgAlt: '#f6f5f2',
