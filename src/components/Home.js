@@ -319,6 +319,20 @@ const LightButton = styled(ExternalButton)`
   border-color: #fff;
 `;
 
+const CvLink = styled.a`
+  display: inline-block;
+  margin-top: 1.4rem;
+  font-size: 0.95rem;
+  color: #c3cad5;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(195, 202, 213, 0.4);
+
+  &:hover {
+    color: #fff;
+    border-color: #fff;
+  }
+`;
+
 const GhostLight = styled(ExternalButton)`
   color: #fff;
   border-color: rgba(255, 255, 255, 0.35);
@@ -505,6 +519,9 @@ const HomePage = () => {
             LinkedIn
           </GhostLight>
         </ButtonRow>
+        <CvLink href={`mailto:${contact.email}?subject=${encodeURIComponent('CV request')}`}>
+          CV available on request →
+        </CvLink>
       </Inner>
     </ContactBand>
   </>
