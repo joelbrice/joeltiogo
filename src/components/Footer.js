@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { t } from '../theme';
 import { contact, identity } from '../data/profile';
+import { legal } from '../data/legal';
 
 const Wrap = styled.footer`
   background: #0a1320;
@@ -66,6 +67,15 @@ const Bottom = styled.div`
   color: #7d8999;
 `;
 
+const LegalLink = styled(Link)`
+  color: #7d8999;
+  text-decoration: none;
+
+  &:hover {
+    color: #fff;
+  }
+`;
+
 const Footer = () => (
   <Wrap>
     <Top>
@@ -88,6 +98,7 @@ const Footer = () => (
     </Top>
     <Bottom>
       <span>&copy; {new Date().getFullYear()} {identity.fullName}</span>
+      <LegalLink to="/privacy">{legal.address.length ? 'Legal notice & privacy' : 'Privacy'}</LegalLink>
       <span>Built with React.</span>
     </Bottom>
   </Wrap>
