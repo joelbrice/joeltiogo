@@ -48,3 +48,12 @@ test('each page sets its own browser-tab title', async () => {
   await waitFor(() => expect(document.title).toBe('About — Joël Tiogo'));
   window.history.pushState({}, '', '/');
 });
+
+test('privacy page explains hosting and visitor rights', async () => {
+  window.history.pushState({}, '', '/privacy');
+  render(<App />);
+  expect(await screen.findByRole('heading', { level: 1, name: 'Privacy' })).toBeInTheDocument();
+  expect(screen.getByText(/hosted by Netlify/)).toBeInTheDocument();
+  expect(screen.getByText(/right to lodge a complaint/)).toBeInTheDocument();
+  window.history.pushState({}, '', '/');
+});
