@@ -81,7 +81,7 @@ const Footer = () => (
     <Top>
       <div>
         <Name>{identity.name}</Name>
-        <Tag>Strategy · Business Development · Go-to-Market</Tag>
+        <Tag>Strategy · Business Development · Innovation</Tag>
       </div>
       <Links aria-label="Footer">
         <Link to="/about">About</Link>
