@@ -351,8 +351,7 @@ const HomePage = () => {
         <div>
           <Avatar src="/images/web/headshot.jpg" alt="" width="88" height="88" />
           <Eyebrow>
-            Strategy · Business Development ·{' '}
-            <span style={{ whiteSpace: 'nowrap' }}>Go-to-Market</span>
+            Strategy · Business Development · Innovation
           </Eyebrow>
           <H1>{identity.name}</H1>
           <Statement>
@@ -361,8 +360,8 @@ const HomePage = () => {
             Took it to market.
           </Statement>
           <Lead>
-            Engineer, founder and robotics &amp; 4IR trainer — now {identity.role} at{' '}
-            {identity.employer}, with an MBA and a deep grasp of both markets and technology.
+            MBA, engineer and former founder — today {identity.role} at {identity.employer},
+            turning innovation into commercial growth.
           </Lead>
           <ButtonRow>
             <ExternalButton $dark href={`mailto:${contact.email}`}>
